@@ -1,0 +1,63 @@
+services:
+  nginx:
+    image: nginx:1.27.0
+    container_name: moyeo-nginx
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - 8080
+    deploy:
+      replicas: 3
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      REDIS_HOST: redis
+      DB_HOST: mysql
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.4.0
+    container_name: moyeo-mysql
+    restart: always
+    ports:
+      - 3388:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7.2.5
+    container_name: moyeo-redis
+    ports:
+      - 6381:6379
+    command:
+      - bash
+      - -c
+      - redis-server --appendonly yes --maxmemory $$(( $$( cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null || cat /sys/fs/cgroup/memory.max ) - 100000000)) --maxmemory-policy volatile-lru
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      TZ: "Asia/Seoul"
+    restart: unless-stopped
+
+volumes:
+  mysql: {}
