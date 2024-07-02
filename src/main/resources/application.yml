@@ -9,9 +9,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -27,30 +24,3 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha
-
----
-spring:
-  config:
-    activate:
-      on-profile: local
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
