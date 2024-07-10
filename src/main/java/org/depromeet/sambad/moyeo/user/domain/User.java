@@ -1,6 +1,11 @@
 package org.depromeet.sambad.moyeo.user.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -8,16 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private Long imageFileId;
+	private Long imageFileId;
 
-    private String name;
+	private String name;
 
-    private String email;
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    private LoginProvider loginProvider;
+	@Enumerated(EnumType.STRING)
+	private LoginProvider loginProvider;
 }
