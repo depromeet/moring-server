@@ -17,6 +17,11 @@ spring:
       client-name: moyeo-api
       repositories:
         enabled: false
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:5MB}
+      max-request-size: ${MAX_REQUEST_SIZE:5MB}
+      enabled: true
 
 springdoc:
   default-consumes-media-type: application/json
