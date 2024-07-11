@@ -4,8 +4,8 @@ import static org.depromeet.sambad.moyeo.user.presentation.exception.UserExcepti
 
 import org.depromeet.sambad.moyeo.common.exception.BusinessException;
 
-public class NotFoundMemberException extends BusinessException {
-	public NotFoundMemberException() {
+public class NotFoundUserException extends BusinessException {
+	public NotFoundUserException() {
 		super(NOT_FOUND_USER);
 	}
 }

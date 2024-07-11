@@ -3,6 +3,7 @@ package org.depromeet.sambad.moyeo.file.application;
 import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moyeo.file.domain.FileEntity;
 import org.depromeet.sambad.moyeo.file.domain.FileRepository;
+import org.depromeet.sambad.moyeo.file.domain.FileUploader;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
