@@ -1,7 +1,6 @@
 package org.depromeet.sambad.moyeo.auth.application;
 
 import lombok.RequiredArgsConstructor;
-import org.depromeet.sambad.moyeo.auth.domain.CustomOAuth2User;
 import org.depromeet.sambad.moyeo.auth.domain.CustomUserDetails;
 import org.depromeet.sambad.moyeo.user.domain.User;
 import org.depromeet.sambad.moyeo.user.domain.UserRepository;

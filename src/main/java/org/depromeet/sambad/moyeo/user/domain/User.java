@@ -12,33 +12,39 @@ import org.depromeet.sambad.moyeo.file.domain.FileEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @JoinColumn(name = "image_file_id")
-    @OneToOne(fetch = FetchType.LAZY)
-    private FileEntity imageFile;
+	@JoinColumn(name = "image_file_id")
+	@OneToOne(fetch = FetchType.LAZY)
+	private FileEntity imageFile;
 
-    private String name;
+	private String name;
 
-    private String email;
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    private LoginProvider loginProvider;
+	@Enumerated(EnumType.STRING)
+	private LoginProvider loginProvider;
 
-    public static User of(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
-        return new User(imageFile, name, email, loginProvider);
-    }
+	public static User of(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
+		return new User(imageFile, name, email, loginProvider);
+	}
 
-    private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
-        this.imageFile = imageFile;
-        this.name = name;
-        this.email = email;
-        this.loginProvider = loginProvider;
-    }
+	private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
+		this.imageFile = imageFile;
+		this.name = name;
+		this.email = email;
+		this.loginProvider = loginProvider;
+	}
 
+<<<<<<< HEAD
     public String getProfileImageUrl() {
         return imageFile != null ? imageFile.getPhysicalPath() : null;
     }
+=======
+	public String getProfileImageUrl() {
+		return imageFile != null ? imageFile.getPath() : null;
+	}
+>>>>>>> c19987f (feat: Security 관련 Exception Handling 강화)
 }

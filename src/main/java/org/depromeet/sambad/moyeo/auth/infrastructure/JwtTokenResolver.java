@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
 
 @Slf4j
 @Component
@@ -35,9 +36,26 @@ public class JwtTokenResolver implements TokenResolver {
                 .or(() -> resolveFromCookie(request));
     }
 
+    @Override
+    public boolean isTokenExpired(String token) {
+        return getExpirationTime(token, secretKey).before(new Date());
+    }
+
+    @Override
+    public String getSubjectFromToken(String token) {
+        return getClaims(token, secretKey)
+                .getPayload()
+                .getSubject();
+    }
+
     private Optional<String> resolveFromCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(cookie -> Objects.equals(cookie.getName(), "accessToken"))
+        Cookie[] cookies = request.getCookies();
+        if (Objects.isNull(cookies)) {
+            return Optional.empty();
+        }
+
+        return Arrays.stream(cookies)
+                .filter(cookie -> Objects.equals(cookie.getName(), ACCESS_TOKEN))
                 .map(Cookie::getValue)
                 .findFirst();
     }
@@ -50,18 +68,6 @@ public class JwtTokenResolver implements TokenResolver {
                 .map(Iterator::next)
                 .filter(auth -> StringUtils.hasText(auth) && BEARER_PATTERN.matcher(auth).matches())
                 .map(auth -> auth.replaceAll(REPLACE_BEARER_PATTERN, ""));
-    }
-
-    @Override
-    public boolean isTokenExpired(String token) {
-        return getExpirationTime(token, secretKey).before(new Date());
-    }
-
-    @Override
-    public String getSubjectFromToken(String token) {
-        return getClaims(token, secretKey)
-                .getPayload()
-                .getSubject();
     }
 
     private Date getExpirationTime(String token, SecretKey secretKey) {

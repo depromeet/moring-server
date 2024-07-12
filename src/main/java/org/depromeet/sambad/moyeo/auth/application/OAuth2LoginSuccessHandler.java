@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
+
 @RequiredArgsConstructor
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -29,7 +31,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         AuthResult result = authService.handleLoginSuccess(oAuth2User.getAuthAttributes());
         int expirationSeconds = (int) (tokenProperties.expirationTimeMs() / 1000);
 
-        Cookie cookie = new Cookie("accessToken", result.accessToken());
+        Cookie cookie = new Cookie(ACCESS_TOKEN, result.accessToken());
         cookie.setPath("/");
         cookie.setMaxAge(expirationSeconds);
         cookie.setHttpOnly(true);

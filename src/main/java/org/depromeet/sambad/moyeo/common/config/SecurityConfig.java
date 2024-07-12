@@ -1,23 +1,27 @@
 package org.depromeet.sambad.moyeo.common.config;
 
-import org.depromeet.sambad.moyeo.auth.application.OAuth2LoginSuccessHandler;
-import org.depromeet.sambad.moyeo.auth.application.OAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moyeo.auth.presentation.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    private final OAuth2UserService oAuth2UserService;
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final DefaultOAuth2UserService defaultOAuth2UserService;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtTokenFilter jwtTokenFilter;
 
     private static final String[] PERMIT_ALL_PATTERNS = {
@@ -27,11 +31,6 @@ public class SecurityConfig {
             "/oauth2/**",
     };
 
-    public SecurityConfig(OAuth2UserService oAuth2UserService, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, JwtTokenFilter jwtTokenFilter) {
-        this.oAuth2UserService = oAuth2UserService;
-        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
-        this.jwtTokenFilter = jwtTokenFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -39,7 +38,8 @@ public class SecurityConfig {
         configureSessionManagement(httpSecurity);
         configureApiAuthorization(httpSecurity);
         configureContentSecurityPolicy(httpSecurity);
-        configureOauth2Login(httpSecurity);
+        configureOAuth2Login(httpSecurity);
+        configureExceptionHandler(httpSecurity);
 
         return httpSecurity.build();
     }
@@ -71,15 +71,19 @@ public class SecurityConfig {
                 ));
     }
 
-    private void configureOauth2Login(HttpSecurity http) throws Exception {
+    private void configureOAuth2Login(HttpSecurity http) throws Exception {
         http.oauth2Login(oauth2 ->
                 oauth2
                         .loginPage("/login")
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.userService(oAuth2UserService)
-                        )
-                        .successHandler(oAuth2LoginSuccessHandler)
+                        .userInfoEndpoint(userInfo -> userInfo.userService(defaultOAuth2UserService))
+                        .successHandler(authenticationSuccessHandler)
         );
-        http.addFilterBefore(jwtTokenFilter, OAuth2LoginAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private void configureExceptionHandler(HttpSecurity http) throws Exception {
+        http.exceptionHandling(exceptionHandler ->
+                exceptionHandler
+                        .authenticationEntryPoint(authenticationEntryPoint));
     }
 }
