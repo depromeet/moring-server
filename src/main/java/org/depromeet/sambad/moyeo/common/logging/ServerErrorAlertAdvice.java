@@ -58,5 +58,6 @@ public class ServerErrorAlertAdvice {
 			businessException.getCode().getCode(), parameterLog);
 		log.error("[SERVER ERROR DESCRIPTION] code : {} | message : {}", businessException.getCode(),
 			businessException.getMessage());
+		log.error(exception.getCause().toString());
 	}
 }

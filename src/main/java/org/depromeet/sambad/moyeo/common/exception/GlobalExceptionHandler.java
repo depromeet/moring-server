@@ -15,6 +15,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.sentry.Sentry;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -26,8 +30,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-		return ResponseEntity.internalServerError()
-			.body(ExceptionResponse.from(SERVER_ERROR));
+		Sentry.captureException(exception);
+		log.error(exception.getCause().toString());
+		return ResponseEntity.internalServerError().body(ExceptionResponse.from(SERVER_ERROR));
 	}
 
 	@Override
