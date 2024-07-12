@@ -3,3 +3,8 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: prod
+  release: "moring-prod@1.0.0"

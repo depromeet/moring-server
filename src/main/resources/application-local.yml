@@ -2,3 +2,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+sentry:
+  enabled: false
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
