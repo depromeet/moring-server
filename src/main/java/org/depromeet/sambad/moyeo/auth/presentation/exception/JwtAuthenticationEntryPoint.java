@@ -20,30 +20,30 @@ import static org.depromeet.sambad.moyeo.common.exception.GlobalExceptionCode.SE
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
-    @Override
-    public void commence(
-            HttpServletRequest request, HttpServletResponse response, AuthenticationException exception
-    ) throws IOException {
-        ExceptionCode code = judgeStatusCode(exception);
+	@Override
+	public void commence(
+			HttpServletRequest request, HttpServletResponse response, AuthenticationException exception
+	) throws IOException {
+		ExceptionCode code = judgeStatusCode(exception);
 
-        setResponseBodyBasicInfo(response, code);
+		setResponseBodyBasicInfo(response, code);
 
-        objectMapper.writeValue(response.getOutputStream(), ExceptionResponse.from(code));
-    }
+		objectMapper.writeValue(response.getOutputStream(), ExceptionResponse.from(code));
+	}
 
-    private void setResponseBodyBasicInfo(HttpServletResponse response, ExceptionCode code) {
-        response.setStatus(code.getStatus().value());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-    }
+	private void setResponseBodyBasicInfo(HttpServletResponse response, ExceptionCode code) {
+		response.setStatus(code.getStatus().value());
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+	}
 
-    private ExceptionCode judgeStatusCode(AuthenticationException ex) {
-        return ex instanceof BusinessAuthException bex
-                ? bex.getCode()
-                : SERVER_ERROR;
-    }
+	private ExceptionCode judgeStatusCode(AuthenticationException ex) {
+		return ex instanceof BusinessAuthException bex
+				? bex.getCode()
+				: SERVER_ERROR;
+	}
 
 }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class FileRepositoryImpl implements FileRepository {
+
 	private final FileJpaRepository fileJpaRepository;
 
 	@Override

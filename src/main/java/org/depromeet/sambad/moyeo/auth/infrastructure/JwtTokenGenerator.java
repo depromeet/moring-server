@@ -15,19 +15,19 @@ import static io.jsonwebtoken.io.Decoders.BASE64;
 @Component
 public class JwtTokenGenerator implements TokenGenerator {
 
-    private final TokenProperties tokenProperties;
+	private final TokenProperties tokenProperties;
 
-    public String generate(Long userSeq) {
-        long currentTimeMillis = System.currentTimeMillis();
-        Date now = new Date(currentTimeMillis);
-        Date expiration = new Date(currentTimeMillis + tokenProperties.expirationTimeMs());
-        SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
+	public String generate(Long userSeq) {
+		long currentTimeMillis = System.currentTimeMillis();
+		Date now = new Date(currentTimeMillis);
+		Date expiration = new Date(currentTimeMillis + tokenProperties.expirationTimeMs());
+		SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
 
-        return Jwts.builder()
-                .subject(String.valueOf(userSeq))
-                .issuedAt(now)
-                .expiration(expiration)
-                .signWith(secretKey)
-                .compact();
-    }
+		return Jwts.builder()
+				.subject(String.valueOf(userSeq))
+				.issuedAt(now)
+				.expiration(expiration)
+				.signWith(secretKey)
+				.compact();
+	}
 }

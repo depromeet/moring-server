@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@UserId Long userId) {
-        UserResponse response = userService.findByUserId(userId);
-        return ResponseEntity.ok(response);
-    }
+	@GetMapping("/me")
+	public ResponseEntity<UserResponse> me(@UserId Long userId) {
+		UserResponse response = userService.findByUserId(userId);
+		return ResponseEntity.ok(response);
+	}
 }

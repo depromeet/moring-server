@@ -16,40 +16,40 @@ import static org.depromeet.sambad.moyeo.user.domain.LoginProvider.kakao;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class KakaoAuthAttributes implements AuthAttributes {
 
-    private final String email;
-    private final String name;
-    private final String profileImageUrl;
-    private final LoginProvider provide;
+	private final String email;
+	private final String name;
+	private final String profileImageUrl;
+	private final LoginProvider provide;
 
-    public static KakaoAuthAttributes of(Map<String, Object> attributes) {
-        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+	public static KakaoAuthAttributes of(Map<String, Object> attributes) {
+		Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+		Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-        return new KakaoAuthAttributes(
-                (String) kakaoAccount.get("email"),
-                (String) profile.get("nickname"),
-                (String) profile.get("profile_image_url"),
-                kakao
-        );
-    }
+		return new KakaoAuthAttributes(
+				(String) kakaoAccount.get("email"),
+				(String) profile.get("nickname"),
+				(String) profile.get("profile_image_url"),
+				kakao
+		);
+	}
 
-    @Override
-    public String getEmail() {
-        return this.email;
-    }
+	@Override
+	public String getEmail() {
+		return this.email;
+	}
 
-    @Override
-    public String getName() {
-        return this.name;
-    }
+	@Override
+	public String getName() {
+		return this.name;
+	}
 
-    @Override
-    public String getProfileImageUrl() {
-        return this.profileImageUrl;
-    }
+	@Override
+	public String getProfileImageUrl() {
+		return this.profileImageUrl;
+	}
 
-    @Override
-    public LoginProvider getProvider() {
-        return this.provide;
-    }
+	@Override
+	public LoginProvider getProvider() {
+		return this.provide;
+	}
 }

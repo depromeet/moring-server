@@ -6,10 +6,10 @@ import org.springframework.security.core.AuthenticationException;
 @Getter
 public class BusinessAuthException extends AuthenticationException {
 
-    private final AuthExceptionCode code;
+	private final AuthExceptionCode code;
 
-    public BusinessAuthException(AuthExceptionCode code) {
-        super(code.getMessage());
-        this.code = code;
-    }
+	public BusinessAuthException(AuthExceptionCode code) {
+		super(code.getMessage());
+		this.code = code;
+	}
 }

@@ -6,19 +6,19 @@ import java.util.Map;
 
 public interface AuthAttributes {
 
-    String getEmail();
+	String getEmail();
 
-    String getName();
+	String getName();
 
-    String getProfileImageUrl();
+	String getProfileImageUrl();
 
-    LoginProvider getProvider();
+	LoginProvider getProvider();
 
-    static AuthAttributes delegate(String providerId, Map<String, Object> attributes) {
-        if (LoginProvider.kakao.isProviderOf(providerId)) {
-            return KakaoAuthAttributes.of(attributes);
-        }
+	static AuthAttributes delegate(String providerId, Map<String, Object> attributes) {
+		if (LoginProvider.kakao.isProviderOf(providerId)) {
+			return KakaoAuthAttributes.of(attributes);
+		}
 
-        throw new IllegalArgumentException("Unsupported id: " + providerId);
-    }
+		throw new IllegalArgumentException("Unsupported id: " + providerId);
+	}
 }

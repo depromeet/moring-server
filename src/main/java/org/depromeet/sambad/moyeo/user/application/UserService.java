@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    public UserResponse findByUserId(Long userId) {
-        return userRepository.findById(userId)
-            .map(UserResponse::from)
-            .orElseThrow(NotFoundUserException::new);
-    }
+	public UserResponse findByUserId(Long userId) {
+		return userRepository.findById(userId)
+				.map(UserResponse::from)
+				.orElseThrow(NotFoundUserException::new);
+	}
 }

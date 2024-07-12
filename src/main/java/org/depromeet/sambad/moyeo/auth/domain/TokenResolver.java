@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface TokenResolver {
 
-    Optional<String> resolveTokenFromRequest(HttpServletRequest request);
+	Optional<String> resolveTokenFromRequest(HttpServletRequest request);
 
-    boolean isTokenExpired(String token);
+	boolean isTokenExpired(String token);
 
-    String getSubjectFromToken(String token);
+	String getSubjectFromToken(String token);
 }

@@ -19,71 +19,68 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 public class SecurityConfig {
 
-    private final DefaultOAuth2UserService defaultOAuth2UserService;
-    private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final JwtTokenFilter jwtTokenFilter;
+	private final DefaultOAuth2UserService defaultOAuth2UserService;
+	private final AuthenticationSuccessHandler authenticationSuccessHandler;
+	private final AuthenticationEntryPoint authenticationEntryPoint;
+	private final JwtTokenFilter jwtTokenFilter;
 
-    private static final String[] PERMIT_ALL_PATTERNS = {
-            "/swagger-ui/**",
-            "/actuator/health",
-            "/login/**",
-            "/oauth2/**",
-    };
+	private static final String[] PERMIT_ALL_PATTERNS = {
+			"/swagger-ui/**",
+			"/actuator/health",
+			"/login/**",
+			"/oauth2/**",
+	};
 
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        disableSecurityBasic(httpSecurity);
-        configureSessionManagement(httpSecurity);
-        configureApiAuthorization(httpSecurity);
-        configureContentSecurityPolicy(httpSecurity);
-        configureOAuth2Login(httpSecurity);
-        configureExceptionHandler(httpSecurity);
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		disableSecurityBasic(httpSecurity);
+		configureSessionManagement(httpSecurity);
+		configureApiAuthorization(httpSecurity);
+		configureContentSecurityPolicy(httpSecurity);
+		configureOAuth2Login(httpSecurity);
+		configureExceptionHandler(httpSecurity);
 
-        return httpSecurity.build();
-    }
+		return httpSecurity.build();
+	}
 
-    private void disableSecurityBasic(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
-    }
+	private void disableSecurityBasic(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity
+				.csrf(AbstractHttpConfigurer::disable)
+				.formLogin(AbstractHttpConfigurer::disable)
+				.httpBasic(AbstractHttpConfigurer::disable);
+	}
 
-    private void configureSessionManagement(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
-    }
+	private void configureSessionManagement(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
+	}
 
-    private void configureApiAuthorization(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(authorize ->
-                authorize
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers(PERMIT_ALL_PATTERNS).permitAll()
-                        .anyRequest().authenticated()
-        );
-    }
+	private void configureApiAuthorization(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.authorizeHttpRequests(authorize ->
+				authorize.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+						.requestMatchers(PERMIT_ALL_PATTERNS).permitAll()
+						.anyRequest().authenticated()
+		);
+	}
 
-    private void configureContentSecurityPolicy(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .headers(headersConfig -> headersConfig.contentSecurityPolicy(
-                        cspConfig -> cspConfig.policyDirectives("script-src 'self'")
-                ));
-    }
+	private void configureContentSecurityPolicy(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable)
+				.headers(headersConfig -> headersConfig.contentSecurityPolicy(
+						cspConfig -> cspConfig.policyDirectives("script-src 'self'")
+				));
+	}
 
-    private void configureOAuth2Login(HttpSecurity http) throws Exception {
-        http.oauth2Login(oauth2 ->
-                oauth2
-                        .loginPage("/login")
-                        .userInfoEndpoint(userInfo -> userInfo.userService(defaultOAuth2UserService))
-                        .successHandler(authenticationSuccessHandler)
-        );
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+	private void configureOAuth2Login(HttpSecurity http) throws Exception {
+		http.oauth2Login(oauth2 ->
+				oauth2.loginPage("/login")
+						.userInfoEndpoint(userInfo -> userInfo.userService(defaultOAuth2UserService))
+						.successHandler(authenticationSuccessHandler)
+		);
+		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+	}
 
-    private void configureExceptionHandler(HttpSecurity http) throws Exception {
-        http.exceptionHandling(exceptionHandler ->
-                exceptionHandler
-                        .authenticationEntryPoint(authenticationEntryPoint));
-    }
+	private void configureExceptionHandler(HttpSecurity http) throws Exception {
+		http.exceptionHandling(exceptionHandler ->
+				exceptionHandler.authenticationEntryPoint(authenticationEntryPoint));
+	}
 }

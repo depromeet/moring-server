@@ -15,43 +15,43 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final TokenGenerator tokenGenerator;
-    private final FileService fileService;
+	private final UserRepository userRepository;
+	private final TokenGenerator tokenGenerator;
+	private final FileService fileService;
 
-    @Transactional
-    public AuthResult handleLoginSuccess(AuthAttributes attributes) {
-        String email = attributes.getEmail();
+	@Transactional
+	public AuthResult handleLoginSuccess(AuthAttributes attributes) {
+		String email = attributes.getEmail();
 
-        return userRepository.findByEmail(email)
-                .map(this::handleExistUser)
-                .orElseGet(() -> handleFirstLogin(attributes));
-    }
+		return userRepository.findByEmail(email)
+				.map(this::handleExistUser)
+				.orElseGet(() -> handleFirstLogin(attributes));
+	}
 
-    private AuthResult handleExistUser(User user) {
-        return new AuthResult(generateTokenFromUser(user), false);
-    }
+	private AuthResult handleExistUser(User user) {
+		return new AuthResult(generateTokenFromUser(user), false);
+	}
 
-    private AuthResult handleFirstLogin(AuthAttributes attributes) {
-        User newUser = saveNewUser(attributes);
+	private AuthResult handleFirstLogin(AuthAttributes attributes) {
+		User newUser = saveNewUser(attributes);
 
-        return new AuthResult(generateTokenFromUser(newUser), true);
-    }
+		return new AuthResult(generateTokenFromUser(newUser), true);
+	}
 
-    private String generateTokenFromUser(User user) {
-        return tokenGenerator.generate(user.getId());
-    }
+	private String generateTokenFromUser(User user) {
+		return tokenGenerator.generate(user.getId());
+	}
 
-    private User saveNewUser(AuthAttributes attributes) {
-        FileEntity file = uploadProfileImage(attributes);
+	private User saveNewUser(AuthAttributes attributes) {
+		FileEntity file = uploadProfileImage(attributes);
 
-        return userRepository.save(
-                User.of(file, attributes.getName(), attributes.getEmail(), attributes.getProvider())
-        );
-    }
+		return userRepository.save(
+				User.of(file, attributes.getName(), attributes.getEmail(), attributes.getProvider())
+		);
+	}
 
-    private FileEntity uploadProfileImage(AuthAttributes attributes) {
-        String profileImageUrl = attributes.getProfileImageUrl();
-        return fileService.uploadAndSave(profileImageUrl);
-    }
+	private FileEntity uploadProfileImage(AuthAttributes attributes) {
+		String profileImageUrl = attributes.getProfileImageUrl();
+		return fileService.uploadAndSave(profileImageUrl);
+	}
 }

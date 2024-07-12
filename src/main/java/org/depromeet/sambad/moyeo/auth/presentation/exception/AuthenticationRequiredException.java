@@ -7,7 +7,7 @@ import static org.depromeet.sambad.moyeo.auth.presentation.exception.AuthExcepti
  * AuthenticationEntryPoint를 통한 예외 처리가 수행되어야 하기 때문이다.
  */
 public class AuthenticationRequiredException extends BusinessAuthException {
-    public AuthenticationRequiredException() {
-        super(AUTHENTICATION_REQUIRED);
-    }
+	public AuthenticationRequiredException() {
+		super(AUTHENTICATION_REQUIRED);
+	}
 }

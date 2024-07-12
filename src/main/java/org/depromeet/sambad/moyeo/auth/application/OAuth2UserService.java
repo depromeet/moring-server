@@ -16,20 +16,20 @@ import java.util.List;
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+	@Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER"); // TODO: Implement role management
+		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER"); // TODO: Implement role management
 
-        ClientRegistration clientRegistration = userRequest.getClientRegistration();
-        String registrationId = clientRegistration.getRegistrationId();
-        String userNameAttributeName = clientRegistration.getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
+		ClientRegistration clientRegistration = userRequest.getClientRegistration();
+		String registrationId = clientRegistration.getRegistrationId();
+		String userNameAttributeName = clientRegistration.getProviderDetails()
+				.getUserInfoEndpoint()
+				.getUserNameAttributeName();
 
-        AuthAttributes authAttributes = AuthAttributes.delegate(registrationId, oAuth2User.getAttributes());
+		AuthAttributes authAttributes = AuthAttributes.delegate(registrationId, oAuth2User.getAttributes());
 
-        return new CustomOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName, authAttributes);
-    }
+		return new CustomOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName, authAttributes);
+	}
 }

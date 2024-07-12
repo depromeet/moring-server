@@ -11,15 +11,15 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private final AuthAttributes authAttributes;
+	private final AuthAttributes authAttributes;
 
-    public CustomOAuth2User(
-            Collection<? extends GrantedAuthority> authorities,
-            Map<String, Object> attributes,
-            String nameAttributeKey,
-            AuthAttributes authAttributes
-    ) {
-        super(authorities, attributes, nameAttributeKey);
-        this.authAttributes = authAttributes;
-    }
+	public CustomOAuth2User(
+			Collection<? extends GrantedAuthority> authorities,
+			Map<String, Object> attributes,
+			String nameAttributeKey,
+			AuthAttributes authAttributes
+	) {
+		super(authorities, attributes, nameAttributeKey);
+		this.authAttributes = authAttributes;
+	}
 }

@@ -8,24 +8,24 @@ import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final Long userId;
+	private final Long userId;
 
-    public CustomUserDetails(Long userId) {
-        this.userId = userId;
-    }
+	public CustomUserDetails(Long userId) {
+		this.userId = userId;
+	}
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of();
+	}
 
-    @Override
-    public String getPassword() {
-        return "";
-    }
+	@Override
+	public String getPassword() {
+		return "";
+	}
 
-    @Override
-    public String getUsername() {
-        return this.userId.toString();
-    }
+	@Override
+	public String getUsername() {
+		return this.userId.toString();
+	}
 }
