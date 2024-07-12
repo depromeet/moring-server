@@ -31,7 +31,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ExceptionResponse> handleException(Exception exception) {
 		Sentry.captureException(exception);
-		log.error(exception.getCause().toString());
+		if (exception.getCause() != null) {
+			log.error(exception.getCause().toString());
+		}
 		return ResponseEntity.internalServerError().body(ExceptionResponse.from(SERVER_ERROR));
 	}
 
