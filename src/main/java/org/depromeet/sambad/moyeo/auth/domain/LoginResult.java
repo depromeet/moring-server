@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moyeo.auth.domain;
 
-public record AuthResult(
+public record LoginResult(
 		String accessToken,
 		boolean isNewUser
 ) {

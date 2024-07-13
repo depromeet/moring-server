@@ -16,8 +16,11 @@ public class UserController {
 
 	private final UserService userService;
 
+	/**
+	 * TODO: API 스펙 확정되면 스웨거 추가 필요
+	 */
 	@GetMapping("/me")
-	public ResponseEntity<UserResponse> me(@UserId Long userId) {
+	public ResponseEntity<UserResponse> getUser(@UserId Long userId) {
 		UserResponse response = userService.findByUserId(userId);
 		return ResponseEntity.ok(response);
 	}

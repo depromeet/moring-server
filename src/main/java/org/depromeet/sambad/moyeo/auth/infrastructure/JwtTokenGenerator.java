@@ -17,14 +17,14 @@ public class JwtTokenGenerator implements TokenGenerator {
 
 	private final TokenProperties tokenProperties;
 
-	public String generate(Long userSeq) {
+	public String generate(Long userId) {
 		long currentTimeMillis = System.currentTimeMillis();
 		Date now = new Date(currentTimeMillis);
 		Date expiration = new Date(currentTimeMillis + tokenProperties.expirationTimeMs());
 		SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
 
 		return Jwts.builder()
-				.subject(String.valueOf(userSeq))
+				.subject(String.valueOf(userId))
 				.issuedAt(now)
 				.expiration(expiration)
 				.signWith(secretKey)

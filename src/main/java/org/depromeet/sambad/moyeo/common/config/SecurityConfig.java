@@ -71,12 +71,12 @@ public class SecurityConfig {
 	}
 
 	private void configureOAuth2Login(HttpSecurity http) throws Exception {
+		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		http.oauth2Login(oauth2 ->
 				oauth2.loginPage("/login")
 						.userInfoEndpoint(userInfo -> userInfo.userService(defaultOAuth2UserService))
 						.successHandler(authenticationSuccessHandler)
 		);
-		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
 	private void configureExceptionHandler(HttpSecurity http) throws Exception {

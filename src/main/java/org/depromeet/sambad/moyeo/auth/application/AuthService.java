@@ -2,7 +2,7 @@ package org.depromeet.sambad.moyeo.auth.application;
 
 import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moyeo.auth.application.dto.AuthAttributes;
-import org.depromeet.sambad.moyeo.auth.domain.AuthResult;
+import org.depromeet.sambad.moyeo.auth.domain.LoginResult;
 import org.depromeet.sambad.moyeo.auth.domain.TokenGenerator;
 import org.depromeet.sambad.moyeo.file.application.FileService;
 import org.depromeet.sambad.moyeo.file.domain.FileEntity;
@@ -11,6 +11,11 @@ import org.depromeet.sambad.moyeo.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 인증 정보에 기반한 로그인 성공 처리를 담당합니다.<br />
+ * 로그인 성공 시, 토큰을 발급합니다.<br />
+ * 최초 로그인일 경우, 사용자 정보를 신규 저장합니다.
+ */
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -20,7 +25,7 @@ public class AuthService {
 	private final FileService fileService;
 
 	@Transactional
-	public AuthResult handleLoginSuccess(AuthAttributes attributes) {
+	public LoginResult handleLoginSuccess(AuthAttributes attributes) {
 		String email = attributes.getEmail();
 
 		return userRepository.findByEmail(email)
@@ -28,14 +33,14 @@ public class AuthService {
 				.orElseGet(() -> handleFirstLogin(attributes));
 	}
 
-	private AuthResult handleExistUser(User user) {
-		return new AuthResult(generateTokenFromUser(user), false);
+	private LoginResult handleExistUser(User user) {
+		return new LoginResult(generateTokenFromUser(user), false);
 	}
 
-	private AuthResult handleFirstLogin(AuthAttributes attributes) {
+	private LoginResult handleFirstLogin(AuthAttributes attributes) {
 		User newUser = saveNewUser(attributes);
 
-		return new AuthResult(generateTokenFromUser(newUser), true);
+		return new LoginResult(generateTokenFromUser(newUser), true);
 	}
 
 	private String generateTokenFromUser(User user) {
