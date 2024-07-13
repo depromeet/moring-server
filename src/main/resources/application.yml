@@ -54,11 +54,11 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
 
-#sentry:
-#  dsn: ${SENTRY_DSN}
-#  exception-resolver-order: -2147483647
-#  max-request-body-size: always
-#  tracesSampleRate: 1.0
+sentry:
+  dsn: ${SENTRY_DSN}
+  exception-resolver-order: -2147483647
+  max-request-body-size: always
+  tracesSampleRate: 1.0
 
 decorator:
   datasource:

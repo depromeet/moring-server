@@ -38,13 +38,7 @@ public class User extends BaseTimeEntity {
 		this.loginProvider = loginProvider;
 	}
 
-<<<<<<< HEAD
-    public String getProfileImageUrl() {
-        return imageFile != null ? imageFile.getPhysicalPath() : null;
-    }
-=======
 	public String getProfileImageUrl() {
-		return imageFile != null ? imageFile.getPath() : null;
+		return imageFile != null ? imageFile.getPhysicalPath() : null;
 	}
->>>>>>> c19987f (feat: Security 관련 Exception Handling 강화)
 }
