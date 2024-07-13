@@ -3,5 +3,8 @@ spring:
     hibernate:
       ddl-auto: update
 
+file:
+  upload-path: ./temp
+
 sentry:
   enabled: false
