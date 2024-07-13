@@ -1,10 +1,7 @@
 package org.depromeet.sambad.moyeo.common.logging;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -59,14 +56,11 @@ public class ExecutionLoggingAdvice {
 		Class className = signature.getDeclaringType();
 		Method method = signature.getMethod();
 
-		List<String> arguments = Arrays.stream(joinPoint.getArgs())
-			.map(Object::toString)
-			.collect(Collectors.toList());
-		String parameterLog = IntStream.range(0, signature.getParameterNames().length)
-			.mapToObj(i -> signature.getParameterNames()[i] + " = " + arguments.get(i))
-			.collect(Collectors.joining(" | "));
+		String[] parameterNames = signature.getParameterNames();
+		List<String> arguments = LoggingUtils.getArguments(joinPoint);
+		String parameterMessage = LoggingUtils.getParameterMessage(parameterNames, arguments);
 
-		log.info("[START] {} | {} {}", className.getSimpleName(), method.getName(), parameterLog);
+		log.info("[START] {} | {} {}", className.getSimpleName(), method.getName(), parameterMessage);
 	}
 
 	@AfterReturning(value = "allPointcut()", returning = "result")
@@ -81,18 +75,14 @@ public class ExecutionLoggingAdvice {
 	@AfterThrowing(value = "allPointcut()", throwing = "exception")
 	public void logAfterThrowing(JoinPoint joinPoint, BusinessException exception) {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-
 		String className = signature.getDeclaringType().getSimpleName();
 		Method method = signature.getMethod();
 
-		List<String> arguments = Arrays.stream(joinPoint.getArgs())
-			.map(Object::toString)
-			.collect(Collectors.toList());
-		String parameterLog = IntStream.range(0, signature.getParameterNames().length)
-			.mapToObj(i -> signature.getParameterNames()[i] + " = " + arguments.get(i))
-			.collect(Collectors.joining(" | "));
+		String[] parameterNames = signature.getParameterNames();
+		List<String> arguments = LoggingUtils.getArguments(joinPoint);
+		String parameterMessage = LoggingUtils.getParameterMessage(parameterNames, arguments);
 
 		log.error("[ERROR] {} | {} | throwing = {} | reqArgs : {}", className, method.getName(),
-			exception.getCode().getCode(), parameterLog);
+			exception.getCode().getCode(), parameterMessage);
 	}
 }

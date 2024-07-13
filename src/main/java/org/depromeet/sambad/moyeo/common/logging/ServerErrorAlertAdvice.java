@@ -3,10 +3,7 @@ package org.depromeet.sambad.moyeo.common.logging;
 import static org.springframework.http.HttpStatus.*;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -37,27 +34,28 @@ public class ServerErrorAlertAdvice {
 		}
 
 		BusinessException businessException = (BusinessException)exception;
-		if (!businessException.getCode().getStatus().equals(INTERNAL_SERVER_ERROR)) {
+		if (isNotServerError(businessException)) {
 			return;
 		}
 
-		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+		Sentry.captureException(exception);
 
+		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		String className = signature.getDeclaringType().getSimpleName();
 		Method method = signature.getMethod();
 
-		List<String> arguments = Arrays.stream(joinPoint.getArgs())
-			.map(Object::toString)
-			.collect(Collectors.toList());
-		String parameterLog = IntStream.range(0, signature.getParameterNames().length)
-			.mapToObj(i -> signature.getParameterNames()[i] + " = " + arguments.get(i))
-			.collect(Collectors.joining(" | "));
+		String[] parameterNames = signature.getParameterNames();
+		List<String> arguments = LoggingUtils.getArguments(joinPoint);
+		String parameterMessage = LoggingUtils.getParameterMessage(parameterNames, arguments);
 
-		Sentry.captureException(exception);
 		log.error("[SERVER ERROR] {} | {} | throwing = {} | reqArgs : {}", className, method.getName(),
-			businessException.getCode().getCode(), parameterLog);
+			businessException.getCode().getCode(), parameterMessage);
 		log.error("[SERVER ERROR DESCRIPTION] code : {} | message : {}", businessException.getCode(),
 			businessException.getMessage());
 		log.error(exception.getCause().toString());
+	}
+
+	private boolean isNotServerError(BusinessException exception) {
+		return !exception.getCode().getStatus().equals(INTERNAL_SERVER_ERROR);
 	}
 }
