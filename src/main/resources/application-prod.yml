@@ -8,3 +8,8 @@ sentry:
   dsn: ${SENTRY_DSN}
   environment: prod
   release: "moring-prod@1.0.0"
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false

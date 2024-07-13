@@ -5,8 +5,3 @@ spring:
 
 sentry:
   enabled: false
-
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: true
