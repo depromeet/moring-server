@@ -9,6 +9,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+      default_batch_fetch_size: 1000
+      jdbc:
+        time_zone: Asia/Seoul
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -29,3 +32,14 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  exception-resolver-order: -2147483647
+  max-request-body-size: always
+  tracesSampleRate: 1.0
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true

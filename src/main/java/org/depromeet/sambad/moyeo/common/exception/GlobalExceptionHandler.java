@@ -5,6 +5,7 @@ import static org.depromeet.sambad.moyeo.file.presentation.exception.FileExcepti
 
 import java.util.Objects;
 
+import org.depromeet.sambad.moyeo.common.logging.LoggingUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,16 +25,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(BusinessException.class)
 	protected ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
-		log.info("Business Exception : ", exception.getCode());
 		ExceptionResponse response = ExceptionResponse.from(exception);
 		return ResponseEntity.status(response.status()).body(response);
 	}
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-		log.warn("Unexpected Exception : ", exception);
-		return ResponseEntity.internalServerError()
-			.body(ExceptionResponse.from(SERVER_ERROR));
+		Sentry.captureException(exception);
+		LoggingUtils.error(exception);
+
+		return ResponseEntity.internalServerError().body(ExceptionResponse.from(SERVER_ERROR));
 	}
 
 	@Override
@@ -44,7 +46,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.getDefaultMessage()
 			.substring(index + 2);
 		ExceptionResponse response = ExceptionResponse.of(INVALID_INPUT.getStatus(), INVALID_INPUT.getCode(), message);
-		log.info("Business Exception : ", response.code());
 		return ResponseEntity.status(response.status()).body(response);
 	}
 
@@ -52,7 +53,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
 		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		ExceptionResponse response = ExceptionResponse.from(EXCEED_FILE_SIZE);
-		log.info("Business Exception : ", response.code());
 		return ResponseEntity.status(response.status()).body(response);
 	}
 }

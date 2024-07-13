@@ -1,0 +1,4 @@
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: dev
+  release: "moring-dev@1.0.0"

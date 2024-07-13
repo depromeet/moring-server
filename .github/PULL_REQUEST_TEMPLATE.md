@@ -1,6 +1,5 @@
----
-title: '[SAMBAD-이슈번호] PR 제목'
----
+### 📍 [SAMBAD-이슈번호] PR 제목
+
 
 ## ✔️ PR 타입(하나 이상의 PR 타입을 선택해주세요)
 - [ ] 기능 추가
@@ -10,7 +9,8 @@ title: '[SAMBAD-이슈번호] PR 제목'
 
 
 ## 📝 개요
-- (description)
+- 
+- 
   ```java
     
   ```
@@ -33,4 +33,4 @@ title: '[SAMBAD-이슈번호] PR 제목'
   - .
 
 ## 🔗 ISSUE 링크
-- resolved [#SAMBAD-이슈번호](노션이슈링크)
+- resolved [SAMBAD-이슈번호]()
