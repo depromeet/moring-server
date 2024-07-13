@@ -5,6 +5,7 @@ import static org.depromeet.sambad.moyeo.file.presentation.exception.FileExcepti
 
 import java.util.Objects;
 
+import org.depromeet.sambad.moyeo.common.logging.LoggingUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ExceptionResponse> handleException(Exception exception) {
 		Sentry.captureException(exception);
-		if (exception.getCause() != null) {
-			log.error(exception.getCause().toString());
-		}
+		LoggingUtils.error(exception);
+
 		return ResponseEntity.internalServerError().body(ExceptionResponse.from(SERVER_ERROR));
 	}
 
