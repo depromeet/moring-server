@@ -25,18 +25,18 @@ public class FileEntity extends BaseTimeEntity {
 
 	private String generatedName;
 
+	private FileEntity(String originalName, String directory, String generatedName) {
+		this.originalName = originalName;
+		this.directory = directory;
+		this.generatedName = generatedName;
+	}
+
 	public static FileEntity of(String filePath, String originalName) {
 		Path path = Paths.get(filePath);
 		String directory = path.getParent().toString();
 		String generatedName = path.getFileName().toString();
 
 		return new FileEntity(originalName, directory, generatedName);
-	}
-
-	private FileEntity(String originalName, String directory, String generatedName) {
-		this.originalName = originalName;
-		this.directory = directory;
-		this.generatedName = generatedName;
 	}
 
 	public String getPath() {
