@@ -1,7 +1,7 @@
 package org.depromeet.sambad.moyeo.file.infrastructure;
 
 import lombok.RequiredArgsConstructor;
-import org.depromeet.sambad.moyeo.file.domain.FileUploader;
+import org.depromeet.sambad.moyeo.file.application.FileUploader;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

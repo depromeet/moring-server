@@ -5,9 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.depromeet.sambad.moyeo.common.domain.BaseTimeEntity;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.depromeet.sambad.moyeo.file.presentation.exception.ObjectStorageServerException;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Entity
@@ -19,27 +18,20 @@ public class FileEntity extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String originalName;
+	private String logicalName;
 
-	private String directory;
+	private String physicalPath;
 
-	private String generatedName;
-
-	private FileEntity(String originalName, String directory, String generatedName) {
-		this.originalName = originalName;
-		this.directory = directory;
-		this.generatedName = generatedName;
+	private FileEntity(String logicalName, String physicalPath) {
+		this.logicalName = logicalName;
+		this.physicalPath = physicalPath;
 	}
 
-	public static FileEntity of(String filePath, String originalName) {
-		Path path = Paths.get(filePath);
-		String directory = path.getParent().toString();
-		String generatedName = path.getFileName().toString();
+	public static FileEntity of(String logicalName, String filePath) {
+		if (!StringUtils.hasText(logicalName) || !StringUtils.hasText(filePath)) {
+			throw new ObjectStorageServerException();
+		}
 
-		return new FileEntity(originalName, directory, generatedName);
-	}
-
-	public String getPath() {
-		return directory + "/" + generatedName;
+		return new FileEntity(logicalName, filePath);
 	}
 }

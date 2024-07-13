@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moyeo.file.domain;
+package org.depromeet.sambad.moyeo.file.application;
 
 import org.springframework.web.multipart.MultipartFile;
 
