@@ -28,7 +28,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 				.getUserInfoEndpoint()
 				.getUserNameAttributeName();
 
-		AuthAttributes authAttributes = AuthAttributes.delegate(registrationId, oAuth2User.getAttributes());
+		AuthAttributes authAttributes = AuthAttributes.of(registrationId, oAuth2User.getAttributes());
 
 		return new CustomOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName, authAttributes);
 	}

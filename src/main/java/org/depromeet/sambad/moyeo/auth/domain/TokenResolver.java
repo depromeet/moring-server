@@ -8,7 +8,5 @@ public interface TokenResolver {
 
 	Optional<String> resolveTokenFromRequest(HttpServletRequest request);
 
-	boolean isTokenExpired(String token);
-
 	String getSubjectFromToken(String token);
 }

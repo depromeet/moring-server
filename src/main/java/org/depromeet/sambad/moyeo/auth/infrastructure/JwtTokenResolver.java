@@ -37,11 +37,6 @@ public class JwtTokenResolver implements TokenResolver {
 	}
 
 	@Override
-	public boolean isTokenExpired(String token) {
-		return getExpirationTime(token, secretKey).before(new Date());
-	}
-
-	@Override
 	public String getSubjectFromToken(String token) {
 		return getClaims(token, secretKey)
 				.getPayload()
@@ -70,24 +65,10 @@ public class JwtTokenResolver implements TokenResolver {
 				.map(auth -> auth.replaceAll(REPLACE_BEARER_PATTERN, ""));
 	}
 
-	private Date getExpirationTime(String token, SecretKey secretKey) {
-		return getClaims(token, secretKey)
-				.getPayload()
-				.getExpiration();
-	}
-
 	private Jws<Claims> getClaims(String token, SecretKey secretKey) {
-		try {
-			return Jwts.parser()
-					.verifyWith(secretKey)
-					.build()
-					.parseSignedClaims(token);
-		} catch (ExpiredJwtException e) {
-			log.error("Token is expired: {}", e.getMessage());
-			throw new RuntimeException("Token is expired", e);
-		} catch (JwtException e) {
-			log.error("Invalid token: {}", e.getMessage());
-			throw new RuntimeException("Invalid token", e);
-		}
+		return Jwts.parser()
+				.verifyWith(secretKey)
+				.build()
+				.parseSignedClaims(token);
 	}
 }

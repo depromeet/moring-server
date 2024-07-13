@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.depromeet.sambad.moyeo.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moyeo.file.domain.FileEntity;
 
+import java.util.Optional;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,10 +29,6 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private LoginProvider loginProvider;
 
-	public static User of(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
-		return new User(imageFile, name, email, loginProvider);
-	}
-
 	private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
 		this.imageFile = imageFile;
 		this.name = name;
@@ -38,7 +36,13 @@ public class User extends BaseTimeEntity {
 		this.loginProvider = loginProvider;
 	}
 
+	public static User of(FileEntity imageFile, String name, String email, LoginProvider loginProvider) {
+		return new User(imageFile, name, email, loginProvider);
+	}
+
 	public String getProfileImageUrl() {
-		return imageFile != null ? imageFile.getPhysicalPath() : null;
+		return Optional.ofNullable(imageFile)
+			.map(FileEntity::getPhysicalPath)
+			.orElse(null);
 	}
 }

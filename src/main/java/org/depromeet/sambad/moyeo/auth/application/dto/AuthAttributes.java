@@ -14,7 +14,7 @@ public interface AuthAttributes {
 
 	LoginProvider getProvider();
 
-	static AuthAttributes delegate(String providerId, Map<String, Object> attributes) {
+	static AuthAttributes of(String providerId, Map<String, Object> attributes) {
 		if (LoginProvider.kakao.isProviderOf(providerId)) {
 			return KakaoAuthAttributes.of(attributes);
 		}

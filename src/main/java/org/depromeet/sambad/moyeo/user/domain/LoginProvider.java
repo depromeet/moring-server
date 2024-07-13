@@ -5,7 +5,7 @@ import java.util.Objects;
 public enum LoginProvider {
 	kakao;
 
-	public boolean isProviderOf(String provider) {
-		return Objects.equals(this.name(), provider);
+	public boolean isProviderOf(String providerId) {
+		return Objects.equals(this.name(), providerId);
 	}
 }

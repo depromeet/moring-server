@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moyeo.auth.presentation;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -9,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.depromeet.sambad.moyeo.auth.domain.TokenResolver;
 import org.depromeet.sambad.moyeo.auth.presentation.exception.AuthenticationRequiredException;
-import org.depromeet.sambad.moyeo.auth.presentation.exception.InvalidTokenException;
-import org.depromeet.sambad.moyeo.auth.presentation.exception.TokenExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
 
@@ -37,26 +35,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
 	) throws ServletException, IOException {
-		try {
-			processTokenAuthentication(request, response);
-		} catch (Exception e) {
-			log.error("Failed to process token", e);
-			invalidateCookie(response);
-		}
-
+		processTokenAuthentication(request, response);
 		filterChain.doFilter(request, response);
 	}
 
 	private void processTokenAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			String token = resolveTokenFromRequest(request);
-			validateToken(token);
 			setAuthentication(request, getUserDetails(token));
-		} catch (TokenExpiredException | AuthenticationRequiredException e) {
+		} catch (ExpiredJwtException | AuthenticationRequiredException e) {
 			log.debug("Failed to authenticate", e);
 			invalidateCookie(response);
-		} catch (AuthenticationException e) {
+		} catch (JwtException e) {
 			log.warn("Failed to authenticate", e);
+			invalidateCookie(response);
+		} catch (Exception e) {
+			log.error("Failed to authenticate", e);
 			invalidateCookie(response);
 		}
 	}
@@ -64,21 +58,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	private String resolveTokenFromRequest(HttpServletRequest request) {
 		return tokenResolver.resolveTokenFromRequest(request)
 				.orElseThrow(AuthenticationRequiredException::new);
-	}
-
-	private void validateToken(String token) {
-		if (isTokenExpired(token)) {
-			throw new TokenExpiredException();
-		}
-	}
-
-	private boolean isTokenExpired(String token) {
-		try {
-			return tokenResolver.isTokenExpired(token);
-		} catch (Exception e) {
-			log.warn("Failed to validate token. token: `{}`", token, e);
-			throw new InvalidTokenException();
-		}
 	}
 
 	private UserDetails getUserDetails(String token) {
