@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moyeo.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moyeo.auth.domain.LoginResult;
 import org.depromeet.sambad.moyeo.auth.domain.TokenGenerator;
+import org.depromeet.sambad.moyeo.auth.presentation.exception.AlreadyRegisteredUserException;
 import org.depromeet.sambad.moyeo.file.application.FileService;
 import org.depromeet.sambad.moyeo.file.domain.FileEntity;
-import org.depromeet.sambad.moyeo.user.domain.UserRepository;
 import org.depromeet.sambad.moyeo.user.domain.User;
+import org.depromeet.sambad.moyeo.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +30,15 @@ public class AuthService {
 		String email = attributes.getEmail();
 
 		return userRepository.findByEmail(email)
-				.map(this::handleExistUser)
+				.map(user -> handleExistUser(user, attributes))
 				.orElseGet(() -> handleFirstLogin(attributes));
 	}
 
-	private LoginResult handleExistUser(User user) {
+	private LoginResult handleExistUser(User user, AuthAttributes attributes) {
+		if (user.hasDifferentProviderWithEmail(attributes.getEmail(), attributes.getExternalId())) {
+			throw new AlreadyRegisteredUserException();
+		}
+
 		return new LoginResult(generateTokenFromUser(user), false);
 	}
 
@@ -49,10 +54,9 @@ public class AuthService {
 
 	private User saveNewUser(AuthAttributes attributes) {
 		FileEntity file = uploadProfileImage(attributes);
+		User user = User.from(file, attributes);
 
-		return userRepository.save(
-				User.of(file, attributes.getName(), attributes.getEmail(), attributes.getProvider())
-		);
+		return userRepository.save(user);
 	}
 
 	private FileEntity uploadProfileImage(AuthAttributes attributes) {

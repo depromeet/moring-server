@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface AuthAttributes {
 
+	String getExternalId();
+
 	String getEmail();
 
 	String getName();

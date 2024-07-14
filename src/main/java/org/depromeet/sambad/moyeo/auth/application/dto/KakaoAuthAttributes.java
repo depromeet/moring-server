@@ -16,6 +16,7 @@ import static org.depromeet.sambad.moyeo.user.domain.LoginProvider.kakao;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class KakaoAuthAttributes implements AuthAttributes {
 
+	private final String id;
 	private final String email;
 	private final String name;
 	private final String profileImageUrl;
@@ -26,11 +27,17 @@ public class KakaoAuthAttributes implements AuthAttributes {
 		Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
 		return new KakaoAuthAttributes(
+				attributes.get("id").toString(),
 				(String) kakaoAccount.get("email"),
 				(String) profile.get("nickname"),
 				(String) profile.get("profile_image_url"),
 				kakao
 		);
+	}
+
+	@Override
+	public String getExternalId() {
+		return this.id;
 	}
 
 	@Override
