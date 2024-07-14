@@ -43,3 +43,17 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
+cloud:
+  ncp:
+    object-storage:
+      endpoint: "https://kr.object.ncloudstorage.com"
+      credentials:
+        access-key: ${NCP_ACCESS_KEY}
+        secret-key: ${NCP_SECRET_KEY}
+        bucket: ${NCP_BUCKET_NAME}
+    region:
+      static: "ap-southeast-2"
+      auto: false
+    stack:
+      auto: false
