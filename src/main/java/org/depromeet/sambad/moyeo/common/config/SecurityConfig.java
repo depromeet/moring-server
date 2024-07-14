@@ -15,7 +15,8 @@ public class SecurityConfig {
 	private static final String[] PERMIT_ALL_PATTERNS = {
 		"/swagger-ui/**",
 		"/v3/api-docs/**",
-		"/actuator/health"
+		"/actuator/health",
+		"/api/v1/object-storage/**"
 	};
 
 	@Bean
