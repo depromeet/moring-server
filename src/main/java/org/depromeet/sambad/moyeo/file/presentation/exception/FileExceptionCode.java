@@ -18,7 +18,10 @@ public enum FileExceptionCode implements ExceptionCode {
 
 	UNSUPPORTED_FILE_TYPE(UNSUPPORTED_MEDIA_TYPE, "파일 형식은 '.jpg', '.jpeg', '.png' 만 가능합니다."),
 
-	OBJECTSTORAGE_SERVER_ERROR(INTERNAL_SERVER_ERROR, "파일 처리 중 서버 에러가 발생했습니다.");
+	OBJECTSTORAGE_SERVER_ERROR(INTERNAL_SERVER_ERROR, "파일 처리 중 서버 에러가 발생했습니다."),
+
+	FILE_UPLOAD_ERROR(INTERNAL_SERVER_ERROR, "파일 업로드 중 에러가 발생했습니다."),
+	FILE_DELETE_ERROR(INTERNAL_SERVER_ERROR, "파일 삭제 중 에러가 발생했습니다.");
 
 	private final HttpStatus status;
 	private final String message;
