@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moyeo.common.config;
 
 import lombok.RequiredArgsConstructor;
+import org.depromeet.sambad.moyeo.auth.infrastructure.SecurityProperties;
 import org.depromeet.sambad.moyeo.auth.presentation.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
@@ -20,9 +22,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
 	private final DefaultOAuth2UserService defaultOAuth2UserService;
-	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final AuthenticationEntryPoint authenticationEntryPoint;
 	private final JwtTokenFilter jwtTokenFilter;
+	private final SecurityProperties securityProperties;
+	private final AuthenticationSuccessHandler authenticationSuccessHandler;
+	private final AuthenticationFailureHandler authenticationFailureHandler;
 
 	private static final String[] PERMIT_ALL_PATTERNS = {
 			"/swagger-ui/**",
@@ -30,7 +34,6 @@ public class SecurityConfig {
 			"/login/**",
 			"/oauth2/**",
 	};
-
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -73,9 +76,10 @@ public class SecurityConfig {
 	private void configureOAuth2Login(HttpSecurity http) throws Exception {
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		http.oauth2Login(oauth2 ->
-				oauth2.loginPage("/login")
+				oauth2.loginPage(securityProperties.loginUrl())
 						.userInfoEndpoint(userInfo -> userInfo.userService(defaultOAuth2UserService))
 						.successHandler(authenticationSuccessHandler)
+						.failureHandler(authenticationFailureHandler)
 		);
 	}
 

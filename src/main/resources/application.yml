@@ -26,6 +26,9 @@ spring:
       max-request-size: ${MAX_REQUEST_SIZE:5MB}
       enabled: true
   security:
+    sub-domain: ${SUB_DOMAIN:moring.one}
+    login-url: ${LOGIN_URL:/login}
+    redirect-url: ${REDIRECT_URL:/}
     oauth2:
       client:
         provider:
