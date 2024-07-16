@@ -8,6 +8,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Optional;
+
 public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -23,7 +25,9 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
 			NativeWebRequest webRequest,
 			WebDataBinderFactory binderFactory
 	) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return Long.valueOf(authentication.getName());
+		return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+				.map(Authentication::getName)
+				.map(Long::valueOf)
+				.orElse(null);
 	}
 }

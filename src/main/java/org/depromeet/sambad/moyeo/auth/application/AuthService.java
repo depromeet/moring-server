@@ -11,6 +11,7 @@ import org.depromeet.sambad.moyeo.user.domain.User;
 import org.depromeet.sambad.moyeo.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * 인증 정보에 기반한 로그인 성공 처리를 담당합니다.<br />
@@ -61,6 +62,9 @@ public class AuthService {
 
 	private FileEntity uploadProfileImage(AuthAttributes attributes) {
 		String profileImageUrl = attributes.getProfileImageUrl();
-		return fileService.uploadAndSave(profileImageUrl);
+
+		return StringUtils.hasText(profileImageUrl)
+				? fileService.uploadAndSave(profileImageUrl)
+				: null;
 	}
 }

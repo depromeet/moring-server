@@ -13,6 +13,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
+	@Override
 	public User save(User user) {
 		return userJpaRepository.save(user);
 	}
