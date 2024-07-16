@@ -1,12 +1,17 @@
 package org.depromeet.sambad.moyeo.file.domain;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.depromeet.sambad.moyeo.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moyeo.file.presentation.exception.ObjectStorageServerException;
 import org.springframework.util.StringUtils;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
