@@ -1,0 +1,48 @@
+name: Build and Deploy to NCP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+    name: "이미지 빌드하기"
+    
+    steps:
+      - name: "GitHub 에서 레포 받아오기"
+        uses: actions/checkout@v3
+
+      - name: "JDK17 준비하기"
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: "Gradle 준비하기"
+        run: chmod +x gradlew
+
+      - name: "Gradle 빌드"
+        run: ./gradlew clean build -x test
+      
+      - name: "도커 빌드 및 푸시"
+        run: |
+          docker login ${{ secrets.DOCKER_REPO }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/moring-api:develop .
+          docker push ${{ secrets.DOCKER_REPO }}/moring-api:develop
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+    steps: 
+      - name : "NCP 로그인 및 배포"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_HOST }}
+          username: ${{ secrets.NCP_USERNAME }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          port: ${{ secrets.NCP_PORT }}
+          script: |
+            sudo docker compose -f /root/docker-compose.yml pull
+            sudo docker compose -f /root/docker-compose.yml up -d
