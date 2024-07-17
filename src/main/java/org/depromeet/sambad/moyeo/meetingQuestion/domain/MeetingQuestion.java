@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class MeetingQuestion {
 	private Meeting meeting;
 
 	// FIXME: MeetingMember에서 mappedBy="registeredMember" 지정
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember registeredMember;
 
