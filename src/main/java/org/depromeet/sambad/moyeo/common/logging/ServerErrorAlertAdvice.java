@@ -23,7 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ServerErrorAlertAdvice {
 
-	@Pointcut("execution(* org.depromeet.sambad.moyeo..*(..))")
+	@Pointcut(
+		"within(org.depromeet.sambad.moyeo..*) && " + "!@within(org.depromeet.sambad.moyeo.auth.presentation.*Filter)"
+	)
 	private void allPointcut() {
 	}
 
