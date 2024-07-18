@@ -39,3 +39,6 @@ out/
 ### ETC ###
 temp
 spy.log
+
+### Qclass ###
+src/main/generated/
