@@ -44,7 +44,7 @@ public class MeetingMember extends BaseTimeEntity {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_image_file_id")
-	private FileEntity profileImage;
+	private FileEntity profileImageFile;
 
 	@OneToMany(mappedBy = "targetMember", fetch = FetchType.LAZY)
 	private List<MeetingQuestion> meetingQuestions = new ArrayList<>();

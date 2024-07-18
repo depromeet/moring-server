@@ -7,9 +7,9 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import lombok.Builder;
 
 @Builder
-public record ActiveMeetingQuestionResponse(
+public record MeetingQuestionResponse(
 	Long meetingQuestionId,
-	String questionImageUrl,
+	String questionImageFileUrl,
 	String title,
 	int questionNumber,
 	int totalMeetingMemberCount,
@@ -18,21 +18,21 @@ public record ActiveMeetingQuestionResponse(
 	MeetingMemberResponse targetMember
 ) {
 
-	public static ActiveMeetingQuestionResponse of(MeetingQuestion activeMeetingQuestion, Boolean isAnswered) {
-		Meeting meeting = activeMeetingQuestion.getMeeting();
-		int questionNumber = meeting.getMeetingQuestions().indexOf(activeMeetingQuestion) + 1;
+	public static MeetingQuestionResponse of(MeetingQuestion meetingQuestion, Boolean isAnswered) {
+		Meeting meeting = meetingQuestion.getMeeting();
+		int questionNumber = meeting.getMeetingQuestions().indexOf(meetingQuestion) + 1;
 		int totalMeetingMemberCount = meeting.getMeetingMembers().size();
-		int responseCount = activeMeetingQuestion.getMemberAnswers().size();
+		int responseCount = meetingQuestion.getMemberAnswers().size();
 
-		return ActiveMeetingQuestionResponse.builder()
-			.meetingQuestionId(activeMeetingQuestion.getId())
-			.questionImageUrl(activeMeetingQuestion.getQuestion().getQuestionImageUrl())
-			.title(activeMeetingQuestion.getQuestion().getTitle())
+		return MeetingQuestionResponse.builder()
+			.meetingQuestionId(meetingQuestion.getId())
+			.questionImageFileUrl(meetingQuestion.getQuestion().getQuestionImageUrl())
+			.title(meetingQuestion.getQuestion().getTitle())
 			.questionNumber(questionNumber)
 			.totalMeetingMemberCount(totalMeetingMemberCount)
 			.responseCount(responseCount)
 			.isAnswered(isAnswered)
-			.targetMember(MeetingMemberResponse.from(activeMeetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberResponse.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
 }

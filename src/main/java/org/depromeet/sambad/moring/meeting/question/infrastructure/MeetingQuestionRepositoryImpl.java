@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -38,7 +38,8 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
+	public org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse findActiveOneByMeeting(
+		Long meetingId, Long loginMeetingMemberId) {
 		Optional<MeetingQuestion> activeMeetingQuestion = Optional.ofNullable(
 			queryFactory
 				.selectFrom(meetingQuestion)
@@ -50,7 +51,7 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
 		}
-		return ActiveMeetingQuestionResponse.of(activeMeetingQuestion.get(),
+		return MeetingQuestionResponse.of(activeMeetingQuestion.get(),
 			isAnswered(activeMeetingQuestion.get().getId(), loginMeetingMemberId));
 	}
 

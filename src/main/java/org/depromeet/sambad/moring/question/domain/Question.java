@@ -32,7 +32,7 @@ public class Question extends BaseTimeEntity {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "question_image_file_id")
-	private FileEntity questionImage;
+	private FileEntity questionImageFile;
 
 	private String title;
 
@@ -43,7 +43,7 @@ public class Question extends BaseTimeEntity {
 	private List<Answer> answers = new ArrayList<>();
 
 	public String getQuestionImageUrl() {
-		return Optional.ofNullable(questionImage)
+		return Optional.ofNullable(questionImageFile)
 			.map(FileEntity::getPhysicalPath)
 			.orElse(null);
 	}

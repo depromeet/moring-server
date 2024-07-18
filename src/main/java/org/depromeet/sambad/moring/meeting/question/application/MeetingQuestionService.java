@@ -10,7 +10,7 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class MeetingQuestionService {
 		meetingQuestionRepository.save(meetingQuestion);
 	}
 
-	public ActiveMeetingQuestionResponse findActiveOne(Long userId) {
+	public MeetingQuestionResponse findActiveOne(Long userId) {
 		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
 		Meeting meeting = meetingMember.getMeeting();
 		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());

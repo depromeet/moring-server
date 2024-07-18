@@ -7,7 +7,7 @@ import org.depromeet.sambad.moring.question.domain.Question;
 
 public record QuestionResponse(
 	Long questionId,
-	String questionImageUrl,
+	String questionImageFileUrl,
 	String title,
 	List<AnswerResponse> answers
 ) {

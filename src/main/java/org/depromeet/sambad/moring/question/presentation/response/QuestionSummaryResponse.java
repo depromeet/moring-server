@@ -9,7 +9,7 @@ public record QuestionSummaryResponse(
 	Long questionId,
 
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4")
-	String questionImageUrl,
+	String questionImageFileUrl,
 
 	@Schema(example = "국내 여행지 중에서 추천하고 싶은 곳은?")
 	String title,

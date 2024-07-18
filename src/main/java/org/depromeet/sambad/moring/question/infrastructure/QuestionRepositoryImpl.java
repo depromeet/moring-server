@@ -49,7 +49,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.select(Projections.constructor(
 				QuestionSummaryResponse.class,
 				question.id.as("questionId"),
-				question.questionImage.physicalPath.as("questionImageUrl"),
+				question.questionImage.physicalPath.as("questionImageFileUrl"),
 				question.title,
 				as(select(meetingQuestion.count())
 					.from(meetingQuestion)
