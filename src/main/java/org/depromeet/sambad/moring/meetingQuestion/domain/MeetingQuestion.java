@@ -50,8 +50,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 	private LocalDateTime startTime;
 
 	@Builder
-	public MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question,
-		List<MeetingMemberAnswer> memberAnswers, LocalDateTime now) {
+	public MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question, LocalDateTime now) {
 		this.meeting = meeting;
 		this.targetMember = targetMember;
 		this.question = question;
