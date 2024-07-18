@@ -1,0 +1,55 @@
+package org.depromeet.sambad.moring.meetingQuestion.application;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+
+import org.depromeet.sambad.moring.meetingQuestion.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meetingQuestion.presentation.exception.DuplicateMeetingQuestionException;
+import org.depromeet.sambad.moring.meetingQuestion.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.question.application.QuestionService;
+import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.user.application.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class MeetingQuestionService {
+
+	private final MeetingQuestionRepository meetingQuestionRepository;
+
+	private final UserService userService;
+	private final MeetingMemberService meetingMemberService;
+	private final QuestionService questionService;
+
+	private final Clock clock;
+
+	@Transactional
+	public void save(Long userId, MeetingQuestionRequest request) {
+		// FIXME: 모임, 모임원 붙이기, 예외 docs 추가
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+		Question question = questionService.getById(request.questionId());
+
+		validateDuplicateMeetingQuestion(meeting, question);
+
+		MeetingQuestion meetingQuestion = MeetingQuestion.builder()
+			.meeting(meeting)
+			.registeredMember(meetingMember)
+			.question(question)
+			.now(LocalDateTime.now(clock))
+			.build();
+		meetingQuestionRepository.save(meetingQuestion);
+	}
+
+	private void validateDuplicateMeetingQuestion(Meeting meeting, Question question) {
+		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
+		if (isDuplicateQuestion) {
+			throw new DuplicateMeetingQuestionException();
+		}
+	}
+}
+
