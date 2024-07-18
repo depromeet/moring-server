@@ -25,12 +25,12 @@ public class Meeting extends BaseTimeEntity {
 
     private String code;
 
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<MeetingMember> meetingMembers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<TypesPerMeeting> typesPerMeetings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY)
     private List<MeetingQuestion> meetingQuestions = new ArrayList<>();
 }

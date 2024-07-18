@@ -2,9 +2,11 @@ package org.depromeet.sambad.moring.meeting.question.presentation;
 
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "MeetingQuestion", description = "모임 내 질문 생성 api")
+@Tag(name = "MeetingQuestion", description = "모임 내 질문 api")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -44,5 +46,20 @@ public class MeetingQuestionController {
 	) {
 		meetingQuestionService.save(userId, request);
 		return ResponseEntity.created(null).build();
+	}
+
+	@Operation(summary = "현재 진행 중인 릴레이 질문 조회")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			content = @Content(schema = @Schema(implementation = ActiveMeetingQuestionResponse.class)),
+			description = "진행 중인 릴레이 질문을 반환하거나, 진행 중인 질문이 없는 경우 null 을 반환합니다.")
+	})
+	@GetMapping("/meeting-questions/active")
+	public ResponseEntity<Object> findActiveOne(
+		@UserId Long userId
+	) {
+		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId);
+		return ResponseEntity.ok().body(activeOne);
 	}
 }
