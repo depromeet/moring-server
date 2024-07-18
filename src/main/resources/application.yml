@@ -1,8 +1,8 @@
 spring:
   application:
-    name: moyeo-api
+    name: moring-api
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:moyeo}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:moring}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,7 +17,7 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD}
-      client-name: moyeo-api
+      client-name: moring-api
       repositories:
         enabled: false
   servlet:
@@ -57,11 +57,10 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
 
-#sentry:
-#  dsn: ${SENTRY_DSN}
-#  exception-resolver-order: -2147483647
-#  max-request-body-size: always
-#  tracesSampleRate: 1.0
+sentry:
+  exception-resolver-order: -2147483647
+  max-request-body-size: always
+  tracesSampleRate: 1.0
 
 decorator:
   datasource:

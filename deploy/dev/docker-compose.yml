@@ -1,0 +1,67 @@
+services:
+  nginx:
+    image: nginx:1.27.0
+    container_name: moring-nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - api
+
+  api:
+    image: ${DOCKER_REPOSITORY}/moring-api:develop
+    container_name: moring-api
+    restart: always
+    expose:
+      - 8080
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      REDIS_HOST: redis
+      DB_HOST: mysql
+      spring.jpa,hibernate.ddl-auto: update
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
+      KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
+      LOGIN_URL: ${LOGIN_URL}
+      REDIRECT_URL: ${REDIRECT_URL}
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.4.0
+    container_name: moring-mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: "Asia/Seoul"
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7.2.5
+    container_name: moring-redis
+    ports:
+      - 6381:6379
+    command:
+      - bash
+      - -c
+      - redis-server --appendonly yes --maxmemory $$(( $$( cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null || cat /sys/fs/cgroup/memory.max ) - 100000000)) --maxmemory-policy volatile-lru
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      TZ: "Asia/Seoul"
+    restart: unless-stopped
+
+volumes:
+  mysql: {}
