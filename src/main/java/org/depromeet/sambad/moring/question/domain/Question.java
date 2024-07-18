@@ -31,7 +31,7 @@ public class Question extends BaseTimeEntity {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "question_image_id")
+	@JoinColumn(name = "question_image_file_id")
 	private FileEntity questionImage;
 
 	private String title;
