@@ -2,11 +2,14 @@ package org.depromeet.sambad.moring.question.presentation;
 
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.presentation.response.QuestionListResponse;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
+import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +29,7 @@ public class QuestionController {
 
 	private final QuestionService questionService;
 
-	@Operation(summary = "질문리스트 내 질문 단건 조회")
+	@Operation(summary = "질문 리스트 내 질문 단건 조회")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -40,5 +43,21 @@ public class QuestionController {
 	) {
 		Question question = questionService.getById(questionId);
 		return ResponseEntity.ok().body(QuestionResponse.from(question));
+	}
+
+	@Operation(summary = "선택 가능한 질문 리스트 조회")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			content = @Content(schema = @Schema(implementation = QuestionListResponse.class)))
+	})
+	@GetMapping("/questions")
+	public ResponseEntity<Object> findQuestions(
+		@UserId Long userId,
+		@RequestParam(value = "page", defaultValue = "0") @Positive int page,
+		@RequestParam(value = "size", defaultValue = "10") @Positive int size
+	) {
+		QuestionListResponse response = questionService.findQuestions(userId, page, size);
+		return ResponseEntity.ok().body(response);
 	}
 }
