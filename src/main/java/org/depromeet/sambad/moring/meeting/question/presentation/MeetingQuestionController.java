@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "MeetingQuestion", description = "모임 내 질문 생성 api")
+@Tag(name = "MeetingQuestion", description = "모임 내 질문 api")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -35,7 +35,7 @@ public class MeetingQuestionController {
 		@ApiResponse(
 			responseCode = "201",
 			content = @Content(schema = @Schema(implementation = Object.class))),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION / NOT_FOUND_MEETING_MEMBER"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
 	})
 	@ResponseStatus(HttpStatus.CREATED)
