@@ -33,7 +33,7 @@ public class User extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JoinColumn(name = "user_image_file_id")
+	@JoinColumn(name = "profile_image_file_id")
 	@OneToOne(fetch = FetchType.LAZY)
 	private FileEntity imageFile;
 
