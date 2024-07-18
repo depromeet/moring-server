@@ -4,6 +4,9 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
+import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
@@ -36,7 +39,7 @@ public class MeetingQuestionService {
 		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
 		validateTargetMember(loginMember, targetMember);
 
-		Meeting meeting = meetingMember.getMeeting();
+		Meeting meeting = targetMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
 		validateDuplicateMeetingQuestion(meeting, question);
 
