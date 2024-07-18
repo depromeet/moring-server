@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MeetingQuestionExceptionCode implements ExceptionCode {
 
-
 	INVALID_MEETING_MEMBER_TARGET(BAD_REQUEST, "본인 혹은 다른 모임의 모임원은 대상이 될 수 없습니다."),
 	DUPLICATE_MEETING_QUESTION(CONFLICT, "등록된 릴레이 질문입니다."),
 	;

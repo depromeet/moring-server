@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.question.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
@@ -29,8 +30,8 @@ public class Question {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "image_file_id")
-	private FileEntity imageFile;
+	@JoinColumn(name = "question_image_id")
+	private FileEntity questionImage;
 
 	private String title;
 
@@ -40,4 +41,9 @@ public class Question {
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
 	private List<Answer> answers = new ArrayList<>();
 
+	public String getQuestionImageUrl() {
+		return Optional.ofNullable(questionImage)
+			.map(FileEntity::getPhysicalPath)
+			.orElse(null);
+	}
 }

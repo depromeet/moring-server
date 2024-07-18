@@ -2,9 +2,11 @@ package org.depromeet.sambad.moring.meeting.question.presentation;
 
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +35,7 @@ public class MeetingQuestionController {
 		@ApiResponse(
 			responseCode = "201",
 			content = @Content(schema = @Schema(implementation = Object.class))),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION / NOT_FOUND_MEETING_MEMBER"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
 	})
 	@ResponseStatus(HttpStatus.CREATED)
@@ -44,5 +46,20 @@ public class MeetingQuestionController {
 	) {
 		meetingQuestionService.save(userId, request);
 		return ResponseEntity.created(null).build();
+	}
+
+	@Operation(summary = "현재 진행 중인 릴레이 질문 조회")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			content = @Content(schema = @Schema(implementation = ActiveMeetingQuestionResponse.class)),
+			description = "진행 중인 릴레이 질문을 반환하거나, 진행 중인 질문이 없는 경우 null 을 반환합니다.")
+	})
+	@GetMapping("/meeting-questions/active")
+	public ResponseEntity<Object> findActiveOne(
+		@UserId Long userId
+	) {
+		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId);
+		return ResponseEntity.ok().body(activeOne);
 	}
 }

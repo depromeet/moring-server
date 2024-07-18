@@ -2,7 +2,6 @@ package org.depromeet.sambad.moring.meeting.question.application;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
@@ -11,9 +10,9 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
-import org.depromeet.sambad.moring.user.application.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,6 @@ public class MeetingQuestionService {
 
 	private final MeetingQuestionRepository meetingQuestionRepository;
 
-	private final UserService userService;
 	private final MeetingMemberService meetingMemberService;
 	private final QuestionService questionService;
 
@@ -34,7 +32,6 @@ public class MeetingQuestionService {
 
 	@Transactional
 	public void save(Long userId, MeetingQuestionRequest request) {
-		// FIXME: 모임, 모임원 붙이기, 예외 docs 추가
 		MeetingMember loginMember = meetingMemberService.getByUserId(userId);
 		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
 		validateTargetMember(loginMember, targetMember);
@@ -50,6 +47,12 @@ public class MeetingQuestionService {
 			.now(LocalDateTime.now(clock))
 			.build();
 		meetingQuestionRepository.save(meetingQuestion);
+	}
+
+	public ActiveMeetingQuestionResponse findActiveOne(Long userId) {
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());
 	}
 
 	private void validateDuplicateMeetingQuestion(Meeting meeting, Question question) {

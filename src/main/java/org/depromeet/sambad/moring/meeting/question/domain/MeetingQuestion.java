@@ -28,16 +28,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingQuestion extends BaseTimeEntity {
 
+	public static final int RESPONSE_TIME_LIMIT_HOURS = 4;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// FIXME: Meeting에서 mappedBy = "meeting" 지정
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_id")
 	private Meeting meeting;
 
-	// FIXME: MeetingMember에서 mappedBy="targetMember" 지정
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember targetMember;
