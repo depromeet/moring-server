@@ -30,10 +30,11 @@ public class SecurityConfig {
 	private final AuthenticationFailureHandler authenticationFailureHandler;
 
 	private static final String[] PERMIT_ALL_PATTERNS = {
-		"/swagger-ui/**",
-		"/actuator/health",
-		"/login/**",
-		"/oauth2/**"
+			"/swagger-ui/**",
+			"/actuator/health",
+			"/v3/api-docs/**",
+			"/login/**",
+			"/oauth2/**",
 	};
 
 	@Bean

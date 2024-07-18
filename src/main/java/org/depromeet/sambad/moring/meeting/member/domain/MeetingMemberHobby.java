@@ -1,6 +1,15 @@
 package org.depromeet.sambad.moring.meeting.member.domain;
 
-import jakarta.persistence.*;
+import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MeetingMemberHobby {
+public class MeetingMemberHobby extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +31,13 @@ public class MeetingMemberHobby {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hobby_id")
     private Hobby hobby;
+
+    private MeetingMemberHobby(MeetingMember meetingMember, Hobby hobby) {
+        this.meetingMember = meetingMember;
+        this.hobby = hobby;
+    }
+
+    public static MeetingMemberHobby of(MeetingMember meetingMember, Hobby hobby) {
+        return new MeetingMemberHobby(meetingMember, hobby);
+    }
 }

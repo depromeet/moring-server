@@ -1,0 +1,21 @@
+package org.depromeet.sambad.moring.meeting.member.infrastructure;
+
+import java.util.List;
+
+import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberHobbyRepository;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
+import org.springframework.stereotype.Repository;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Repository
+public class MeetingMemberHobbyRepositoryImpl implements MeetingMemberHobbyRepository {
+
+	private final MeetingMemberHobbyJpaRepository meetingMemberHobbyJpaRepository;
+
+	@Override
+	public void saveAll(List<MeetingMemberHobby> hobbies) {
+		meetingMemberHobbyJpaRepository.saveAll(hobbies);
+	}
+}

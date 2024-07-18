@@ -3,7 +3,7 @@ package org.depromeet.sambad.moring.common.exception;
 import static org.depromeet.sambad.moring.common.exception.GlobalExceptionCode.*;
 import static org.depromeet.sambad.moring.file.presentation.exception.FileExceptionCode.*;
 
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.depromeet.sambad.moring.common.logging.LoggingUtils;
 import org.springframework.http.HttpHeaders;
@@ -41,11 +41,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
 		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-		int index = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage().indexOf(",");
-		String message = Objects.requireNonNull(exception.getFieldError())
-			.getDefaultMessage()
-			.substring(index + 2);
+		String message = exception.getFieldErrors().stream()
+			.map(error -> error.getField() + ": " + error.getDefaultMessage())
+			.collect(Collectors.joining(", "));
 		ExceptionResponse response = ExceptionResponse.of(INVALID_INPUT.getStatus(), INVALID_INPUT.getCode(), message);
+
 		return ResponseEntity.status(response.status()).body(response);
 	}
 
