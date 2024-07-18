@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meetingAnswer.presentation;
+package org.depromeet.sambad.moring.meeting.answer.presentation;
 
 import org.springframework.web.bind.annotation.RestController;
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
-import org.depromeet.sambad.moring.meetingQuestion.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -1,6 +1,6 @@
-package org.depromeet.sambad.moring.meetingAnswer.infrastructure;
+package org.depromeet.sambad.moring.meeting.answer.infrastructure;
 
-import org.depromeet.sambad.moring.meetingAnswer.application.MeetingMemberAnswerRepository;
+import org.depromeet.sambad.moring.meeting.answer.application.MeetingMemberAnswerRepository;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;

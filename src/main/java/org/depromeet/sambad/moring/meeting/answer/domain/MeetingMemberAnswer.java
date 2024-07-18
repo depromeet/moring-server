@@ -1,6 +1,6 @@
-package org.depromeet.sambad.moring.meetingAnswer.domain;
+package org.depromeet.sambad.moring.meeting.answer.domain;
 
-import org.depromeet.sambad.moring.meetingQuestion.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

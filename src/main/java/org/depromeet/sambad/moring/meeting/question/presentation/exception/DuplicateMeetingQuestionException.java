@@ -1,6 +1,6 @@
-package org.depromeet.sambad.moring.meetingQuestion.presentation.exception;
+package org.depromeet.sambad.moring.meeting.question.presentation.exception;
 
-import static org.depromeet.sambad.moring.meetingQuestion.presentation.exception.MeetingQuestionExceptionCode.*;
+import static org.depromeet.sambad.moring.meeting.question.presentation.exception.MeetingQuestionExceptionCode.*;
 
 import org.depromeet.sambad.moring.common.exception.BusinessException;
 

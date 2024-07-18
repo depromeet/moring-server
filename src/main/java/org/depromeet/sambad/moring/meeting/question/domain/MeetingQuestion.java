@@ -1,11 +1,11 @@
-package org.depromeet.sambad.moring.meetingQuestion.domain;
+package org.depromeet.sambad.moring.meeting.question.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
-import org.depromeet.sambad.moring.meetingAnswer.domain.MeetingMemberAnswer;
+import org.depromeet.sambad.moring.meeting.answer.domain.MeetingMemberAnswer;
 import org.depromeet.sambad.moring.question.domain.Question;
 
 import jakarta.persistence.Entity;

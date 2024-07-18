@@ -1,12 +1,13 @@
-package org.depromeet.sambad.moring.meetingQuestion.application;
+package org.depromeet.sambad.moring.meeting.question.application;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import org.depromeet.sambad.moring.meetingQuestion.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meetingQuestion.presentation.exception.DuplicateMeetingQuestionException;
-import org.depromeet.sambad.moring.meetingQuestion.presentation.exception.InvalidMeetingMemberTargetException;
-import org.depromeet.sambad.moring.meetingQuestion.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
+import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
 import org.depromeet.sambad.moring.user.application.UserService;

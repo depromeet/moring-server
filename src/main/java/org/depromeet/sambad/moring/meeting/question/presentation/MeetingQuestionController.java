@@ -1,7 +1,7 @@
-package org.depromeet.sambad.moring.meetingQuestion.presentation;
+package org.depromeet.sambad.moring.meeting.question.presentation;
 
-import org.depromeet.sambad.moring.meetingQuestion.application.MeetingQuestionService;
-import org.depromeet.sambad.moring.meetingQuestion.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
+import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +41,7 @@ public class MeetingQuestionController {
 	})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/meeting-questions/new")
-	public ResponseEntity<Object> saveQuestion(
+	public ResponseEntity<Object> save(
 		@UserId Long userId,
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {

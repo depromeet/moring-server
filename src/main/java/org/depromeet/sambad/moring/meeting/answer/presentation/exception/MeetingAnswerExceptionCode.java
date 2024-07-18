@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meetingAnswer.presentation.exception;
+package org.depromeet.sambad.moring.meeting.answer.presentation.exception;
 
 import org.depromeet.sambad.moring.common.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
