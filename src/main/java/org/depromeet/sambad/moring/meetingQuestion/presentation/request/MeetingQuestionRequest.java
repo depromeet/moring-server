@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record MeetingQuestionRequest(
-	@Schema(example = "1", description = "질문 리스트에서 등록하고 싶은 질문의 식별자")
+	@Schema(example = "1", description = "다음 릴레이 질문")
 	@NotNull
-	Long questionId
+	Long questionId,
+
+	@Schema(example = "1", description = "다음 릴레이 질문 대상자")
+	@NotNull
+	Long meetingMemberId
 ) {
 }

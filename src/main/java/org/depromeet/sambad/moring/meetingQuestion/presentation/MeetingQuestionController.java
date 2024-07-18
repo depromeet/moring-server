@@ -36,7 +36,7 @@ public class MeetingQuestionController {
 		@ApiResponse(responseCode = "400", description = "INVALID_INPUT"),
 		@ApiResponse(responseCode = "401", description = "AUTHENTICATION_REQUIRED"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
-		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION"),
+		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET"),
 		@ApiResponse(responseCode = "500", description = "SERVER_ERROR"),
 	})
 	@ResponseStatus(HttpStatus.CREATED)

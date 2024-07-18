@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.depromeet.sambad.moring.meetingQuestion.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meetingQuestion.presentation.exception.DuplicateMeetingQuestionException;
+import org.depromeet.sambad.moring.meetingQuestion.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meetingQuestion.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
@@ -30,15 +31,17 @@ public class MeetingQuestionService {
 	@Transactional
 	public void save(Long userId, MeetingQuestionRequest request) {
 		// FIXME: 모임, 모임원 붙이기, 예외 docs 추가
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		MeetingMember loginMember = meetingMemberService.getByUserId(userId);
+		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
+		validateTargetMember(loginMember, targetMember);
+
 		Meeting meeting = meetingMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
-
 		validateDuplicateMeetingQuestion(meeting, question);
 
 		MeetingQuestion meetingQuestion = MeetingQuestion.builder()
 			.meeting(meeting)
-			.registeredMember(meetingMember)
+			.targetMember(targetMember)
 			.question(question)
 			.now(LocalDateTime.now(clock))
 			.build();
@@ -49,6 +52,12 @@ public class MeetingQuestionService {
 		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();
+		}
+	}
+
+	private void validateTargetMember(MeetingMember loginMember, MeetingMember targetMember) {
+		if (loginMember.isOtherMeeting(targetMember) || loginMember.equals(targetMember)) {
+			throw new InvalidMeetingMemberTargetException();
 		}
 	}
 }

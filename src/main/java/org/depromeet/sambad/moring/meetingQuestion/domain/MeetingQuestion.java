@@ -35,10 +35,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 	@JoinColumn(name = "meeting_id")
 	private Meeting meeting;
 
-	// FIXME: MeetingMember에서 mappedBy="registeredMember" 지정
+	// FIXME: MeetingMember에서 mappedBy="targetMember" 지정
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_member_id")
-	private MeetingMember registeredMember;
+	private MeetingMember targetMember;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "question_id")
@@ -50,10 +50,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 	private LocalDateTime startTime;
 
 	@Builder
-	public MeetingQuestion(Meeting meeting, MeetingMember registeredMember, Question question,
+	public MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question,
 		List<MeetingMemberAnswer> memberAnswers, LocalDateTime now) {
 		this.meeting = meeting;
-		this.registeredMember = registeredMember;
+		this.targetMember = targetMember;
 		this.question = question;
 		this.startTime = now;
 	}
