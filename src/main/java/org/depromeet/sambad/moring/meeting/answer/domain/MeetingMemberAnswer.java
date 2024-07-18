@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.answer.domain;
 
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import jakarta.persistence.Entity;
@@ -25,4 +26,8 @@ public class MeetingMemberAnswer {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_question_id")
 	private MeetingQuestion meetingQuestion;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "meeting_member_id")
+	private MeetingMember meetingMember;
 }

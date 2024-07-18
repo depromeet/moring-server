@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import org.depromeet.sambad.moring.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,6 +35,9 @@ public class User extends BaseTimeEntity {
     private LoginProvider loginProvider;
 
     private String externalId;
+
+    @OneToMany(mappedBy = "user")
+    private List<MeetingMember> meetingMember = new ArrayList<>();
 
     private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider, String externalId) {
         this.imageFile = imageFile;
