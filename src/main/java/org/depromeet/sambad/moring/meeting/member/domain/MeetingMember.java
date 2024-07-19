@@ -82,7 +82,7 @@ public class MeetingMember extends BaseTimeEntity {
 		Gender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
 		this.meeting = meeting;
 		this.user = user;
-		this.profileImage = profileImage;
+		this.profileImageFile = profileImage;
 		this.type = type;
 		this.name = name;
 		this.gender = gender;
@@ -98,7 +98,7 @@ public class MeetingMember extends BaseTimeEntity {
 		return new MeetingMember(
 			meeting,
 			user,
-			user.getImageFile(),
+			user.getProfileImageFile(),
 			request.type(),
 			request.name(),
 			request.gender(),

@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
-import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingMemberAnswer.*;
+import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
@@ -91,12 +91,17 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 			PageableResponse.of(pageable, meetingQuestionResponses));
 	}
 
+	@Override
+	public Optional<MeetingQuestion> findById(Long id) {
+		return meetingQuestionJpaRepository.findById(id);
+	}
+
 	private Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
 		Integer fetchOne = queryFactory
 			.selectOne()
-			.from(meetingMemberAnswer)
-			.where(meetingMemberAnswer.meetingQuestion.id.eq(meetingQuestionId),
-				meetingMemberAnswer.meetingMember.id.eq(meetingMemberId))
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId),
+				meetingAnswer.meetingMember.id.eq(meetingMemberId))
 			.fetchFirst();
 		return fetchOne != null;
 	}

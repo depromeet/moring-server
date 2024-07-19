@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
-import org.depromeet.sambad.moring.meeting.answer.domain.MeetingMemberAnswer;
+import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.question.domain.Question;
@@ -47,7 +47,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 	private Question question;
 
 	@OneToMany(mappedBy = "meetingQuestion", fetch = FetchType.LAZY)
-	private List<MeetingMemberAnswer> memberAnswers = new ArrayList<>();
+	private List<MeetingAnswer> memberAnswers = new ArrayList<>();
 
 	private LocalDateTime startTime;
 
