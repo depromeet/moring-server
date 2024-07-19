@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.common.domain.Gender;
@@ -33,7 +34,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MeetingMember extends BaseTimeEntity {
+public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingMember> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +55,7 @@ public class MeetingMember extends BaseTimeEntity {
 
 	@Enumerated(STRING)
 	@Column(columnDefinition = "varchar(20)")
-	private MeetingMemberType type;
+	private MeetingMemberRole role;
 
 	private String name;
 
@@ -78,12 +79,12 @@ public class MeetingMember extends BaseTimeEntity {
 	@OneToMany(mappedBy = "meetingMember", fetch = FetchType.LAZY)
 	private List<MeetingMemberHobby> meetingMemberHobbies = new ArrayList<>();
 
-	private MeetingMember(Meeting meeting, User user, FileEntity profileImage, MeetingMemberType type, String name,
+	private MeetingMember(Meeting meeting, User user, FileEntity profileImageFile, MeetingMemberRole role, String name,
 		Gender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
 		this.meeting = meeting;
 		this.user = user;
-		this.profileImage = profileImage;
-		this.type = type;
+		this.profileImageFile = profileImageFile;
+		this.role = role;
 		this.name = name;
 		this.gender = gender;
 		this.birth = birth;
@@ -98,8 +99,8 @@ public class MeetingMember extends BaseTimeEntity {
 		return new MeetingMember(
 			meeting,
 			user,
-			user.getImageFile(),
-			request.type(),
+			user.getProfileImageFile(),
+			request.role(),
 			request.name(),
 			request.gender(),
 			request.birth(),
@@ -110,5 +111,24 @@ public class MeetingMember extends BaseTimeEntity {
 
 	public boolean isOtherMeeting(MeetingMember targetMember) {
 		return !Objects.equals(this.meeting, targetMember.getMeeting());
+	}
+
+	public String getProfileImageUrl() {
+		return Optional.ofNullable(this.profileImageFile)
+			.map(FileEntity::getPhysicalPath)
+			.orElse(null);
+	}
+
+	@Override
+	public int compareTo(MeetingMember o) {
+		// OWNER 역할을 가진 멤버가 우선순위를 가짐
+		if (this.role == MeetingMemberRole.OWNER && o.role != MeetingMemberRole.OWNER) {
+			return -1;
+		} else if (this.role != MeetingMemberRole.OWNER && o.role == MeetingMemberRole.OWNER) {
+			return 1;
+		}
+
+		// 둘 다 OWNER 역할이 아니거나 둘 다 OWNER 역할일 때 이름순으로 정렬
+		return this.name.compareTo(o.name);
 	}
 }
