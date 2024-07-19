@@ -6,25 +6,23 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.depromeet.sambad.moring.file.application.FileService;
 import org.depromeet.sambad.moring.file.application.FileUploader;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.file.domain.FileRepository;
 import org.depromeet.sambad.moring.file.presentation.exception.ObjectStorageServerException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Profile({"dev", "prod"})
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,6 +34,7 @@ public class ObjectStorageFileUploader implements FileUploader {
 	private final AmazonS3 amazonS3;
 	private final FileRepository fileRepository;
 
+	@Override
 	public void delete(Long Id) {
 		FileEntity fileEntity = fileRepository.findById(Id);
 		try {

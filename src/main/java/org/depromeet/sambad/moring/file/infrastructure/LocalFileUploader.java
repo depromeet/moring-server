@@ -1,17 +1,18 @@
 package org.depromeet.sambad.moring.file.infrastructure;
 
-import lombok.RequiredArgsConstructor;
-import org.depromeet.sambad.moring.file.application.FileUploader;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+
+import org.depromeet.sambad.moring.file.application.FileUploader;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.RequiredArgsConstructor;
 
 @Profile("local")
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class LocalFileUploader implements FileUploader {
 		Path uploadPath = generateUploadPath(originalFileName);
 
 		return Files.write(uploadPath, file.getBytes())
-				.toString();
+			.toString();
 	}
 
 	@Override
@@ -38,6 +39,11 @@ public class LocalFileUploader implements FileUploader {
 		}
 
 		return uploadPath.toString();
+	}
+
+	@Override
+	public void delete(Long Id) {
+		// TODO: 구현
 	}
 
 	private Path generateUploadPath(String originalFileName) throws IOException {

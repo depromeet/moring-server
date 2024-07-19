@@ -1,16 +1,16 @@
 package org.depromeet.sambad.moring.file.application;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.file.domain.FileRepository;
-import org.depromeet.sambad.moring.file.infrastructure.ObjectStorageFileUploader;
 import org.depromeet.sambad.moring.file.presentation.exception.NotFoundFileException;
 import org.depromeet.sambad.moring.file.presentation.response.FileUrlResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -18,11 +18,10 @@ public class FileService {
 
 	private final FileUploader fileUploader;
 	private final FileRepository fileRepository;
-	private final ObjectStorageFileUploader objectStorageFileUploader;
 
 	@Transactional
 	public FileUrlResponse upload(MultipartFile multipartFile) throws IOException {
-		String url = objectStorageFileUploader.upload(multipartFile, multipartFile.getOriginalFilename());
+		String url = fileUploader.upload(multipartFile, multipartFile.getOriginalFilename());
 		FileEntity fileEntity = FileEntity.of(multipartFile.getOriginalFilename(), url);
 		fileRepository.save(fileEntity);
 		return FileUrlResponse.of(url);
@@ -30,13 +29,14 @@ public class FileService {
 
 	@Transactional
 	public void delete(Long fileId) {
-		if(isNotExistFile(fileId)) {
+		if (isNotExistFile(fileId)) {
 			throw new NotFoundFileException();
 		}
 		fileRepository.deleteById(fileId);
-		objectStorageFileUploader.delete(fileId);
+		fileUploader.delete(fileId);
 	}
 
+	@Transactional
 	public FileEntity uploadAndSave(String fileUrl) {
 		// TODO: add url validation
 		try {
