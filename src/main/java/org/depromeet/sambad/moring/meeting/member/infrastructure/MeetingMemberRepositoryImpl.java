@@ -17,13 +17,23 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 	private final MeetingMemberQueryRepository meetingMemberQueryRepository;
 
 	@Override
-	public Optional<MeetingMember> findByUserId(Long userId) {
-		return meetingMemberJpaRepository.findByUserId(userId);
+	public void save(MeetingMember meetingMember) {
+		meetingMemberJpaRepository.save(meetingMember);
 	}
 
 	@Override
 	public Optional<MeetingMember> findById(Long meetingMemberId) {
 		return meetingMemberJpaRepository.findById(meetingMemberId);
+	}
+
+	@Override
+	public Optional<MeetingMember> findByUserId(Long userId) {
+		return meetingMemberJpaRepository.findByUserId(userId);
+	}
+
+	@Override
+	public Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId) {
+		return meetingMemberJpaRepository.findByUserIdAndMeetingId(userId, meetingId);
 	}
 
 	@Override
@@ -37,17 +47,12 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 	}
 
 	@Override
-	public void save(MeetingMember meetingMember) {
-		meetingMemberJpaRepository.save(meetingMember);
-	}
-
-	@Override
 	public boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers) {
 		return meetingMemberQueryRepository.isMeetingExceedingMaxMembers(meetingId, maxMeetingMembers);
 	}
 
 	@Override
-	public boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
+	public boolean isOwnerExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
 		return meetingMemberQueryRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings);
 	}
 

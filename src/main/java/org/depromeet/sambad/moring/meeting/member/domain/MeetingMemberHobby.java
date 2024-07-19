@@ -40,4 +40,8 @@ public class MeetingMemberHobby extends BaseTimeEntity {
     public static MeetingMemberHobby of(MeetingMember meetingMember, Hobby hobby) {
         return new MeetingMemberHobby(meetingMember, hobby);
     }
+
+    public String getHobbyContent() {
+        return hobby.getContent();
+    }
 }

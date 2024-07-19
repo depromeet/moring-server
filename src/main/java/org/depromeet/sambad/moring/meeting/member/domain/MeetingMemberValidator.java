@@ -3,7 +3,7 @@ package org.depromeet.sambad.moring.meeting.member.domain;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.ExceedMaxMeetingCountException;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
 import org.depromeet.sambad.moring.meeting.member.infrastructure.MeetingMemberProperties;
-import org.depromeet.sambad.moring.meeting.member.presentation.exception.ExceedMaxHostCountException;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.ExceedMaxOwnerCountException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.ExceedMaxMemberCountException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberAlreadyExistsException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.UserNotMemberOfMeetingException;
@@ -46,8 +46,8 @@ public class MeetingMemberValidator {
 	public void validateHostMaxCount(Long meetingId) {
 		int maxHostMeetings = meetingMemberProperties.hostMaxCount();
 
-		if (meetingMemberRepository.isHostExceedingMaxMeetings(meetingId, maxHostMeetings)) {
-			throw new ExceedMaxHostCountException();
+		if (meetingMemberRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings)) {
+			throw new ExceedMaxOwnerCountException();
 		}
 	}
 

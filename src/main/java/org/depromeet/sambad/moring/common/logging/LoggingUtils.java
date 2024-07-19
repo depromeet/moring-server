@@ -17,7 +17,7 @@ public class LoggingUtils {
 		String message = getExceptionMessage(exception.getMessage());
 		StackTraceElement[] stackTraceElements = exception.getStackTrace();
 
-		log.error("[SERVER ERROR] {} {}", message, stackTraceElements[0]);
+		log.error("[SERVER ERROR] {} {}", message, stackTraceElements[0], exception);
 	}
 
 	static List<String> getArguments(JoinPoint joinPoint) {

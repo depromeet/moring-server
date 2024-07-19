@@ -9,9 +9,11 @@ import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.Meetin
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberNotFoundException;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
@@ -38,15 +40,41 @@ public class MeetingMemberService {
 		return MeetingMemberListResponse.from(meetingMemberRepository.findByMeetingIdOrderByName(meetingId));
 	}
 
+	// FIXME: userId 기반 조회 시, unique한 결과가 반환되지 않음. 해당 메서드 제거 및 `getByUserIdAndMeetingId` 사용 필요
 	public MeetingMember getByUserId(Long userId) {
 		return meetingMemberRepository.findByUserId(userId)
-			.orElseThrow(() -> new IllegalArgumentException("MeetingMember not found. userId: " + userId));
+			.orElseThrow(MeetingMemberNotFoundException::new);
+	}
+
+	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
+		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
+			.orElseThrow(MeetingMemberNotFoundException::new);
 	}
 
 	public MeetingMember getById(Long meetingMemberId) {
 		return meetingMemberRepository.findById(meetingMemberId)
-			.orElseThrow(
-				() -> new IllegalArgumentException("MeetingMember not found. meetingMemberId: " + meetingMemberId));
+			.orElseThrow(MeetingMemberNotFoundException::new);
+	}
+
+	public MeetingMemberResponse getMeetingMember(Long userId, Long meetingId, Long memberId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+
+		return MeetingMemberResponse.from(getById(memberId));
+	}
+
+	public MeetingMemberResponse getMyMeetingMember(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+
+		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
+	}
+
+	public MeetingMemberListResponse getNextTargets(Long userId) {
+		MeetingMember meetingMember = getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
+			meetingMember.getId());
+		return MeetingMemberListResponse.from(nextTargetMembers);
 	}
 
 	@Transactional
@@ -90,14 +118,5 @@ public class MeetingMemberService {
 			.toList();
 
 		meetingMemberHobbyRepository.saveAll(hobbies);
-	}
-
-	public MeetingMemberListResponse getNextTargets(Long userId) {
-		MeetingMember meetingMember = getByUserId(userId);
-		Meeting meeting = meetingMember.getMeeting();
-
-		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
-			meetingMember.getId());
-		return MeetingMemberListResponse.from(nextTargetMembers);
 	}
 }
