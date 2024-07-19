@@ -8,6 +8,8 @@ import org.depromeet.sambad.moring.meeting.comment.presentation.comment.response
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +40,7 @@ public class MeetingQuestionCommentController {
 			content = @Content(schema = @Schema(implementation = Object.class))),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 	})
-	@PostMapping("/meeting-questions/comments/new")
+	@PostMapping("/meetings/questions/comments")
 	public ResponseEntity<Object> saveComment(
 		@UserId Long userId,
 		@Valid @RequestBody MeetingQuestionCommentRequest request
@@ -55,7 +57,7 @@ public class MeetingQuestionCommentController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@PostMapping("/meeting-questions/comments/{meetingQuestionId}")
+	@GetMapping("/meetings/questions/comments/{meetingQuestionId}")
 	public ResponseEntity<Object> getComments(
 		@PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
@@ -72,7 +74,7 @@ public class MeetingQuestionCommentController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION_COMMENT")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@PostMapping("/meeting-questions/comments/delete/{meetingQuestionCommentId}")
+	@DeleteMapping("/meetings/questions/comments/{meetingQuestionCommentId}")
 	public ResponseEntity<Object> deleteComment(
 		@UserId Long userId,
 		@PathVariable("meetingQuestionCommentId") Long meetingQuestionCommentId

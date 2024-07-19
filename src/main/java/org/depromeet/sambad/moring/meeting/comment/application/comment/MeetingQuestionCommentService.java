@@ -10,6 +10,7 @@ import org.depromeet.sambad.moring.meeting.comment.presentation.comment.request.
 import org.depromeet.sambad.moring.meeting.comment.presentation.comment.response.MeetingQuestionCommentResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.UserNotMemberOfMeetingException;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class MeetingQuestionCommentService {
 	public void save(Long userId, MeetingQuestionCommentRequest request) {
 		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(request.meetingQuestionId());
+		validateMeeting(meetingMember, meetingQuestion);
 
 		MeetingQuestionComment meetingQuestionComment = MeetingQuestionComment.builder()
 			.meetingMember(meetingMember)
@@ -58,6 +60,12 @@ public class MeetingQuestionCommentService {
 	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
 		if (!meetingMember.equals(writer)) {
 			throw new InvalidCommentWriterException();
+		}
+	}
+
+	private void validateMeeting(MeetingMember meetingMember, MeetingQuestion meetingQuestion) {
+		if (!meetingMember.getMeeting().equals(meetingQuestion.getMeeting())) {
+			throw new UserNotMemberOfMeetingException();
 		}
 	}
 
