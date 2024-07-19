@@ -1,3 +1,4 @@
+
 package org.depromeet.sambad.moring.meeting.member.domain;
 
 import static jakarta.persistence.EnumType.*;

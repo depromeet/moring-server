@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
@@ -40,7 +41,7 @@ public class MeetingQuestionService {
 
 		Meeting meeting = targetMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
-		validateDuplicateMeetingQuestion(meeting, question);
+		validateNonDuplicateMeetingQuestion(meeting, question);
 
 		MeetingQuestion meetingQuestion = MeetingQuestion.builder()
 			.meeting(meeting)
@@ -57,7 +58,19 @@ public class MeetingQuestionService {
 		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());
 	}
 
-	private void validateDuplicateMeetingQuestion(Meeting meeting, Question question) {
+	public MeetingQuestionListResponse findInactiveList(Long userId, int page, int size) {
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+		return meetingQuestionRepository.findInactiveList(meeting.getId(), meetingMember.getId(),
+			PageRequest.of(page, size));
+	}
+
+	public MeetingQuestion getById(Long id) {
+		return meetingQuestionRepository.findById(id)
+			.orElseThrow(NotFoundMeetingQuestion::new);
+	}
+
+	private void validateNonDuplicateMeetingQuestion(Meeting meeting, Question question) {
 		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();
@@ -68,13 +81,6 @@ public class MeetingQuestionService {
 		if (loginMember.isOtherMeeting(targetMember) || loginMember.equals(targetMember)) {
 			throw new InvalidMeetingMemberTargetException();
 		}
-	}
-
-	public MeetingQuestionListResponse findInactiveList(Long userId, int page, int size) {
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
-		Meeting meeting = meetingMember.getMeeting();
-		return meetingQuestionRepository.findInactiveList(meeting.getId(), meetingMember.getId(),
-			PageRequest.of(page, size));
 	}
 }
 
