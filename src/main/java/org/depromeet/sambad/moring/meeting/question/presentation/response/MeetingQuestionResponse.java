@@ -7,7 +7,7 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import lombok.Builder;
 
 @Builder
-public record ActiveMeetingQuestionResponse(
+public record MeetingQuestionResponse(
 	Long meetingQuestionId,
 	String questionImageUrl,
 	String title,
@@ -18,13 +18,13 @@ public record ActiveMeetingQuestionResponse(
 	MeetingMemberResponse targetMember
 ) {
 
-	public static ActiveMeetingQuestionResponse of(MeetingQuestion activeMeetingQuestion, Boolean isAnswered) {
+	public static MeetingQuestionResponse of(MeetingQuestion activeMeetingQuestion, Boolean isAnswered) {
 		Meeting meeting = activeMeetingQuestion.getMeeting();
 		int questionNumber = meeting.getMeetingQuestions().indexOf(activeMeetingQuestion) + 1;
 		int totalMeetingMemberCount = meeting.getMeetingMembers().size();
 		int responseCount = activeMeetingQuestion.getMemberAnswers().size();
 
-		return ActiveMeetingQuestionResponse.builder()
+		return MeetingQuestionResponse.builder()
 			.meetingQuestionId(activeMeetingQuestion.getId())
 			.questionImageUrl(activeMeetingQuestion.getQuestion().getQuestionImageUrl())
 			.title(activeMeetingQuestion.getQuestion().getTitle())

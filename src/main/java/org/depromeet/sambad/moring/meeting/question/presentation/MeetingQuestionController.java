@@ -2,7 +2,7 @@ package org.depromeet.sambad.moring.meeting.question.presentation;
 
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,14 +52,14 @@ public class MeetingQuestionController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = ActiveMeetingQuestionResponse.class)),
+			content = @Content(schema = @Schema(implementation = MeetingQuestionResponse.class)),
 			description = "진행 중인 릴레이 질문을 반환하거나, 진행 중인 질문이 없는 경우 null 을 반환합니다.")
 	})
 	@GetMapping("/meeting-questions/active")
 	public ResponseEntity<Object> findActiveOne(
 		@UserId Long userId
 	) {
-		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId);
+		MeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId);
 		return ResponseEntity.ok().body(activeOne);
 	}
 }
