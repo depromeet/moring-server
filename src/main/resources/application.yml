@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
       default_batch_fetch_size: 1000
       jdbc:
         time_zone: Asia/Seoul
