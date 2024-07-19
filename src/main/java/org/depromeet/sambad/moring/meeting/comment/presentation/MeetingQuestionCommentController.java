@@ -5,6 +5,7 @@ import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQ
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,12 +36,30 @@ public class MeetingQuestionCommentController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 	})
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/meeting-questions/comment")
+	@PostMapping("/meeting-questions/comment/new")
 	public ResponseEntity<Object> saveComment(
 		@UserId Long userId,
 		@Valid @RequestBody MeetingQuestionCommentRequest request
 	) {
 		meetingQuestionCommentService.save(userId, request);
 		return ResponseEntity.created(null).build();
+	}
+
+	@Operation(summary = "릴레이 질문 코멘트 삭제", description = "모임의 릴레이 질문 코멘트를 삭제합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			content = @Content(schema = @Schema(implementation = Object.class))),
+		@ApiResponse(responseCode = "400", description = "INVALID_COMMENT_WRITER"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION_COMMENT")
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/meeting-questions/comment/delete/{meetingQuestionCommentId}")
+	public ResponseEntity<Object> deleteComment(
+		@UserId Long userId,
+		@PathVariable("meetingQuestionCommentId") Long meetingQuestionCommentId
+	) {
+		meetingQuestionCommentService.delete(userId, meetingQuestionCommentId);
+		return ResponseEntity.noContent().build();
 	}
 }

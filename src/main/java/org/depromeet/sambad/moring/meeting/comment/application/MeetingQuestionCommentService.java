@@ -1,6 +1,8 @@
 package org.depromeet.sambad.moring.meeting.comment.application;
 
 import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.comment.presentation.exception.InvalidCommentWriterException;
+import org.depromeet.sambad.moring.meeting.comment.presentation.exception.NotFoundMeetingQuestionCommentException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQuestionCommentRequest;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -32,5 +34,24 @@ public class MeetingQuestionCommentService {
 			.build();
 
 		meetingQuestionCommentRepository.save(meetingQuestionComment);
+	}
+
+	@Transactional
+	public void delete(Long userId, Long meetingQuestionCommentId) {
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		MeetingQuestionComment meetingQuestionComment = getById(meetingQuestionCommentId);
+		isSameWriter(meetingMember, meetingQuestionComment.getMeetingMember());
+		meetingQuestionCommentRepository.delete(meetingQuestionComment);
+	}
+
+	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
+		if (!meetingMember.equals(writer)) {
+			throw new InvalidCommentWriterException();
+		}
+	}
+
+	public MeetingQuestionComment getById(Long id) {
+		return meetingQuestionCommentRepository.findById(id)
+			.orElseThrow(NotFoundMeetingQuestionCommentException::new);
 	}
 }
