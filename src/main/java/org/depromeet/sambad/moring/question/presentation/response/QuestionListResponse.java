@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.common.response.PageableResponse;
 
-public record QuestionListResponse(
+public record QuestionListResponse<T>(
 	List<QuestionSummaryResponse> content,
-	PageableResponse pageableResponse
+	PageableResponse<T> pageable
 ) {
-	public static QuestionListResponse of(List<QuestionSummaryResponse> content, PageableResponse pageableResponse) {
+	public static <T> QuestionListResponse<T> of(List<QuestionSummaryResponse> content,
+		PageableResponse<T> pageableResponse) {
 		return new QuestionListResponse(content, pageableResponse);
 	}
 }

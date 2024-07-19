@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity {
 
 	@JoinColumn(name = "profile_image_file_id")
 	@OneToOne(fetch = FetchType.LAZY)
-	private FileEntity imageFile;
+	private FileEntity profileImageFile;
 
 	private String name;
 
@@ -50,7 +50,7 @@ public class User extends BaseTimeEntity {
 	private List<MeetingMember> meetingMember = new ArrayList<>();
 
 	private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider, String externalId) {
-		this.imageFile = imageFile;
+		this.profileImageFile = imageFile;
 		this.name = name;
 		this.email = email;
 		this.loginProvider = loginProvider;
@@ -64,8 +64,8 @@ public class User extends BaseTimeEntity {
 			authAttributes.getExternalId());
 	}
 
-	public String getProfileImageUrl() {
-		return Optional.ofNullable(imageFile)
+	public String getProfileImageFileUrl() {
+		return Optional.ofNullable(profileImageFile)
 			.map(FileEntity::getPhysicalPath)
 			.orElse(null);
 	}

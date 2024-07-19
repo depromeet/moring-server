@@ -1,12 +1,13 @@
 package org.depromeet.sambad.moring.auth.application.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import org.depromeet.sambad.moring.user.domain.LoginProvider;
+import static org.depromeet.sambad.moring.user.domain.LoginProvider.*;
 
 import java.util.Map;
 
-import static org.depromeet.sambad.moring.user.domain.LoginProvider.kakao;
+import org.depromeet.sambad.moring.user.domain.LoginProvider;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 /**
  * 카카오로부터 받은 인증 정보를 파싱하여 전달합니다.<br />
@@ -23,15 +24,15 @@ public class KakaoAuthAttributes implements AuthAttributes {
 	private final LoginProvider provide;
 
 	public static KakaoAuthAttributes of(Map<String, Object> attributes) {
-		Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-		Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+		Map<String, Object> kakaoAccount = (Map<String, Object>)attributes.get("kakao_account");
+		Map<String, Object> profile = (Map<String, Object>)kakaoAccount.get("profile");
 
 		return new KakaoAuthAttributes(
-				attributes.get("id").toString(),
-				(String) kakaoAccount.get("email"),
-				(String) profile.get("nickname"),
-				(String) profile.get("profile_image_url"),
-				kakao
+			attributes.get("id").toString(),
+			(String)kakaoAccount.get("email"),
+			(String)profile.get("nickname"),
+			(String)profile.get("profile_image_url"),
+			kakao
 		);
 	}
 

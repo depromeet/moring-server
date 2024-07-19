@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public record UserResponse(
 		String name,
 		String email,
-		String profileImageUrl,
+		String profileImageFileUrl,
 		LocalDateTime createAt,
 		LocalDateTime updateAt
 ) {
@@ -19,7 +19,7 @@ public record UserResponse(
 		return new UserResponse(
 				user.getName(),
 				user.getEmail(),
-				user.getProfileImageUrl(),
+				user.getProfileImageFileUrl(),
 				user.getCreateAt(),
 				user.getUpdateAt()
 		);
