@@ -11,7 +11,7 @@ import lombok.Builder;
 public record MeetingQuestionCommentResponse(
 	Long id,
 	String content,
-	시 writer
+	MeetingMemberListResponseDetail writer
 ) {
 	public static MeetingQuestionCommentResponse from(MeetingQuestionComment meetingQuestionComment) {
 		MeetingMember writer = meetingQuestionComment.getMeetingMember();
