@@ -10,6 +10,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -90,5 +91,14 @@ public class MeetingMemberService {
 			.toList();
 
 		meetingMemberHobbyRepository.saveAll(hobbies);
+	}
+
+	public MeetingMemberListResponse getNextTargets(Long userId) {
+		MeetingMember meetingMember = getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
+			meetingMember.getId());
+		return MeetingMemberListResponse.of(nextTargetMembers);
 	}
 }

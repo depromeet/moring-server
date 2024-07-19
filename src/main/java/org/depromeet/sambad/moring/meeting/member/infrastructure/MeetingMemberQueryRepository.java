@@ -3,6 +3,9 @@ package org.depromeet.sambad.moring.meeting.member.infrastructure;
 import static org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberRole.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 
+import java.util.List;
+
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -39,5 +42,12 @@ public class MeetingMemberQueryRepository {
 			.where(meetingMember.user.id.eq(userId)
 				.and(meetingMember.meeting.id.eq(meetingId)))
 			.fetchFirst() != null;
+	}
+
+	public List<MeetingMember> findNextTargetsByMeetingId(Long meetingId, Long loginMeetingMemberId) {
+		return query.selectFrom(meetingMember)
+			.where(meetingMember.id.ne(loginMeetingMemberId),
+				meetingMember.meeting.id.eq(meetingId))
+			.fetch();
 	}
 }

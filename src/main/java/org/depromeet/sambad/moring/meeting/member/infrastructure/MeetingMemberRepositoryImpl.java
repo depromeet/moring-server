@@ -13,46 +13,51 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 
-    private final MeetingMemberJpaRepository meetingMemberJpaRepository;
-    private final MeetingMemberQueryRepository meetingMemberQueryRepository;
+	private final MeetingMemberJpaRepository meetingMemberJpaRepository;
+	private final MeetingMemberQueryRepository meetingMemberQueryRepository;
 
-    @Override
-    public Optional<MeetingMember> findByUserId(Long userId) {
-        return meetingMemberJpaRepository.findByUserId(userId);
-    }
+	@Override
+	public Optional<MeetingMember> findByUserId(Long userId) {
+		return meetingMemberJpaRepository.findByUserId(userId);
+	}
 
-    @Override
-    public Optional<MeetingMember> findById(Long meetingMemberId) {
-        return meetingMemberJpaRepository.findById(meetingMemberId);
-    }
+	@Override
+	public Optional<MeetingMember> findById(Long meetingMemberId) {
+		return meetingMemberJpaRepository.findById(meetingMemberId);
+	}
 
-    @Override
-    public boolean isUserExceedingMaxMeetings(Long userId, int maxMeetings) {
-        return meetingMemberQueryRepository.isUserExceedingMaxMeetings(userId, maxMeetings);
-    }
+	@Override
+	public List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId) {
+		return meetingMemberQueryRepository.findNextTargetsByMeetingId(meetingId, loginMeetingMemberId);
+	}
 
-    @Override
-    public void save(MeetingMember meetingMember) {
-        meetingMemberJpaRepository.save(meetingMember);
-    }
+	@Override
+	public boolean isUserExceedingMaxMeetings(Long userId, int maxMeetings) {
+		return meetingMemberQueryRepository.isUserExceedingMaxMeetings(userId, maxMeetings);
+	}
 
-    @Override
-    public boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers) {
-        return meetingMemberQueryRepository.isMeetingExceedingMaxMembers(meetingId, maxMeetingMembers);
-    }
+	@Override
+	public void save(MeetingMember meetingMember) {
+		meetingMemberJpaRepository.save(meetingMember);
+	}
 
-    @Override
-    public boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
-        return meetingMemberQueryRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings);
-    }
+	@Override
+	public boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers) {
+		return meetingMemberQueryRepository.isMeetingExceedingMaxMembers(meetingId, maxMeetingMembers);
+	}
 
-    @Override
-    public List<MeetingMember> findByMeetingIdOrderByName(Long meetingId) {
-        return meetingMemberJpaRepository.findByMeetingIdOrderByName(meetingId);
-    }
+	@Override
+	public boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
+		return meetingMemberQueryRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings);
+	}
 
-    @Override
-    public boolean isUserMemberOfMeeting(Long userId, Long meetingId) {
-        return meetingMemberQueryRepository.isUserMemberOfMeeting(userId, meetingId);
-    }
+	@Override
+	public List<MeetingMember> findByMeetingIdOrderByName(Long meetingId) {
+		return meetingMemberJpaRepository.findByMeetingIdOrderByName(meetingId);
+	}
+
+	@Override
+	public boolean isUserMemberOfMeeting(Long userId, Long meetingId) {
+		return meetingMemberQueryRepository.isUserMemberOfMeeting(userId, meetingId);
+	}
 }

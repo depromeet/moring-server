@@ -6,6 +6,7 @@ import org.depromeet.sambad.moring.meeting.member.application.HobbyService;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.HobbyResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -73,5 +74,15 @@ public class MeetingMemberController {
 	@GetMapping("/hobbies")
 	public ResponseEntity<HobbyResponse> getHobbies() {
 		return ResponseEntity.ok(hobbyService.getHobbies());
+	}
+
+	@Operation(summary = "다음 질문인 대상자 목록 조회", description = "모임원이 선택할 수 있는 다음 질문 대상자 리스트를 조회합니다.")
+	@ApiResponse(responseCode = "200", description = "질문 대상자 리스트 조회 성공")
+	@GetMapping("/target")
+	public ResponseEntity<MeetingMemberListResponse> getNextTargets(
+		@UserId Long userId
+	) {
+		MeetingMemberListResponse response = meetingMemberService.getNextTargets(userId);
+		return ResponseEntity.ok(response);
 	}
 }
