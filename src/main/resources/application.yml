@@ -84,3 +84,9 @@ cloud:
       static-region: "ap-southeast-2"
     stack:
       auto: false
+
+meeting:
+  member:
+    meeting-max-count: ${MEETING_MAX_COUNT:1}
+    meeting-member-max-count: ${MEETING_MEMBER_MAX_COUNT:50}
+    host-max-count: ${HOST_MAX_COUNT:1}
