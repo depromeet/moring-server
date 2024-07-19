@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
@@ -38,7 +39,7 @@ public class MeetingQuestionService {
 
 		Meeting meeting = targetMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
-		validateDuplicateMeetingQuestion(meeting, question);
+		validateNonDuplicateMeetingQuestion(meeting, question);
 
 		MeetingQuestion meetingQuestion = MeetingQuestion.builder()
 			.meeting(meeting)
@@ -55,7 +56,12 @@ public class MeetingQuestionService {
 		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());
 	}
 
-	private void validateDuplicateMeetingQuestion(Meeting meeting, Question question) {
+	public MeetingQuestion getById(Long id) {
+		return meetingQuestionRepository.findById(id)
+			.orElseThrow(NotFoundMeetingQuestion::new);
+	}
+
+	private void validateNonDuplicateMeetingQuestion(Meeting meeting, Question question) {
 		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();

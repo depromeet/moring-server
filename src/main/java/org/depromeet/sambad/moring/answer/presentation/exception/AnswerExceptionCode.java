@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.answer.presentation.exception;
+package org.depromeet.sambad.moring.answer.presentation.exception;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MeetingAnswerExceptionCode implements ExceptionCode {
+public enum AnswerExceptionCode implements ExceptionCode {
 
-	DUPLICATE_MEETING_ANSWER(CONFLICT, "등록된 답변이 존재합니다."),
+	NOT_FOUND_ANSWER(NOT_FOUND, "존재하지 않는 답변입니다."),
 	;
 
 	private final HttpStatus status;
