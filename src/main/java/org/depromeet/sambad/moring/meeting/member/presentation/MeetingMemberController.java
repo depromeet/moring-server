@@ -78,7 +78,7 @@ public class MeetingMemberController {
 
 	@Operation(summary = "다음 질문인 대상자 목록 조회", description = "모임원이 선택할 수 있는 다음 질문 대상자 리스트를 조회합니다.")
 	@ApiResponse(responseCode = "200", description = "질문 대상자 리스트 조회 성공")
-	@GetMapping("/target")
+	@GetMapping("/targets")
 	public ResponseEntity<MeetingMemberSummaryListResponse> getNextTargets(
 		@UserId Long userId
 	) {
