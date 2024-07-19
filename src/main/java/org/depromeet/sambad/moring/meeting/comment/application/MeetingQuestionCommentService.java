@@ -1,9 +1,13 @@
 package org.depromeet.sambad.moring.meeting.comment.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.comment.presentation.exception.InvalidCommentWriterException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.exception.NotFoundMeetingQuestionCommentException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQuestionCommentRequest;
+import org.depromeet.sambad.moring.meeting.comment.presentation.response.MeetingQuestionCommentResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
@@ -44,6 +48,18 @@ public class MeetingQuestionCommentService {
 		meetingQuestionCommentRepository.delete(meetingQuestionComment);
 	}
 
+	public List<MeetingQuestionCommentResponse> getAllComments(Long meetingQuestionId) {
+		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingQuestionId);
+		List<MeetingQuestionComment> meetingQuestionComments = getAllCommentsByMeetingQuestion(meetingQuestion);
+		return meetingQuestionComments.stream()
+			.map(MeetingQuestionComment -> MeetingQuestionCommentResponse.of(
+				MeetingQuestionComment.getId(),
+				MeetingQuestionComment.getContent(),
+				MeetingQuestionComment.getMeetingMember(),
+				MeetingQuestionComment.getMeetingQuestion()
+			)).collect(Collectors.toList());
+	}
+
 	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
 		if (!meetingMember.equals(writer)) {
 			throw new InvalidCommentWriterException();
@@ -53,5 +69,9 @@ public class MeetingQuestionCommentService {
 	public MeetingQuestionComment getById(Long id) {
 		return meetingQuestionCommentRepository.findById(id)
 			.orElseThrow(NotFoundMeetingQuestionCommentException::new);
+	}
+
+	public List<MeetingQuestionComment> getAllCommentsByMeetingQuestion(MeetingQuestion meetingQuestion) {
+		return meetingQuestionCommentRepository.findAllByMeetingQuestion(meetingQuestion);
 	}
 }

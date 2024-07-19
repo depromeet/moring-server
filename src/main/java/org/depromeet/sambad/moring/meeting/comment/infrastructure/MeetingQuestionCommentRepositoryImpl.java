@@ -1,9 +1,11 @@
 package org.depromeet.sambad.moring.meeting.comment.infrastructure;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.comment.application.MeetingQuestionCommentRepository;
 import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,5 +27,10 @@ public class MeetingQuestionCommentRepositoryImpl implements MeetingQuestionComm
 	@Override
 	public void delete(MeetingQuestionComment meetingQuestionComment) {
 		meetingQuestionCommentJpaRepository.delete(meetingQuestionComment);
+	}
+
+	@Override
+	public List<MeetingQuestionComment> findAllByMeetingQuestion(MeetingQuestion meetingQuestion) {
+		return meetingQuestionCommentJpaRepository.findAllByMeetingQuestion(meetingQuestion);
 	}
 }

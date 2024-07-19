@@ -1,7 +1,10 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.meeting.comment.application.MeetingQuestionCommentService;
 import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQuestionCommentRequest;
+import org.depromeet.sambad.moring.meeting.comment.presentation.response.MeetingQuestionCommentResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,22 @@ public class MeetingQuestionCommentController {
 	) {
 		meetingQuestionCommentService.save(userId, request);
 		return ResponseEntity.created(null).build();
+	}
+
+	@Operation(summary = "릴레이 질문에 대한 모든 코멘트 조회", description = "모임의 릴레이 질문에 대한 모든 코멘트를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			content = @Content(schema = @Schema(implementation = Object.class))),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/meeting-questions/comment/{meetingQuestionId}")
+	public ResponseEntity<Object> getComments(
+		@PathVariable("meetingQuestionId") Long meetingQuestionId
+	) {
+		List<MeetingQuestionCommentResponse> comments = meetingQuestionCommentService.getAllComments(meetingQuestionId);
+		return ResponseEntity.ok(comments);
 	}
 
 	@Operation(summary = "릴레이 질문 코멘트 삭제", description = "모임의 릴레이 질문 코멘트를 삭제합니다.")
