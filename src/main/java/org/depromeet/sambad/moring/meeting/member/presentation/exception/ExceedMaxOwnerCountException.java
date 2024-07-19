@@ -4,8 +4,8 @@ import static org.depromeet.sambad.moring.meeting.member.presentation.exception.
 
 import org.depromeet.sambad.moring.common.exception.BusinessException;
 
-public class ExceedMaxHostCountException extends BusinessException {
-	public ExceedMaxHostCountException() {
-		super(EXCEED_MAX_HOST_COUNT);
+public class ExceedMaxOwnerCountException extends BusinessException {
+	public ExceedMaxOwnerCountException() {
+		super(EXCEED_MAX_OWNER_COUNT);
 	}
 }

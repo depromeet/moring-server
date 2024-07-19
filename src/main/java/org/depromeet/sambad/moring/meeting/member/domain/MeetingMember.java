@@ -68,6 +68,8 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 	private String job;
 
+	private String location;
+
 	@Enumerated(STRING)
 	@Column(columnDefinition = "varchar(4)")
 	private MBTI mbti;
@@ -81,7 +83,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 	private List<MeetingMemberHobby> meetingMemberHobbies = new ArrayList<>();
 
 	private MeetingMember(Meeting meeting, User user, FileEntity profileImageFile, MeetingMemberRole role, String name,
-		Gender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
+		Gender gender, LocalDate birth, String job, String location, MBTI mbti, String introduction) {
 		this.meeting = meeting;
 		this.user = user;
 		this.profileImageFile = profileImageFile;
@@ -90,6 +92,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		this.gender = gender;
 		this.birth = birth;
 		this.job = job;
+		this.location = location;
 		this.mbti = mbti;
 		this.introduction = introduction;
 	}
@@ -106,6 +109,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			request.gender(),
 			request.birth(),
 			request.job(),
+			request.location(),
 			request.mbti(),
 			request.introduction());
 	}
@@ -131,5 +135,11 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 		// 둘 다 OWNER 역할이 아니거나 둘 다 OWNER 역할일 때 이름순으로 정렬
 		return this.name.compareTo(o.name);
+	}
+
+	public List<String> getHobbies() {
+		return meetingMemberHobbies.stream()
+			.map(MeetingMemberHobby::getHobbyContent)
+			.toList();
 	}
 }
