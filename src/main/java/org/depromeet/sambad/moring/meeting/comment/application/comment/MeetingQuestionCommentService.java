@@ -57,7 +57,7 @@ public class MeetingQuestionCommentService {
 			.collect(Collectors.toList());
 	}
 
-	public void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
+	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
 		if (!meetingMember.equals(writer)) {
 			throw new InvalidCommentWriterException();
 		}
