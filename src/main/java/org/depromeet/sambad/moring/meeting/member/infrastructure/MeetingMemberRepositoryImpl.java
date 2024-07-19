@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.infrastructure;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
@@ -42,6 +43,16 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 
     @Override
     public boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
-        return meetingMemberQueryRepository.isHostExceedingMaxMeetings(meetingId, maxHostMeetings);
+        return meetingMemberQueryRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings);
+    }
+
+    @Override
+    public List<MeetingMember> findByMeetingIdOrderByName(Long meetingId) {
+        return meetingMemberJpaRepository.findByMeetingIdOrderByName(meetingId);
+    }
+
+    @Override
+    public boolean isUserMemberOfMeeting(Long userId, Long meetingId) {
+        return meetingMemberQueryRepository.isUserMemberOfMeeting(userId, meetingId);
     }
 }

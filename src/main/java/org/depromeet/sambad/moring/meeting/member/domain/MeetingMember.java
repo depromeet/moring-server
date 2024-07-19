@@ -54,7 +54,7 @@ public class MeetingMember extends BaseTimeEntity {
 
 	@Enumerated(STRING)
 	@Column(columnDefinition = "varchar(20)")
-	private MeetingMemberType type;
+	private MeetingMemberRole role;
 
 	private String name;
 
@@ -78,12 +78,12 @@ public class MeetingMember extends BaseTimeEntity {
 	@OneToMany(mappedBy = "meetingMember", fetch = FetchType.LAZY)
 	private List<MeetingMemberHobby> meetingMemberHobbies = new ArrayList<>();
 
-	private MeetingMember(Meeting meeting, User user, FileEntity profileImage, MeetingMemberType type, String name,
+	private MeetingMember(Meeting meeting, User user, FileEntity profileImageFile, MeetingMemberRole role, String name,
 		Gender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
 		this.meeting = meeting;
 		this.user = user;
-		this.profileImage = profileImage;
-		this.type = type;
+		this.profileImageFile = profileImageFile;
+		this.role = role;
 		this.name = name;
 		this.gender = gender;
 		this.birth = birth;
@@ -98,8 +98,8 @@ public class MeetingMember extends BaseTimeEntity {
 		return new MeetingMember(
 			meeting,
 			user,
-			user.getImageFile(),
-			request.type(),
+			user.getProfileImageFile(),
+			request.role(),
 			request.name(),
 			request.gender(),
 			request.birth(),
@@ -110,5 +110,13 @@ public class MeetingMember extends BaseTimeEntity {
 
 	public boolean isOtherMeeting(MeetingMember targetMember) {
 		return !Objects.equals(this.meeting, targetMember.getMeeting());
+	}
+
+	public boolean isOwner() {
+		return this.role == MeetingMemberRole.OWNER;
+	}
+
+	public boolean isNotOwner() {
+		return !isOwner();
 	}
 }

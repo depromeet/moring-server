@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.Gender;
 import org.depromeet.sambad.moring.meeting.member.domain.MBTI;
-import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberType;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberRole;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,7 +20,7 @@ public record MeetingMemberPersistRequest(
 
 	@Schema(description = "모임원 유형 (HOST, MEMBER)", example = "HOST", requiredMode = REQUIRED)
 	@NotNull
-	MeetingMemberType type,
+	MeetingMemberRole role,
 
 	@Schema(description = "모임원 이름", example = "권기준", requiredMode = REQUIRED)
 	@NotBlank
@@ -56,6 +56,6 @@ public record MeetingMemberPersistRequest(
 ) {
 	@JsonIgnore
 	public boolean isHost() {
-		return type == MeetingMemberType.HOST;
+		return role == MeetingMemberRole.OWNER;
 	}
 }

@@ -11,6 +11,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
@@ -31,6 +32,12 @@ public class MeetingMemberService {
 	private final HobbyRepository hobbyRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 
+	public MeetingMemberResponse getMeetingMembers(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+
+		return MeetingMemberResponse.from(meetingMemberRepository.findByMeetingIdOrderByName(meetingId));
+	}
+
 	public MeetingMember getByUserId(Long userId) {
 		return meetingMemberRepository.findByUserId(userId)
 			.orElseThrow(() -> new IllegalArgumentException("MeetingMember not found. userId: " + userId));
@@ -43,7 +50,9 @@ public class MeetingMemberService {
 	}
 
 	@Transactional
-	public MeetingMemberPersistResponse registerMeetingMember(Long userId, String code, MeetingMemberPersistRequest request) {
+	public MeetingMemberPersistResponse registerMeetingMember(
+		Long userId, String code, MeetingMemberPersistRequest request
+	) {
 		Meeting meeting = meetingRepository.findByCode(MeetingCode.from(code))
 			.orElseThrow(MeetingNotFoundException::new);
 
