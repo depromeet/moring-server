@@ -1,6 +1,6 @@
-package org.depromeet.sambad.moring.meeting.comment.presentation.response;
+package org.depromeet.sambad.moring.meeting.comment.presentation.comment.response;
 
-import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 import lombok.Builder;

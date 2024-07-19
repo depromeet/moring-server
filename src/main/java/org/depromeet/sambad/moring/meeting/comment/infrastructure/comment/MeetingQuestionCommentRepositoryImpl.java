@@ -1,11 +1,10 @@
-package org.depromeet.sambad.moring.meeting.comment.infrastructure;
+package org.depromeet.sambad.moring.meeting.comment.infrastructure.comment;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.depromeet.sambad.moring.meeting.comment.application.MeetingQuestionCommentRepository;
-import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
-import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQuestionCommentRepository;
+import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;

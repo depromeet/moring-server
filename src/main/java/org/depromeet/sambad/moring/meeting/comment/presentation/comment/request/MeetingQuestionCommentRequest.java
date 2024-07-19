@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.comment.presentation.request;
+package org.depromeet.sambad.moring.meeting.comment.presentation.comment.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

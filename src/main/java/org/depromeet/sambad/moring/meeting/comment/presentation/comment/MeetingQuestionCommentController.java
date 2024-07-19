@@ -1,10 +1,10 @@
-package org.depromeet.sambad.moring.meeting.comment.presentation;
+package org.depromeet.sambad.moring.meeting.comment.presentation.comment;
 
 import java.util.List;
 
-import org.depromeet.sambad.moring.meeting.comment.application.MeetingQuestionCommentService;
-import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQuestionCommentRequest;
-import org.depromeet.sambad.moring.meeting.comment.presentation.response.MeetingQuestionCommentResponse;
+import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQuestionCommentService;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.request.MeetingQuestionCommentRequest;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.response.MeetingQuestionCommentResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

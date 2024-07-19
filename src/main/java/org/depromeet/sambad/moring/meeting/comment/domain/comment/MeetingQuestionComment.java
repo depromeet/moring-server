@@ -1,6 +1,10 @@
-package org.depromeet.sambad.moring.meeting.comment.domain;
+package org.depromeet.sambad.moring.meeting.comment.domain.comment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionCommentReply;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
@@ -11,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +37,9 @@ public class MeetingQuestionComment extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember meetingMember;
+
+	@OneToMany(mappedBy = "meetingQuestionComment", fetch = FetchType.LAZY)
+	private List<MeetingQuestionCommentReply> commentReplies = new ArrayList<>();
 
 	private String content;
 

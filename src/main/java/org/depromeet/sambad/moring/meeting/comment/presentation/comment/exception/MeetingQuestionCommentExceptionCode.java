@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.comment.presentation.exception;
+package org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;

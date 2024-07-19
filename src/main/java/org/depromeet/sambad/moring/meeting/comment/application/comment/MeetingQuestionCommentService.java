@@ -1,13 +1,13 @@
-package org.depromeet.sambad.moring.meeting.comment.application;
+package org.depromeet.sambad.moring.meeting.comment.application.comment;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
-import org.depromeet.sambad.moring.meeting.comment.presentation.exception.InvalidCommentWriterException;
-import org.depromeet.sambad.moring.meeting.comment.presentation.exception.NotFoundMeetingQuestionCommentException;
-import org.depromeet.sambad.moring.meeting.comment.presentation.request.MeetingQuestionCommentRequest;
-import org.depromeet.sambad.moring.meeting.comment.presentation.response.MeetingQuestionCommentResponse;
+import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.InvalidCommentWriterException;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.NotFoundMeetingQuestionCommentException;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.request.MeetingQuestionCommentRequest;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.response.MeetingQuestionCommentResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
