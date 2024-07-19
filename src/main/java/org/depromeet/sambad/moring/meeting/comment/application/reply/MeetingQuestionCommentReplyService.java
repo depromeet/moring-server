@@ -4,6 +4,8 @@ import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQu
 import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQuestionCommentService;
 import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionCommentReply;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.NotFoundMeetingQuestionCommentException;
+import org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.NotFoundMeetingQuestionCommentReplyException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.reply.request.MeetingQuestionCommentReplyRequest;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -38,5 +40,23 @@ public class MeetingQuestionCommentReplyService {
 		meetingQuestionCommentRepository.save(comment);
 
 		meetingQuestionCommentReplyRepository.save(commentReply);
+	}
+
+	@Transactional
+	public void delete(Long userId, Long meetingQuestionCommentReplyId) {
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		MeetingQuestionCommentReply commentReply = getById(meetingQuestionCommentReplyId);
+		meetingQuestionCommentService.isSameWriter(meetingMember, commentReply.getMeetingMember());
+
+		MeetingQuestionComment comment = commentReply.getMeetingQuestionComment();
+		comment.removeCommentReply(commentReply);
+		meetingQuestionCommentRepository.save(comment);
+
+		meetingQuestionCommentReplyRepository.delete(commentReply);
+	}
+
+	public MeetingQuestionCommentReply getById(Long id) {
+		return meetingQuestionCommentReplyRepository.findById(id)
+			.orElseThrow(NotFoundMeetingQuestionCommentReplyException::new);
 	}
 }
