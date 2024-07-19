@@ -10,9 +10,11 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +68,13 @@ public class MeetingQuestionService {
 		if (loginMember.isOtherMeeting(targetMember) || loginMember.equals(targetMember)) {
 			throw new InvalidMeetingMemberTargetException();
 		}
+	}
+
+	public MeetingQuestionListResponse findInactiveList(Long userId, int page, int size) {
+		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+		Meeting meeting = meetingMember.getMeeting();
+		return meetingQuestionRepository.findInactiveList(meeting.getId(), meetingMember.getId(),
+			PageRequest.of(page, size));
 	}
 }
 

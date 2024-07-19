@@ -49,7 +49,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.select(Projections.constructor(
 				QuestionSummaryResponse.class,
 				question.id.as("questionId"),
-				question.questionImage.physicalPath.as("questionImageFileUrl"),
+				question.questionImageFile.physicalPath.as("questionImageFileUrl"),
 				question.title,
 				as(select(meetingQuestion.count())
 					.from(meetingQuestion)
@@ -60,22 +60,12 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.orderBy(question.createAt.asc())
 			.fetch();
 
-		List<Long> total = queryFactory
+		List<Long> totalElementIds = queryFactory
 			.select(question.id)
 			.from(question)
 			.where(question.id.notIn(usedQuestionIds))
 			.fetch();
-		int totalPages = total.size() / pageable.getPageSize();
-		boolean isEnd = totalPages == (pageable.getPageNumber() + 1);
-
-		PageableResponse pageableResponse = PageableResponse.builder()
-			.page(pageable.getPageNumber())
-			.size(pageable.getPageSize())
-			.totalPages(totalPages)
-			.isEnd(isEnd)
-			.build();
-
-		return QuestionListResponse.of(questionSummaryResponses, pageableResponse);
+		return QuestionListResponse.of(questionSummaryResponses, PageableResponse.of(pageable, totalElementIds));
 	}
 
 	private static BooleanExpression questionEq() {
