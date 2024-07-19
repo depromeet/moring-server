@@ -10,9 +10,8 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryListResponse;
 import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
@@ -33,10 +32,10 @@ public class MeetingMemberService {
 	private final HobbyRepository hobbyRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 
-	public MeetingMemberResponse getMeetingMembers(Long userId, Long meetingId) {
+	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 
-		return MeetingMemberResponse.from(meetingMemberRepository.findByMeetingIdOrderByName(meetingId));
+		return MeetingMemberListResponse.from(meetingMemberRepository.findByMeetingIdOrderByName(meetingId));
 	}
 
 	public MeetingMember getByUserId(Long userId) {
@@ -93,12 +92,12 @@ public class MeetingMemberService {
 		meetingMemberHobbyRepository.saveAll(hobbies);
 	}
 
-	public MeetingMemberSummaryListResponse getNextTargets(Long userId) {
+	public MeetingMemberListResponse getNextTargets(Long userId) {
 		MeetingMember meetingMember = getByUserId(userId);
 		Meeting meeting = meetingMember.getMeeting();
 
 		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
 			meetingMember.getId());
-		return MeetingMemberSummaryListResponse.of(nextTargetMembers);
+		return MeetingMemberListResponse.from(nextTargetMembers);
 	}
 }
