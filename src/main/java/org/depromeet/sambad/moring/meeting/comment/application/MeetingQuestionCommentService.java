@@ -49,15 +49,10 @@ public class MeetingQuestionCommentService {
 	}
 
 	public List<MeetingQuestionCommentResponse> getAllComments(Long meetingQuestionId) {
-		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingQuestionId);
-		List<MeetingQuestionComment> meetingQuestionComments = getAllCommentsByMeetingQuestion(meetingQuestion);
+		List<MeetingQuestionComment> meetingQuestionComments = getAllCommentsByMeetingQuestionId(meetingQuestionId);
 		return meetingQuestionComments.stream()
-			.map(MeetingQuestionComment -> MeetingQuestionCommentResponse.of(
-				MeetingQuestionComment.getId(),
-				MeetingQuestionComment.getContent(),
-				MeetingQuestionComment.getMeetingMember(),
-				MeetingQuestionComment.getMeetingQuestion()
-			)).collect(Collectors.toList());
+			.map(MeetingQuestionCommentResponse::from)
+			.collect(Collectors.toList());
 	}
 
 	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
@@ -71,7 +66,7 @@ public class MeetingQuestionCommentService {
 			.orElseThrow(NotFoundMeetingQuestionCommentException::new);
 	}
 
-	public List<MeetingQuestionComment> getAllCommentsByMeetingQuestion(MeetingQuestion meetingQuestion) {
-		return meetingQuestionCommentRepository.findAllByMeetingQuestion(meetingQuestion);
+	public List<MeetingQuestionComment> getAllCommentsByMeetingQuestionId(Long meetingQuestionId) {
+		return meetingQuestionCommentRepository.findAllByMeetingQuestionId(meetingQuestionId);
 	}
 }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MeetingQuestionCommentRepositoryImpl implements MeetingQuestionCommentRepository {
 	private final MeetingQuestionCommentJpaRepository meetingQuestionCommentJpaRepository;
+
 	@Override
 	public void save(MeetingQuestionComment meetingQuestionComment) {
 		meetingQuestionCommentJpaRepository.save(meetingQuestionComment);
@@ -30,7 +31,7 @@ public class MeetingQuestionCommentRepositoryImpl implements MeetingQuestionComm
 	}
 
 	@Override
-	public List<MeetingQuestionComment> findAllByMeetingQuestion(MeetingQuestion meetingQuestion) {
-		return meetingQuestionCommentJpaRepository.findAllByMeetingQuestion(meetingQuestion);
+	public List<MeetingQuestionComment> findAllByMeetingQuestionId(Long meetingQuestionId) {
+		return meetingQuestionCommentJpaRepository.findAllByMeetingQuestionId(meetingQuestionId);
 	}
 }

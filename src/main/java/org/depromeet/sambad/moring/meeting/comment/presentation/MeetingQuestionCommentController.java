@@ -38,14 +38,13 @@ public class MeetingQuestionCommentController {
 			content = @Content(schema = @Schema(implementation = Object.class))),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 	})
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/meeting-questions/comment/new")
+	@PostMapping("/meeting-questions/comments/new")
 	public ResponseEntity<Object> saveComment(
 		@UserId Long userId,
 		@Valid @RequestBody MeetingQuestionCommentRequest request
 	) {
 		meetingQuestionCommentService.save(userId, request);
-		return ResponseEntity.created(null).build();
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@Operation(summary = "릴레이 질문에 대한 모든 코멘트 조회", description = "모임의 릴레이 질문에 대한 모든 코멘트를 조회합니다.")
@@ -56,7 +55,7 @@ public class MeetingQuestionCommentController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@PostMapping("/meeting-questions/comment/{meetingQuestionId}")
+	@PostMapping("/meeting-questions/comments/{meetingQuestionId}")
 	public ResponseEntity<Object> getComments(
 		@PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
@@ -73,7 +72,7 @@ public class MeetingQuestionCommentController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION_COMMENT")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@PostMapping("/meeting-questions/comment/delete/{meetingQuestionCommentId}")
+	@PostMapping("/meeting-questions/comments/delete/{meetingQuestionCommentId}")
 	public ResponseEntity<Object> deleteComment(
 		@UserId Long userId,
 		@PathVariable("meetingQuestionCommentId") Long meetingQuestionCommentId

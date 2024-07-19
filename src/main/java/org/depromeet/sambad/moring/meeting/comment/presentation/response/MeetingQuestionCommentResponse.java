@@ -1,29 +1,25 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.response;
 
+import org.depromeet.sambad.moring.meeting.comment.domain.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
-import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import lombok.Builder;
 
 @Builder
 public record MeetingQuestionCommentResponse(
-		Long id,
-		String content,
-		MeetingMember writer,
-		MeetingQuestion meetingQuestion
+	Long id,
+	String content,
+	String writerName,
+	String profileImagePath
 ) {
+	public static MeetingQuestionCommentResponse from(MeetingQuestionComment meetingQuestionComment) {
+		MeetingMember writer = meetingQuestionComment.getMeetingMember();
+		MeetingQuestionCommentResponseBuilder builder = MeetingQuestionCommentResponse.builder()
+			.id(meetingQuestionComment.getId())
+			.content(meetingQuestionComment.getContent())
+			.writerName(writer.getName())
+			.profileImagePath(writer.getProfileImageUrl());
 
-	public static MeetingQuestionCommentResponse of(
-		Long id,
-		String content,
-		MeetingMember writer,
-		MeetingQuestion meetingQuestion
-	) {
-		return MeetingQuestionCommentResponse.builder()
-			.id(id)
-			.content(content)
-			.writer(writer)
-			.meetingQuestion(meetingQuestion)
-			.build();
+		return builder.build();
 	}
 }
