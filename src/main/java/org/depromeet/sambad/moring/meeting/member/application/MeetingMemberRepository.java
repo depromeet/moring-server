@@ -6,19 +6,21 @@ import java.util.Optional;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 public interface MeetingMemberRepository {
-    Optional<MeetingMember> findByUserId(Long userId);
+	Optional<MeetingMember> findByUserId(Long userId);
 
-    Optional<MeetingMember> findById(Long meetingMemberId);
+	Optional<MeetingMember> findById(Long meetingMemberId);
 
-    boolean isUserExceedingMaxMeetings(Long userId, int maxMeetings);
+	List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId);
 
-    void save(MeetingMember meetingMember);
+	boolean isUserExceedingMaxMeetings(Long userId, int maxMeetings);
 
-    boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers);
+	void save(MeetingMember meetingMember);
 
-    boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings);
+	boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers);
 
-    List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+	boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings);
 
-    boolean isUserMemberOfMeeting(Long userId, Long meetingId);
+	List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+
+	boolean isUserMemberOfMeeting(Long userId, Long meetingId);
 }
