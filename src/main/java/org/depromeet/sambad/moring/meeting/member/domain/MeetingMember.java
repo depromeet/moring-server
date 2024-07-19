@@ -50,7 +50,7 @@ public class MeetingMember extends BaseTimeEntity {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_image_file_id")
-	private FileEntity profileImage;
+	private FileEntity profileImageFile;
 
 	@Enumerated(STRING)
 	@Column(columnDefinition = "varchar(20)")
