@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.answer.presentation.response;
+package org.depromeet.sambad.moring.answer.presentation.response;
 
 import java.util.List;
 import java.util.stream.Collectors;

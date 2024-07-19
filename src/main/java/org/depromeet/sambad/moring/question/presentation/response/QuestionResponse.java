@@ -2,7 +2,7 @@ package org.depromeet.sambad.moring.question.presentation.response;
 
 import java.util.List;
 
-import org.depromeet.sambad.moring.meeting.answer.presentation.response.AnswerResponse;
+import org.depromeet.sambad.moring.answer.presentation.response.AnswerResponse;
 import org.depromeet.sambad.moring.question.domain.Question;
 
 public record QuestionResponse(
