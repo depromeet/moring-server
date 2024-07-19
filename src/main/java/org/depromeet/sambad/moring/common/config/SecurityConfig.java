@@ -35,6 +35,7 @@ public class SecurityConfig {
 			"/v3/api-docs/**",
 			"/login/**",
 			"/oauth2/**",
+		"/v1/**"
 	};
 
 	@Bean

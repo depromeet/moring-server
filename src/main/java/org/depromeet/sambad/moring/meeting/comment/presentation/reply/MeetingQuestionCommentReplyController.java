@@ -49,12 +49,12 @@ public class MeetingQuestionCommentReplyController {
 	@Operation(summary = "릴레이 질문 코멘트 답글 삭제", description = "릴레이 질문 코멘트의 답글을 삭제합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "200",
+			responseCode = "204",
 			content = @Content(schema = @Schema(implementation = Object.class))),
 		@ApiResponse(responseCode = "400", description = "INVALID_COMMENT_REPLY_WRITER"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION_COMMENT_REPLY")
 	})
-	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/meetings/questions/comments/replies/{meetingQuestionCommentReplyId}")
 	public ResponseEntity<Object> deleteCommentReply(
 		@UserId Long userId,

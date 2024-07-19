@@ -21,15 +21,6 @@ public record MeetingQuestionCommentResponse(
 
 	int commentReplyCount
 ) {
-	// public static MeetingQuestionCommentResponse from(MeetingQuestionComment meetingQuestionComment) {
-	// 	MeetingMember writer = meetingQuestionComment.getMeetingMember();
-	// 	MeetingQuestionCommentResponseBuilder builder = MeetingQuestionCommentResponse.builder()
-	// 		.id(meetingQuestionComment.getId())
-	// 		.content(meetingQuestionComment.getContent())
-	// 		.writer(MeetingMemberListResponseDetail.from(writer));
-	// 	return builder.build();
-	// }
-
 	public static MeetingQuestionCommentResponse from(MeetingQuestionComment meetingQuestionComment) {
 		MeetingMember writer = meetingQuestionComment.getMeetingMember();
 		List<MeetingQuestionCommentReplyResponse> commentReplies = meetingQuestionComment.getCommentReplies().stream()
