@@ -63,7 +63,7 @@ public class MeetingQuestionCommentService {
 		}
 	}
 
-	private void validateMeeting(MeetingMember meetingMember, MeetingQuestion meetingQuestion) {
+	public void validateMeeting(MeetingMember meetingMember, MeetingQuestion meetingQuestion) {
 		if (!meetingMember.getMeeting().equals(meetingQuestion.getMeeting())) {
 			throw new UserNotMemberOfMeetingException();
 		}

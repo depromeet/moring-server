@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -33,5 +34,12 @@ public class MeetingQuestionCommentReply extends BaseTimeEntity {
 	private MeetingMember meetingMember;
 
 	private String content;
+
+	@Builder
+	public MeetingQuestionCommentReply(MeetingQuestionComment meetingQuestionComment, MeetingMember meetingMember, String content) {
+		this.meetingQuestionComment = meetingQuestionComment;
+		this.meetingMember = meetingMember;
+		this.content = content;
+	}
 
 }

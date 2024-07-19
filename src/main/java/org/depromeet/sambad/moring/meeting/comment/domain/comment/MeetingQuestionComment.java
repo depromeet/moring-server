@@ -49,4 +49,8 @@ public class MeetingQuestionComment extends BaseTimeEntity {
 		this.meetingMember = meetingMember;
 		this.content = content;
 	}
+
+	public void addCommentReply(MeetingQuestionCommentReply commentReply) {
+		commentReplies.add(commentReply);
+	}
 }
