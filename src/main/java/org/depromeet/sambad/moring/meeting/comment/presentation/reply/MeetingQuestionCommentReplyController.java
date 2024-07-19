@@ -31,7 +31,8 @@ public class MeetingQuestionCommentReplyController {
 		@ApiResponse(
 			responseCode = "201",
 			content = @Content(schema = @Schema(implementation = Object.class))),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION_COMMENT"),
 	})
 	@PostMapping("/meeting/questions/comments/replies")
 	public ResponseEntity<Object> saveComment(
