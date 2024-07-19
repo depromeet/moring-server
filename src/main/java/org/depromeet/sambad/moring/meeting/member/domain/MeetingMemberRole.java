@@ -1,8 +1,9 @@
 package org.depromeet.sambad.moring.meeting.member.domain;
 
-public enum MeetingMemberType {
+public enum MeetingMemberRole {
 
-	HOST,
+	OWNER,
+	ADMIN,
 	MEMBER,
 	;
 }

@@ -1,7 +1,7 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
-import org.depromeet.sambad.moring.meeting.member.presentation.MeetingMemberResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse.MeetingMemberResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import lombok.Builder;
@@ -15,7 +15,7 @@ public record MeetingQuestionResponse(
 	int totalMeetingMemberCount,
 	int responseCount,
 	Boolean isAnswered,
-	MeetingMemberResponse targetMember
+	MeetingMemberResponseDetail targetMember
 ) {
 
 	public static MeetingQuestionResponse of(MeetingQuestion meetingQuestion, Boolean isAnswered) {
@@ -32,7 +32,7 @@ public record MeetingQuestionResponse(
 			.totalMeetingMemberCount(totalMeetingMemberCount)
 			.responseCount(responseCount)
 			.isAnswered(isAnswered)
-			.targetMember(MeetingMemberResponse.from(meetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
 }

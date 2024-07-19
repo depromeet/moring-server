@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.infrastructure;
 
-import static org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberType.*;
+import static org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberRole.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 
 import org.springframework.stereotype.Repository;
@@ -27,10 +27,17 @@ public class MeetingMemberQueryRepository {
 			.fetch().size() >= maxMeetingMembers;
 	}
 
-	public boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
+	public boolean isOwnerExceedingMaxMeetings(Long meetingId, int maxHostMeetings) {
 		return query.selectFrom(meetingMember)
 			.where(meetingMember.meeting.id.eq(meetingId)
-				.and(meetingMember.type.eq(HOST)))
+				.and(meetingMember.role.eq(OWNER)))
 			.fetch().size() >= maxHostMeetings;
+	}
+
+	public boolean isUserMemberOfMeeting(Long userId, Long meetingId) {
+		return query.selectFrom(meetingMember)
+			.where(meetingMember.user.id.eq(userId)
+				.and(meetingMember.meeting.id.eq(meetingId)))
+			.fetchFirst() != null;
 	}
 }

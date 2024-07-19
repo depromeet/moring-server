@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -16,4 +17,8 @@ public interface MeetingMemberRepository {
     boolean isMeetingExceedingMaxMembers(Long meetingId, int maxMeetingMembers);
 
     boolean isHostExceedingMaxMeetings(Long meetingId, int maxHostMeetings);
+
+    List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+
+    boolean isUserMemberOfMeeting(Long userId, Long meetingId);
 }
