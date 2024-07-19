@@ -5,8 +5,8 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.depromeet.sambad.moring.common.domain.Gender;
 import org.depromeet.sambad.moring.meeting.member.domain.MBTI;
-import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberGender;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,7 +29,7 @@ public record MeetingMemberPersistRequest(
 
 	@Schema(description = "모임원 성별 (MALE, FEMALE)", example = "FEMALE", requiredMode = REQUIRED)
 	@NotNull
-	MeetingMemberGender gender,
+	Gender gender,
 
 	@Schema(description = "모임원 생년월일", example = "1998-10-29", requiredMode = REQUIRED)
 	@NotNull

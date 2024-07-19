@@ -13,12 +13,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class MeetingMemberValidator {
 
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final MeetingMemberProperties meetingMemberProperties;
 
-	@Transactional(readOnly = true)
 	public void validateMeetingMaxCount(Long userId) {
 		int maxMeetings = meetingMemberProperties.meetingMaxCount();
 
@@ -27,7 +27,6 @@ public class MeetingMemberValidator {
 		}
 	}
 
-	@Transactional(readOnly = true)
 	public void validateAlreadyExistMember(Long userId) {
 		meetingMemberRepository.findByUserId(userId)
 			.ifPresent(meetingMember -> {
@@ -35,7 +34,6 @@ public class MeetingMemberValidator {
 			});
 	}
 
-	@Transactional(readOnly = true)
 	public void validateMeetingMemberMaxCount(Long meetingId) {
 		int maxMeetingMembers = meetingMemberProperties.meetingMemberMaxCount();
 
@@ -44,7 +42,6 @@ public class MeetingMemberValidator {
 		}
 	}
 
-	@Transactional(readOnly = true)
 	public void validateHostMaxCount(Long meetingId) {
 		int maxHostMeetings = meetingMemberProperties.hostMaxCount();
 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+import org.depromeet.sambad.moring.common.domain.Gender;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
@@ -59,7 +60,7 @@ public class MeetingMember extends BaseTimeEntity {
 
 	@Enumerated(STRING)
 	@Column(columnDefinition = "varchar(10)")
-	private MeetingMemberGender gender;
+	private Gender gender;
 
 	private LocalDate birth;
 
@@ -78,7 +79,7 @@ public class MeetingMember extends BaseTimeEntity {
 	private List<MeetingMemberHobby> meetingMemberHobbies = new ArrayList<>();
 
 	private MeetingMember(Meeting meeting, User user, FileEntity profileImage, MeetingMemberType type, String name,
-		MeetingMemberGender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
+		Gender gender, LocalDate birth, String job, MBTI mbti, String introduction) {
 		this.meeting = meeting;
 		this.user = user;
 		this.profileImage = profileImage;

@@ -37,9 +37,9 @@ public class MeetingMemberController {
 	@Operation(summary = "모임 가입", description = "특정 모임에 신규 모임 멤버를 등록합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "201", description = "모임 멤버 등록 성공"),
-		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT: 모임 최대 참여 및 개설 횟수를 초과했습니다."),
-		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND: 코드에 해당하는 모임을 찾을 수 없습니다, USER_NOT_FOUND: 사용자를 찾을 수 없습니다"),
-		@ApiResponse(responseCode = "409", description = "MEETING_MEMBER_ALREADY_EXISTS: 이미 모임 멤버로 등록된 사용자입니다.")
+		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT"),
+		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND / USER_NOT_FOUND"),
+		@ApiResponse(responseCode = "409", description = "MEETING_MEMBER_ALREADY_EXISTS")
 	})
 	@PostMapping
 	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(

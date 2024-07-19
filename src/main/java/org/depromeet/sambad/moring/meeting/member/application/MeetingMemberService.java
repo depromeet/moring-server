@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class MeetingMemberService {
 
 	private final MeetingMemberValidator meetingMemberValidator;
@@ -30,13 +31,11 @@ public class MeetingMemberService {
 	private final HobbyRepository hobbyRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 
-	@Transactional(readOnly = true)
 	public MeetingMember getByUserId(Long userId) {
 		return meetingMemberRepository.findByUserId(userId)
 			.orElseThrow(() -> new IllegalArgumentException("MeetingMember not found. userId: " + userId));
 	}
 
-	@Transactional(readOnly = true)
 	public MeetingMember getById(Long meetingMemberId) {
 		return meetingMemberRepository.findById(meetingMemberId)
 			.orElseThrow(

@@ -38,7 +38,7 @@ public class MeetingController {
 	@Operation(summary = "모임 생성", description = "모임을 생성합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "201", description = "모임 생성 성공"),
-		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT: 최대 모임 개수 초과"),
+		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT"),
 	})
 	@PostMapping
 	public ResponseEntity<MeetingPersistResponse> createMeeting(
