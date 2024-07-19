@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AnswerExceptionCode implements ExceptionCode {
 
-	NOT_FOUND_ANSWER(NOT_FOUND, "존재하지 않는 답변입니다."),
+	NOT_FOUND_ANSWER(NOT_FOUND, "답변이 존재하지 않습니다."),
 	;
 
 	private final HttpStatus status;
