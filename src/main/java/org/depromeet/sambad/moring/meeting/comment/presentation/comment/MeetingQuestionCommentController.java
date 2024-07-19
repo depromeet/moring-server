@@ -58,7 +58,7 @@ public class MeetingQuestionCommentController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/meetings/questions/comments/{meetingQuestionId}")
-	public ResponseEntity<Object> getComments(
+	public ResponseEntity<List<MeetingQuestionCommentResponse>> getComments(
 		@PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
 		List<MeetingQuestionCommentResponse> comments = meetingQuestionCommentService.getAllComments(meetingQuestionId);
