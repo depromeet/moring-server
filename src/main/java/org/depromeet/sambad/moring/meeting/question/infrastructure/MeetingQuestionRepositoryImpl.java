@@ -143,14 +143,18 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 		DateTimeExpression<LocalDateTime> endTime = getEndTime();
 		DateTimeExpression<LocalDateTime> now = getNow();
 
-		return now.loe(endTime);
+		return now.loe(endTime).and(isAnsweredByAllCond().not());
 	}
 
 	private BooleanExpression inactiveCond() {
 		DateTimeExpression<LocalDateTime> endTime = getEndTime();
 		DateTimeExpression<LocalDateTime> now = getNow();
 
-		return now.gt(endTime);
+		return now.gt(endTime).or(isAnsweredByAllCond());
+	}
+
+	private BooleanExpression isAnsweredByAllCond() {
+		return meetingQuestion.memberAnswers.size().eq(meetingQuestion.meeting.meetingMembers.size());
 	}
 
 	private DateTimeExpression<LocalDateTime> getEndTime() {
