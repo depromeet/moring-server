@@ -20,8 +20,8 @@ public class MeetingQuestionCommentRepositoryImpl implements MeetingQuestionComm
 	}
 
 	@Override
-	public Optional<MeetingQuestionComment> findById(Long id) {
-		return meetingQuestionCommentJpaRepository.findById(id);
+	public Optional<MeetingQuestionComment> findByIdAndMeetingQuestionId(Long id, Long meetingQuestionId) {
+		return meetingQuestionCommentJpaRepository.findByIdAndMeetingQuestionId(id, meetingQuestionId);
 	}
 
 	@Override

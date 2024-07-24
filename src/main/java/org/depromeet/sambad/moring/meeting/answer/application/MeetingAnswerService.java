@@ -26,12 +26,12 @@ public class MeetingAnswerService {
 	private final AnswerService answerService;
 
 	@Transactional
-	public void save(Long userId, MeetingAnswerRequest request) {
-		MeetingMember loginMember = meetingMemberService.getByUserId(userId);
-		MeetingQuestion meetingQuestion = meetingQuestionService.getById(request.meetingQuestionId());
+	public void save(Long userId, Long meetingId, MeetingAnswerRequest request) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, request.meetingQuestionId());
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
 
-		Answer selectedAnswer = answerService.getById(request.answerId());
+		Answer selectedAnswer = answerService.getById(meetingQuestion.getQuestion().getId(), request.answerId());
 		MeetingAnswer meetingAnswer = MeetingAnswer
 			.builder()
 			.meetingMember(loginMember)

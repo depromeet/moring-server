@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "릴레이 질문", description = "모임의 질문이 아닌, 운영자가 관리하는 릴레이 질문 관련 api")
+@Tag(name = "릴레이 질문", description = "모임의 질문이 아닌, 운영자가 관리하는 릴레이 질문 관련 api / 담당자 : 김나현")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -47,9 +47,7 @@ public class QuestionController {
 
 	@Operation(summary = "선택 가능한 질문 리스트 조회")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = QuestionListResponse.class)))
+		@ApiResponse(responseCode = "200")
 	})
 	@GetMapping("/questions")
 	public ResponseEntity<Object> findQuestions(
@@ -58,6 +56,6 @@ public class QuestionController {
 		@RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
 		QuestionListResponse response = questionService.findQuestions(userId, page, size);
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.ok(response);
 	}
 }

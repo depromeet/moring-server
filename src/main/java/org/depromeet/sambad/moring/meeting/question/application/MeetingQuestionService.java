@@ -8,7 +8,6 @@ import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberServi
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
-import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
@@ -38,7 +37,7 @@ public class MeetingQuestionService {
 	public void save(Long userId, Long meetingId, MeetingQuestionRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
-		validateTargetMember(loginMember, targetMember);
+		loginMember.validateTargetMember(targetMember);
 
 		Meeting meeting = targetMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
@@ -72,20 +71,15 @@ public class MeetingQuestionService {
 		return meetingQuestionRepository.findFullInactiveList(meeting.getId(), meetingMember.getId(), pageRequest);
 	}
 
-	public MeetingQuestion getById(Long id) {
-		return meetingQuestionRepository.findById(id).orElseThrow(NotFoundMeetingQuestion::new);
+	public MeetingQuestion getById(Long meetingId, Long meetingQuestionId) {
+		return meetingQuestionRepository.findByMeetingIdAndMeetingQuestionId(meetingId, meetingQuestionId)
+			.orElseThrow(NotFoundMeetingQuestion::new);
 	}
 
 	private void validateNonDuplicateMeetingQuestion(Meeting meeting, Question question) {
 		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();
-		}
-	}
-
-	private void validateTargetMember(MeetingMember loginMember, MeetingMember targetMember) {
-		if (loginMember.isOtherMeeting(targetMember) || loginMember.equals(targetMember)) {
-			throw new InvalidMeetingMemberTargetException();
 		}
 	}
 }

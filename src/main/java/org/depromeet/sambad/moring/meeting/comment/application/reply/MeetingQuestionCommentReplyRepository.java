@@ -7,7 +7,7 @@ import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionC
 public interface MeetingQuestionCommentReplyRepository {
 	void save(MeetingQuestionCommentReply commentReply);
 
-	Optional<MeetingQuestionCommentReply> findById(Long id);
+	Optional<MeetingQuestionCommentReply> findById(Long meetingQuestionCommentReplyId);
 
 	void delete(MeetingQuestionCommentReply commentReply);
 }

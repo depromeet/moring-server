@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionCommentReply;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.InvalidCommentWriterException;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
@@ -56,5 +57,11 @@ public class MeetingQuestionComment extends BaseTimeEntity {
 
 	public void removeCommentReply(MeetingQuestionCommentReply commentReply) {
 		commentReplies.remove(commentReply);
+	}
+
+	public void validateWriter(MeetingMember meetingMember) {
+		if (!meetingMember.equals(this.meetingMember)) {
+			throw new InvalidCommentWriterException();
+		}
 	}
 }

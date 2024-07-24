@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.meeting.comment.domain.reply;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.InvalidCommentWriterException;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 import jakarta.persistence.Entity;
@@ -36,10 +37,16 @@ public class MeetingQuestionCommentReply extends BaseTimeEntity {
 	private String content;
 
 	@Builder
-	public MeetingQuestionCommentReply(MeetingQuestionComment meetingQuestionComment, MeetingMember meetingMember, String content) {
+	public MeetingQuestionCommentReply(MeetingQuestionComment meetingQuestionComment, MeetingMember meetingMember,
+		String content) {
 		this.meetingQuestionComment = meetingQuestionComment;
 		this.meetingMember = meetingMember;
 		this.content = content;
 	}
 
+	public void validateWriter(MeetingMember meetingMember) {
+		if (!meetingMember.equals(this.meetingMember)) {
+			throw new InvalidCommentWriterException();
+		}
+	}
 }

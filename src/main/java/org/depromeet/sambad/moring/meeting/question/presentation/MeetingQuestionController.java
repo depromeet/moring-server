@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +26,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "모임의 릴레이 질문", description = "릴레이 질문 관련 api")
+@Tag(name = "모임의 릴레이 질문", description = "모임원이 선택한 릴레이 질문 관련 api / 담당자: 김나현")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -38,13 +36,11 @@ public class MeetingQuestionController {
 
 	@Operation(summary = "다음 릴레이 질문 저장", description = "모임의 다음 릴레이 질문과 질문인을 저장합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "201",
-			content = @Content(schema = @Schema(implementation = Object.class))),
+		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
 	})
-	@PostMapping("/meetings/{meetingId}/questions/new")
+	@PostMapping("/meetings/{meetingId}/questions")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
@@ -67,7 +63,7 @@ public class MeetingQuestionController {
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
 	) {
 		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId, meetingId);
-		return ResponseEntity.status(HttpStatus.OK).body(activeOne);
+		return ResponseEntity.ok(activeOne);
 	}
 
 	@Operation(summary = "홈 화면 내 종료된 릴레이 질문 2건 조회", description = "- 참여율 순으로 내림차순 정렬한 후 2건 반환합니다.")
@@ -82,7 +78,7 @@ public class MeetingQuestionController {
 	) {
 		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findMostInactiveList(userId,
 			meetingId);
-		return ResponseEntity.ok().body(inactiveList);
+		return ResponseEntity.ok(inactiveList);
 	}
 
 	@Operation(summary = "전체 종료된 릴레이 질문 리스트 조회", description = "- 페이징 적용 API 로, page는 0부터 시작합니다.\n"
@@ -101,6 +97,6 @@ public class MeetingQuestionController {
 		FullInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findFullInactiveList(userId,
 			meetingId,
 			PageRequest.of(page, size));
-		return ResponseEntity.ok().body(inactiveList);
+		return ResponseEntity.ok(inactiveList);
 	}
 }

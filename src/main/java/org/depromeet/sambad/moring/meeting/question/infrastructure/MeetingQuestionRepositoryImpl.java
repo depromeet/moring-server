@@ -104,8 +104,8 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public Optional<MeetingQuestion> findById(Long id) {
-		return meetingQuestionJpaRepository.findById(id);
+	public Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId) {
+		return meetingQuestionJpaRepository.findByMeetingIdAndId(meetingId, meetingQuestionId);
 	}
 
 	private OrderSpecifier<Long> orderDescByMeetingAnswerCount() {

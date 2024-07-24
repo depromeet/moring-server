@@ -21,5 +21,5 @@ public interface MeetingQuestionRepository {
 	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,
 		Pageable pageable);
 
-	Optional<MeetingQuestion> findById(Long id);
+	Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId);
 }

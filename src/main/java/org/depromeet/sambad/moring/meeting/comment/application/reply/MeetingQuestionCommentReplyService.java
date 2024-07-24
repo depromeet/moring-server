@@ -1,14 +1,13 @@
 package org.depromeet.sambad.moring.meeting.comment.application.reply;
 
-import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQuestionCommentRepository;
 import org.depromeet.sambad.moring.meeting.comment.application.comment.MeetingQuestionCommentService;
 import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionCommentReply;
-import org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.InvalidCommentReplyWriterException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.NotFoundMeetingQuestionCommentReplyException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.reply.request.MeetingQuestionCommentReplyRequest;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,50 +18,45 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MeetingQuestionCommentReplyService {
 	private final MeetingQuestionCommentReplyRepository meetingQuestionCommentReplyRepository;
-	private final MeetingQuestionCommentRepository meetingQuestionCommentRepository;
 
 	private final MeetingMemberService meetingMemberService;
+	private final MeetingQuestionService meetingQuestionService;
 	private final MeetingQuestionCommentService meetingQuestionCommentService;
 
 	@Transactional
-	public void save(Long userId, MeetingQuestionCommentReplyRequest request) {
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
-		MeetingQuestionComment comment = meetingQuestionCommentService.getById(request.meetingQuestionCommentId());
-		meetingQuestionCommentService.validateMeeting(meetingMember, comment.getMeetingQuestion());
+	public void save(Long userId, Long meetingId, Long meetingQuestionId, Long parentCommentId,
+		MeetingQuestionCommentReplyRequest request) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		MeetingQuestionComment parentComment = meetingQuestionCommentService.getById(meetingQuestionId,
+			parentCommentId);
 
-		MeetingQuestionCommentReply commentReply = MeetingQuestionCommentReply.builder()
-			.meetingMember(meetingMember)
-			.meetingQuestionComment(comment)
+		MeetingQuestionCommentReply childComment = MeetingQuestionCommentReply.builder()
+			.meetingMember(loginMember)
+			.meetingQuestionComment(parentComment)
 			.content(request.content())
 			.build();
 
-		comment.addCommentReply(commentReply);
-		meetingQuestionCommentRepository.save(comment);
-
-		meetingQuestionCommentReplyRepository.save(commentReply);
+		meetingQuestionCommentReplyRepository.save(childComment);
+		parentComment.addCommentReply(childComment);
 	}
 
 	@Transactional
-	public void delete(Long userId, Long meetingQuestionCommentReplyId) {
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
-		MeetingQuestionCommentReply commentReply = getById(meetingQuestionCommentReplyId);
-		isSameWriter(meetingMember, commentReply.getMeetingMember());
+	public void delete(Long userId, Long meetingId, Long meetingQuestionId, Long meetingQuestionCommentReplyId) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		// TODO: getById() 대신 검증 메서드 만들어서 호출하는 방식으로 수정
+		meetingQuestionService.getById(meetingId, meetingQuestionId);
 
-		MeetingQuestionComment comment = commentReply.getMeetingQuestionComment();
-		comment.removeCommentReply(commentReply);
-		meetingQuestionCommentRepository.save(comment);
+		MeetingQuestionCommentReply commentReply = getById(meetingQuestionCommentReplyId);
+		commentReply.validateWriter(loginMember);
+
+		MeetingQuestionComment parentComment = commentReply.getMeetingQuestionComment();
+		parentComment.removeCommentReply(commentReply);
 
 		meetingQuestionCommentReplyRepository.delete(commentReply);
 	}
 
-	private void isSameWriter(MeetingMember meetingMember, MeetingMember writer) {
-		if (!meetingMember.equals(writer)) {
-			throw new InvalidCommentReplyWriterException();
-		}
-	}
-
-	public MeetingQuestionCommentReply getById(Long id) {
-		return meetingQuestionCommentReplyRepository.findById(id)
+	public MeetingQuestionCommentReply getById(Long childCommentId) {
+		return meetingQuestionCommentReplyRepository.findById(childCommentId)
 			.orElseThrow(NotFoundMeetingQuestionCommentReplyException::new);
 	}
 }
