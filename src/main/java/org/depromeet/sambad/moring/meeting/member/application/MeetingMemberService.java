@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.meeting.member.application;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -11,6 +12,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberNotFoundException;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.NoMeetingMemberInConditionException;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
@@ -94,16 +96,21 @@ public class MeetingMemberService {
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
-	public MeetingMemberResponse getRandomMeetingMember(Long userId, Long meetingId) {
+	public MeetingMemberResponse getRandomMeetingMember(Long userId, Long meetingId, List<Long> excludeMemberIds) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId);
 
-		Random random = new Random();
-		int randomIndex = random.nextInt(nextTargetMembers.size());
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId).stream()
+			.filter(member -> !excludeMemberIds.contains(member.getId()))
+			.toList();
 
-		MeetingMember randomMember = nextTargetMembers.get(randomIndex);
+		if (nextTargetMembers.isEmpty()) {
+			throw new NoMeetingMemberInConditionException();
+		}
+
+		MeetingMember randomMember = nextTargetMembers.get(new Random().nextInt(nextTargetMembers.size()));
 		return MeetingMemberResponse.from(randomMember);
 	}
+
 
 	private MeetingMember validateAndCreateMember(
 		Long userId, MeetingMemberPersistRequest request, Meeting meeting, User user
