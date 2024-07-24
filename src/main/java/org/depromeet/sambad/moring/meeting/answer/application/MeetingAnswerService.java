@@ -5,6 +5,7 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
@@ -39,6 +40,11 @@ public class MeetingAnswerService {
 			.answer(selectedAnswer)
 			.build();
 		meetingAnswerRepository.save(meetingAnswer);
+	}
+
+	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
 	}
 
 	private void validateNonDuplicateMeetingAnswer(Long meetingQuestionId, Long meetingMemberId) {

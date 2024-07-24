@@ -99,20 +99,4 @@ public class MeetingQuestionController {
 			PageRequest.of(page, size));
 		return ResponseEntity.ok(inactiveList);
 	}
-
-	@Operation(summary = "내가 작성한 모든 질문의 답변 리스트 조회", description =
-		"- 자기 소개 페이지 내 유저가 작성한 모든 릴레이 질문의 답변 목록을 조회 시 사용합니다.\n"
-			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
-	})
-	@GetMapping("/meetings/{meetingId}/questions")
-	public ResponseEntity<Object> findMyList(
-		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
-	) {
-		// TODO: 구현
-		return ResponseEntity.ok().build();
-	}
 }

@@ -31,10 +31,12 @@ public class MeetingQuestionComment extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	// TODO: 양방향 매핑
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_question_id")
 	private MeetingQuestion meetingQuestion;
 
+	// TODO: 양방향 매핑
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember meetingMember;

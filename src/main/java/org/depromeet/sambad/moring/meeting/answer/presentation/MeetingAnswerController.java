@@ -2,9 +2,11 @@ package org.depromeet.sambad.moring.meeting.answer.presentation;
 
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerService;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +44,21 @@ public class MeetingAnswerController {
 	) {
 		meetingAnswerService.save(userId, meetingId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@Operation(summary = "내가 작성한 모든 질문의 답변 리스트 조회", description =
+		"- 프로필 페이지 내 릴레이 질문 영역 조회 시 사용합니다.\n"
+			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@GetMapping("/meetings/{meetingId}/questions")
+	public ResponseEntity<MyMeetingAnswerListResponse> findMyList(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
+	) {
+		MyMeetingAnswerListResponse response = meetingAnswerService.getMyList(userId, meetingId);
+		return ResponseEntity.ok(response);
 	}
 }
