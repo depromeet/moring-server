@@ -1,14 +1,15 @@
 package org.depromeet.sambad.moring.common.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
 
 @Getter
 @MappedSuperclass
@@ -17,10 +18,10 @@ public abstract class BaseTimeEntity {
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
-	protected LocalDateTime createAt;
+	protected LocalDateTime createdAt;
 
 	@UpdateTimestamp
 	@Column(nullable = false)
-	protected LocalDateTime updateAt;
+	protected LocalDateTime updatedAt;
 }
 
