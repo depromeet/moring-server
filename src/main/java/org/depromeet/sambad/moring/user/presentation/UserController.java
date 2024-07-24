@@ -1,6 +1,5 @@
 package org.depromeet.sambad.moring.user.presentation;
 
-import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moring.user.application.UserService;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.depromeet.sambad.moring.user.presentation.response.UserResponse;
@@ -9,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+
+@Tag(name = "유저", description = "유저 인증정보 관리 api / 담당자 : 권기준")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")

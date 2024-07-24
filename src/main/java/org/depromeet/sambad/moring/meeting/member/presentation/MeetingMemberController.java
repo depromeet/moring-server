@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "MeetingMember", description = "모임 멤버 관련 API")
+@Tag(name = "모임원", description = "모임 멤버 관련 api / 담당자 : 권기준")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/meetings/{meetingId}/members")
@@ -42,11 +42,10 @@ public class MeetingMemberController {
 	@GetMapping("/{memberId}")
 	public ResponseEntity<MeetingMemberResponse> getMeetingMember(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임원 ID", example = "1", required = true) @PathVariable Long memberId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "모임원 ID", example = "1", required = true) @PathVariable("memberId") Long memberId
 	) {
 		MeetingMemberResponse response = meetingMemberService.getMeetingMember(userId, meetingId, memberId);
-
 		return ResponseEntity.ok(response);
 	}
 
@@ -59,10 +58,9 @@ public class MeetingMemberController {
 	@GetMapping("/me")
 	public ResponseEntity<MeetingMemberResponse> getMyMeetingMember(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
 		MeetingMemberResponse response = meetingMemberService.getMyMeetingMember(userId, meetingId);
-
 		return ResponseEntity.ok(response);
 	}
 
@@ -74,10 +72,9 @@ public class MeetingMemberController {
 	@GetMapping
 	public ResponseEntity<MeetingMemberListResponse> getMeetingMembers(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
 		MeetingMemberListResponse response = meetingMemberService.getMeetingMembers(userId, meetingId);
-
 		return ResponseEntity.ok(response);
 	}
 
@@ -91,11 +88,10 @@ public class MeetingMemberController {
 	@PostMapping
 	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(
 		@UserId Long userId,
-		@Parameter(description = "모임의 고유 초대 코드", example = "A1G05C", required = true) @RequestParam String code,
+		@Parameter(description = "모임의 고유 초대 코드", example = "A1G05C", required = true) @RequestParam("code") String code,
 		@Valid @RequestBody MeetingMemberPersistRequest request
 	) {
 		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);
-
 		return ResponseEntity.status(CREATED).body(response);
 	}
 }

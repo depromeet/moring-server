@@ -15,6 +15,7 @@ import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -114,14 +115,20 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			request.introduction());
 	}
 
-	public boolean isOtherMeeting(MeetingMember targetMember) {
-		return !Objects.equals(this.meeting, targetMember.getMeeting());
-	}
-
 	public String getProfileImageUrl() {
 		return Optional.ofNullable(this.profileImageFile)
 			.map(FileEntity::getPhysicalPath)
 			.orElse(null);
+	}
+
+	public List<String> getHobbies() {
+		return meetingMemberHobbies.stream()
+			.map(MeetingMemberHobby::getHobbyContent)
+			.toList();
+	}
+
+	public boolean isOtherMeeting(MeetingMember targetMember) {
+		return !Objects.equals(this.meeting, targetMember.getMeeting());
 	}
 
 	@Override
@@ -137,9 +144,9 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		return this.name.compareTo(o.name);
 	}
 
-	public List<String> getHobbies() {
-		return meetingMemberHobbies.stream()
-			.map(MeetingMemberHobby::getHobbyContent)
-			.toList();
+	public void validateTargetMember(MeetingMember targetMember) {
+		if (isOtherMeeting(targetMember) || Objects.equals(this.user, targetMember.getUser())) {
+			throw new InvalidMeetingMemberTargetException();
+		}
 	}
 }

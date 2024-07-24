@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "file", description = "파일 업로드 api")
+@Tag(name = "이미지 파일", description = "파일 업로드 api / 담당자 : 이한음")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/files")

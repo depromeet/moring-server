@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Question", description = "질문 api")
+@Tag(name = "릴레이 질문", description = "모임의 질문이 아닌, 운영자가 관리하는 릴레이 질문 관련 api / 담당자 : 김나현")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -37,9 +38,9 @@ public class QuestionController {
 		),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
-	@GetMapping("/questions/{question-id}")
+	@GetMapping("/questions/{questionId}")
 	public ResponseEntity<QuestionResponse> findQuestion(
-		@PathVariable(value = "question-id") @Positive Long questionId
+		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable(value = "questionId") @Positive Long questionId
 	) {
 		Question question = questionService.getById(questionId);
 		return ResponseEntity.ok().body(QuestionResponse.from(question));
@@ -47,17 +48,15 @@ public class QuestionController {
 
 	@Operation(summary = "선택 가능한 질문 리스트 조회")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = QuestionListResponse.class)))
+		@ApiResponse(responseCode = "200")
 	})
 	@GetMapping("/questions")
 	public ResponseEntity<Object> findQuestions(
 		@UserId Long userId,
-		@RequestParam(value = "page", defaultValue = "0") @Positive int page,
-		@RequestParam(value = "size", defaultValue = "10") @Positive int size
+		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
+		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
 		QuestionListResponse response = questionService.findQuestions(userId, page, size);
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.ok(response);
 	}
 }

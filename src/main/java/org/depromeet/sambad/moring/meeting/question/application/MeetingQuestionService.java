@@ -8,11 +8,11 @@ import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberServi
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
-import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionListResponse;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +34,10 @@ public class MeetingQuestionService {
 	private final Clock clock;
 
 	@Transactional
-	public void save(Long userId, MeetingQuestionRequest request) {
-		MeetingMember loginMember = meetingMemberService.getByUserId(userId);
+	public void save(Long userId, Long meetingId, MeetingQuestionRequest request) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
-		validateTargetMember(loginMember, targetMember);
+		loginMember.validateTargetMember(targetMember);
 
 		Meeting meeting = targetMember.getMeeting();
 		Question question = questionService.getById(request.questionId());
@@ -52,21 +52,27 @@ public class MeetingQuestionService {
 		meetingQuestionRepository.save(meetingQuestion);
 	}
 
-	public MeetingQuestionResponse findActiveOne(Long userId) {
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+	public ActiveMeetingQuestionResponse findActiveOne(Long userId, Long meetingId) {
+		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = meetingMember.getMeeting();
 		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());
 	}
 
-	public MeetingQuestionListResponse findInactiveList(Long userId, int page, int size) {
-		MeetingMember meetingMember = meetingMemberService.getByUserId(userId);
+	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long userId, Long meetingId) {
+		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = meetingMember.getMeeting();
-		return meetingQuestionRepository.findInactiveList(meeting.getId(), meetingMember.getId(),
-			PageRequest.of(page, size));
+		return meetingQuestionRepository.findMostInactiveList(meeting.getId(), meetingMember.getId());
 	}
 
-	public MeetingQuestion getById(Long id) {
-		return meetingQuestionRepository.findById(id)
+	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long userId, Long meetingId,
+		PageRequest pageRequest) {
+		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		Meeting meeting = meetingMember.getMeeting();
+		return meetingQuestionRepository.findFullInactiveList(meeting.getId(), meetingMember.getId(), pageRequest);
+	}
+
+	public MeetingQuestion getById(Long meetingId, Long meetingQuestionId) {
+		return meetingQuestionRepository.findByMeetingIdAndMeetingQuestionId(meetingId, meetingQuestionId)
 			.orElseThrow(NotFoundMeetingQuestion::new);
 	}
 
@@ -74,12 +80,6 @@ public class MeetingQuestionService {
 		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();
-		}
-	}
-
-	private void validateTargetMember(MeetingMember loginMember, MeetingMember targetMember) {
-		if (loginMember.isOtherMeeting(targetMember) || loginMember.equals(targetMember)) {
-			throw new InvalidMeetingMemberTargetException();
 		}
 	}
 }

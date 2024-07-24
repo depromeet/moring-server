@@ -14,8 +14,8 @@ public class AnswerService {
 
 	private final AnswerRepository answerRepository;
 
-	public Answer getById(Long id) {
-		return answerRepository.findById(id)
+	public Answer getById(Long questionId, Long answerId) {
+		return answerRepository.findByQuestionIdAndAnswerId(questionId, answerId)
 			.orElseThrow(NotFoundAnswerException::new);
 	}
 }

@@ -6,5 +6,5 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 
 public interface AnswerRepository {
 
-	Optional<Answer> findById(Long id);
+	Optional<Answer> findByQuestionIdAndAnswerId(Long questionId, Long answerId);
 }

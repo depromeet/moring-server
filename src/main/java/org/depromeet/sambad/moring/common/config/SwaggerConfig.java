@@ -53,6 +53,7 @@ public class SwaggerConfig {
 				우리 친해져요! 모임 관리 서비스 MORING API 입니다.\n\n
 				{{HOST}}/login 접속 후, 카카오 로그인을 수행하세요.\n\n
 				쿠키에 저장된 JWT 토큰을 하단 Authorize 버튼에서 입력하세요.\n\n
+				예외 응답 안내 문서는 다음 링크에서 확인하실 수 있습니다. https://www.notion.so/depromeet/2df46b8b160a4dc09839d562977d6850?pvs=4 \n\n
 				""");
 	}
 

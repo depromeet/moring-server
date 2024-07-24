@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,5 +58,21 @@ public class MeetingQuestion extends BaseTimeEntity {
 		this.targetMember = targetMember;
 		this.question = question;
 		this.startTime = now;
+	}
+
+	public int getResponseCount() {
+		return this.memberAnswers.size();
+	}
+
+	public String getQuestionImageUrl() {
+		return question.getQuestionImageUrl();
+	}
+
+	public String getTitle() {
+		return question.getTitle();
+	}
+
+	public LocalDate getStartDate() {
+		return startTime.toLocalDate();
 	}
 }
