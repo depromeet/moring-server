@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class MeetingMemberService {
 
 	private final MeetingMemberValidator meetingMemberValidator;
+	private final MeetingMemberRandomGenerator meetingMemberRandomGenerator;
 	private final MeetingRepository meetingRepository;
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final UserRepository userRepository;
@@ -109,7 +110,7 @@ public class MeetingMemberService {
 			throw new NoMeetingMemberInConditionException();
 		}
 
-		MeetingMember randomMember = nextTargetMembers.get(new Random().nextInt(nextTargetMembers.size()));
+		MeetingMember randomMember = meetingMemberRandomGenerator.generate(nextTargetMembers);
 		return MeetingMemberListResponseDetail.from(randomMember);
 	}
 
