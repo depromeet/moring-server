@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
-import org.depromeet.sambad.moring.common.DateTimeFormatter;
+import org.depromeet.sambad.moring.common.response.DateFormatter;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
@@ -43,7 +43,7 @@ public record ActiveMeetingQuestionResponse(
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
-			.startTime(DateTimeFormatter.format(meetingQuestion.getStartTime()))
+			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
 			.isAnswered(isAnswered)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
