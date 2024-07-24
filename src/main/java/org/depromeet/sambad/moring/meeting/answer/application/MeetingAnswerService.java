@@ -1,5 +1,8 @@
 package org.depromeet.sambad.moring.meeting.answer.application;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 import org.depromeet.sambad.moring.answer.application.AnswerService;
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
@@ -26,10 +29,13 @@ public class MeetingAnswerService {
 	private final MeetingQuestionService meetingQuestionService;
 	private final AnswerService answerService;
 
+	private final Clock clock;
+
 	@Transactional
 	public void save(Long userId, Long meetingId, MeetingAnswerRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, request.meetingQuestionId());
+		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
 
 		Answer selectedAnswer = answerService.getById(meetingQuestion.getQuestion().getId(), request.answerId());

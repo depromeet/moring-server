@@ -1,7 +1,8 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
+import org.depromeet.sambad.moring.common.response.DateFormatter;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,10 +24,12 @@ public record ActiveMeetingQuestionResponse(
 	int responseCount,
 	@Schema(example = "70", description = "참여율, 소수점 첫째 자리에서 반올림하여 반환합니다.")
 	double engagementRate,
+	@Schema(example = "yyyy-MM-dd HH:mm:ss", description = "릴레이 질문 시작 시간")
+	String startTime,
 	@Schema(example = "false", description = "로그인한 유저의 답변 유무")
 	Boolean isAnswered,
 	@Schema(description = "질문인에 대한 정보")
-	MeetingMemberResponse targetMember
+	MeetingMemberListResponseDetail targetMember
 ) {
 
 	public static ActiveMeetingQuestionResponse of(MeetingQuestion meetingQuestion, Boolean isAnswered) {
@@ -40,8 +43,9 @@ public record ActiveMeetingQuestionResponse(
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
+			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
 			.isAnswered(isAnswered)
-			.targetMember(MeetingMemberResponse.from(meetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
 }

@@ -2,7 +2,7 @@ package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
 import java.util.List;
 
-import org.depromeet.sambad.moring.common.DateFormatter;
+import org.depromeet.sambad.moring.common.response.DateFormatter;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;

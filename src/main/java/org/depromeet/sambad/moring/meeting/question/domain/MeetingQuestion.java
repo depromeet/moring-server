@@ -9,8 +9,10 @@ import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
 import org.depromeet.sambad.moring.question.domain.Question;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "meeting_question_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -74,5 +77,12 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public LocalDate getStartDate() {
 		return startTime.toLocalDate();
+	}
+
+	public void validateNotFinished(LocalDateTime now) {
+		LocalDateTime endTime = startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		if (now.isAfter(endTime)) {
+			throw new FinishedMeetingQuestionException();
+		}
 	}
 }
