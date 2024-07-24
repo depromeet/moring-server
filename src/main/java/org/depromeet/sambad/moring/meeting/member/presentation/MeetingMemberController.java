@@ -7,6 +7,7 @@ import java.util.List;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -104,12 +105,12 @@ public class MeetingMemberController {
 		@ApiResponse(responseCode = "404", description = "NO_MEETING_MEMBER_IN_CONDITION")
 	})
 	@GetMapping("/questions/target")
-	public ResponseEntity<MeetingMemberResponse> getRandomQuestionMember(
+	public ResponseEntity<MeetingMemberListResponseDetail> getRandomQuestionMember(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "랜덤 대상자 제외할 모임원 ID 리스트", example = "2") @RequestParam("excludeMemberIds") List<Long> excludeMemberIds
 	) {
-		MeetingMemberResponse response = meetingMemberService.getRandomMeetingMember(userId, meetingId, excludeMemberIds);
+		MeetingMemberListResponseDetail response = meetingMemberService.getRandomMeetingMember(userId, meetingId, excludeMemberIds);
 		return ResponseEntity.ok(response);
 	}
 }
