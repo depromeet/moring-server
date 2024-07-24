@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Question", description = "질문 api")
+@Tag(name = "릴레이 질문", description = "모임의 질문이 아닌, 운영자가 관리하는 릴레이 질문 관련 api")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -37,9 +37,9 @@ public class QuestionController {
 		),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
-	@GetMapping("/questions/{question-id}")
+	@GetMapping("/questions/{questionId}")
 	public ResponseEntity<QuestionResponse> findQuestion(
-		@PathVariable(value = "question-id") @Positive Long questionId
+		@PathVariable(value = "questionId") @Positive Long questionId
 	) {
 		Question question = questionService.getById(questionId);
 		return ResponseEntity.ok().body(QuestionResponse.from(question));

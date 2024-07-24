@@ -2,20 +2,23 @@ package org.depromeet.sambad.moring.meeting.question.presentation;
 
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionListResponse;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +28,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "MeetingQuestion", description = "모임 내 질문 api")
+@Tag(name = "모임의 릴레이 질문", description = "릴레이 질문 관련 api")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
@@ -33,7 +36,7 @@ public class MeetingQuestionController {
 
 	private final MeetingQuestionService meetingQuestionService;
 
-	@Operation(summary = "다음 릴레이 질문 등록", description = "모임의 다음 릴레이 질문과 질문인을 저장합니다.")
+	@Operation(summary = "다음 릴레이 질문 저장", description = "모임의 다음 릴레이 질문과 질문인을 저장합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "201",
@@ -41,45 +44,63 @@ public class MeetingQuestionController {
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
 	})
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/meeting-questions/new")
+	@PostMapping("/meetings/{meetingId}/questions/new")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {
-		meetingQuestionService.save(userId, request);
-		return ResponseEntity.created(null).build();
+		meetingQuestionService.save(userId, meetingId, request);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@Operation(summary = "현재 진행 중인 릴레이 질문 조회")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = MeetingQuestionResponse.class)),
-			description = "진행 중인 릴레이 질문이 없다면, 200 OK 코드와 body 는 null 을 반환합니다.")
-	})
-	@GetMapping("/meeting-questions/active")
-	public ResponseEntity<MeetingQuestionResponse> findActiveOne(
-		@UserId Long userId
-	) {
-		MeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId);
-		return ResponseEntity.ok().body(activeOne);
-	}
-
-	@Operation(summary = "종료된 릴레이 질문 리스트 조회")
-	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = MeetingQuestionListResponse.class))
+			description = "진행 중인 릴레이 질문이 없다면, 200 OK 코드와 body 는 null 을 반환합니다."
 		)
 	})
-	@GetMapping("/meeting-questions/inactive")
-	public ResponseEntity<MeetingQuestionListResponse> findInactiveList(
+	@GetMapping("/meetings/{meetingId}/questions/active")
+	public ResponseEntity<ActiveMeetingQuestionResponse> findActiveOne(
 		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+	) {
+		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId, meetingId);
+		return ResponseEntity.status(HttpStatus.OK).body(activeOne);
+	}
+
+	@Operation(summary = "홈 화면 내 종료된 릴레이 질문 2건 조회", description = "- 참여율 순으로 내림차순 정렬한 후 2건 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@GetMapping("/meetings/{meetingId}/questions/inactive/top")
+	public ResponseEntity<MostInactiveMeetingQuestionListResponse> findMostInactiveList(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+	) {
+		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findMostInactiveList(userId,
+			meetingId);
+		return ResponseEntity.ok().body(inactiveList);
+	}
+
+	@Operation(summary = "전체 종료된 릴레이 질문 리스트 조회", description = "- 페이징 적용 API 로, page는 0부터 시작합니다.\n"
+		+ "- 참여율 순으로 내림차순 정렬하여 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@GetMapping("/meetings/{meetingId}/questions/inactive")
+	public ResponseEntity<FullInactiveMeetingQuestionListResponse> findFullInactiveList(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
 		@RequestParam(value = "page", defaultValue = "0") @Positive int page,
 		@RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
-		MeetingQuestionListResponse inactiveList = meetingQuestionService.findInactiveList(userId, page, size);
+		FullInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findFullInactiveList(userId,
+			meetingId,
+			PageRequest.of(page, size));
 		return ResponseEntity.ok().body(inactiveList);
 	}
 }

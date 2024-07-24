@@ -59,4 +59,19 @@ public class Meeting extends BaseTimeEntity {
 			.map(MeetingCode::getCode)
 			.orElseThrow(() -> new IllegalStateException("모임 코드가 존재하지 않습니다."));
 	}
+
+	public int getTotalMemberCount() {
+		return meetingMembers.size();
+	}
+
+	public int getQuestionNumber(MeetingQuestion meetingQuestion) {
+		return meetingQuestions.indexOf(meetingQuestion) + 1;
+	}
+
+	public double calculateEngagementRate(MeetingQuestion meetingQuestion) {
+		if (getTotalMemberCount() == 0)
+			return 0;
+
+		return ((double)meetingQuestion.getResponseCount() / getTotalMemberCount()) * 100;
+	}
 }

@@ -1,7 +1,7 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
+import static com.querydsl.jpa.JPAExpressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
-import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
 
@@ -9,18 +9,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.depromeet.sambad.moring.common.response.PageableResponse;
+import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionListResponse;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponseDetail;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -43,8 +48,7 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public MeetingQuestionResponse findActiveOneByMeeting(
-		Long meetingId, Long loginMeetingMemberId) {
+	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
 		Optional<MeetingQuestion> activeMeetingQuestion = Optional.ofNullable(
 			queryFactory
 				.selectFrom(meetingQuestion)
@@ -56,12 +60,13 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
 		}
-		return MeetingQuestionResponse.of(activeMeetingQuestion.get(),
+
+		return ActiveMeetingQuestionResponse.of(activeMeetingQuestion.get(),
 			isAnswered(activeMeetingQuestion.get().getId(), loginMeetingMemberId));
 	}
 
 	@Override
-	public MeetingQuestionListResponse findInactiveList(Long meetingId, Long loginMeetingMemberId, Pageable pageable) {
+	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId, Long loginMeetingMemberId) {
 		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
 			.select(meetingQuestion)
 			.from(meetingQuestion)
@@ -69,31 +74,59 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 				meetingQuestion.meeting.id.eq(meetingId),
 				inactiveCond()
 			)
-			.orderBy(meetingQuestion.startTime.asc())
+			.orderBy(orderDescByMeetingAnswerCount())
+			.limit(2)
+			.fetch();
+
+		List<MostInactiveMeetingQuestionListResponseDetail> responseDetails = inactiveMeetingQuestions.stream()
+			.map(meetingQuestion -> MostInactiveMeetingQuestionListResponseDetail.of(meetingQuestion,
+				getBestAnswer(meetingQuestion)))
+			.toList();
+		return MostInactiveMeetingQuestionListResponse.from(responseDetails);
+	}
+
+	@Override
+	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,
+		Pageable pageable) {
+		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
+			.select(meetingQuestion)
+			.from(meetingQuestion)
+			.where(
+				meetingQuestion.meeting.id.eq(meetingId),
+				inactiveCond()
+			)
+			.orderBy(orderDescByMeetingAnswerCount())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		List<MeetingQuestionResponse> meetingQuestionResponses = inactiveMeetingQuestions.stream()
-			.map(meetingQuestion -> MeetingQuestionResponse.of(meetingQuestion,
-				isAnswered(meetingQuestion.getId(), loginMeetingMemberId)))
-			.toList();
-
-		int totalMeetingMemberCount = queryFactory
-			.select(meetingMember.count())
-			.from(meetingMember)
-			.where(meetingMember.meeting.id.eq(meetingId))
-			.fetchOne()
-			.intValue();
-
-		return MeetingQuestionListResponse.of(totalMeetingMemberCount,
-			meetingQuestionResponses,
-			PageableResponse.of(pageable, meetingQuestionResponses));
+		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions, pageable);
 	}
 
 	@Override
 	public Optional<MeetingQuestion> findById(Long id) {
 		return meetingQuestionJpaRepository.findById(id);
+	}
+
+	private OrderSpecifier<Long> orderDescByMeetingAnswerCount() {
+		// 서브쿼리를 사용하여 각 meetingQuestion에 대한 답변 수를 계산
+		NumberExpression<Long> count = meetingAnswer.count();
+
+		// OrderSpecifier를 사용하여 내림차순 정렬
+		return new OrderSpecifier<>(Order.DESC,
+			select(count)
+				.from(meetingAnswer)
+				.groupBy(meetingAnswer.meetingQuestion));
+	}
+
+	private Answer getBestAnswer(MeetingQuestion meetingQuestion) {
+		return queryFactory
+			.select(meetingAnswer.answer)
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
+			.groupBy(meetingAnswer.answer)
+			.orderBy(meetingAnswer.count().desc())
+			.fetchOne();
 	}
 
 	private Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
