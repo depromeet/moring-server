@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.presentation;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
@@ -93,5 +93,19 @@ public class MeetingMemberController {
 	) {
 		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);
 		return ResponseEntity.status(CREATED).body(response);
+	}
+
+	@Operation(summary = "다음 랜덤 질문 대상자 조회", description = "다음 릴레이 질문 랜덤 대상자를 조회합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "랜덤 질문 대상자 조회 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@GetMapping("/questions/target")
+	public ResponseEntity<MeetingMemberResponse> getRandomQuestionMember(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
+	) {
+		MeetingMemberResponse response = meetingMemberService.getRandomMeetingMember(userId, meetingId);
+		return ResponseEntity.ok(response);
 	}
 }

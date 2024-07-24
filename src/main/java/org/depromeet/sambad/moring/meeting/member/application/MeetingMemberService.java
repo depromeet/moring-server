@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
 import java.util.List;
+import java.util.Random;
 
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -91,6 +92,17 @@ public class MeetingMemberService {
 		addHobbies(meetingMember, request);
 
 		return MeetingMemberPersistResponse.from(meetingMember);
+	}
+
+	public MeetingMemberResponse getRandomMeetingMember(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId);
+
+		Random random = new Random();
+		int randomIndex = random.nextInt(nextTargetMembers.size());
+
+		MeetingMember randomMember = nextTargetMembers.get(randomIndex);
+		return MeetingMemberResponse.from(randomMember);
 	}
 
 	private MeetingMember validateAndCreateMember(
