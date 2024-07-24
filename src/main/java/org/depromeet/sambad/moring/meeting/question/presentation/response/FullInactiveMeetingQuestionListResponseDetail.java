@@ -2,7 +2,7 @@ package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
 import java.util.List;
 
-import org.depromeet.sambad.moring.common.DateFormatter;
+import org.depromeet.sambad.moring.common.DateTimeFormatter;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
@@ -35,7 +35,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 			.questionImageFileUrl(meetingQuestion.getQuestionImageUrl())
 			.title(meetingQuestion.getTitle())
 			.questionNumber(questionNumber)
-			.startDate(DateFormatter.format(meetingQuestion.getStartDate()))
+			.startDate(DateTimeFormatter.format(meetingQuestion.getStartDate()))
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
 	}

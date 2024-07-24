@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
 import org.depromeet.sambad.moring.question.domain.Question;
 
 import jakarta.persistence.Entity;
@@ -74,5 +75,12 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public LocalDate getStartDate() {
 		return startTime.toLocalDate();
+	}
+
+	public void validateNotFinished(LocalDateTime now) {
+		LocalDateTime endTime = startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		if (now.isAfter(endTime)) {
+			throw new FinishedMeetingQuestionException();
+		}
 	}
 }

@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingMemberListResponseDetail(
 	@Schema(description = "모임원 ID", example = "1", requiredMode = REQUIRED)
-	Long id,
+	Long meetingMemberId,
 	@Schema(description = "모임원 이름", example = "이한음", requiredMode = REQUIRED)
 	String name,
 	@Schema(description = "모임원 프로필 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
