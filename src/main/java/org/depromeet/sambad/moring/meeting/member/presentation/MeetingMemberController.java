@@ -107,7 +107,7 @@ public class MeetingMemberController {
 	public ResponseEntity<MeetingMemberResponse> getRandomQuestionMember(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
-		@Parameter(description = "랜덤 대상자 제외 ID", example = "2") @RequestParam("excludeMemberIds") List<Long> excludeMemberIds
+		@Parameter(description = "랜덤 대상자 제외할 모임원 ID 리스트", example = "2") @RequestParam("excludeMemberIds") List<Long> excludeMemberIds
 	) {
 		MeetingMemberResponse response = meetingMemberService.getRandomMeetingMember(userId, meetingId, excludeMemberIds);
 		return ResponseEntity.ok(response);
