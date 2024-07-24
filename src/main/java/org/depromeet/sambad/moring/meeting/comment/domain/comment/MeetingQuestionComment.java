@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exceptio
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class MeetingQuestionComment extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "meeting_question_comment_id")
 	private Long id;
 
 	// TODO: 양방향 매핑

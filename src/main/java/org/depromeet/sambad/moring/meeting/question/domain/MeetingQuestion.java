@@ -12,6 +12,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
 import org.depromeet.sambad.moring.question.domain.Question;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "meeting_question_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
