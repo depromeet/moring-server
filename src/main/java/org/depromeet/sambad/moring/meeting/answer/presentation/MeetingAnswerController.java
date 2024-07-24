@@ -37,7 +37,7 @@ public class MeetingAnswerController {
 	@PostMapping("/meetings/{meetingId}/answers")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Valid @RequestBody MeetingAnswerRequest request
 	) {
 		meetingAnswerService.save(userId, meetingId, request);

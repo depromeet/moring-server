@@ -43,7 +43,7 @@ public class MeetingQuestionController {
 	@PostMapping("/meetings/{meetingId}/questions")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {
 		meetingQuestionService.save(userId, meetingId, request);
@@ -60,7 +60,7 @@ public class MeetingQuestionController {
 	@GetMapping("/meetings/{meetingId}/questions/active")
 	public ResponseEntity<ActiveMeetingQuestionResponse> findActiveOne(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
 		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId, meetingId);
 		return ResponseEntity.ok(activeOne);
@@ -74,7 +74,7 @@ public class MeetingQuestionController {
 	@GetMapping("/meetings/{meetingId}/questions/inactive/top")
 	public ResponseEntity<MostInactiveMeetingQuestionListResponse> findMostInactiveList(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
 		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findMostInactiveList(userId,
 			meetingId);
@@ -90,13 +90,29 @@ public class MeetingQuestionController {
 	@GetMapping("/meetings/{meetingId}/questions/inactive")
 	public ResponseEntity<FullInactiveMeetingQuestionListResponse> findFullInactiveList(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@RequestParam(value = "page", defaultValue = "0") @Positive int page,
-		@RequestParam(value = "size", defaultValue = "10") @Positive int size
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
+		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
 		FullInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findFullInactiveList(userId,
 			meetingId,
 			PageRequest.of(page, size));
 		return ResponseEntity.ok(inactiveList);
+	}
+
+	@Operation(summary = "내가 작성한 모든 질문의 답변 리스트 조회", description =
+		"- 자기 소개 페이지 내 유저가 작성한 모든 릴레이 질문의 답변 목록을 조회 시 사용합니다.\n"
+			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@GetMapping("/meetings/{meetingId}/questions")
+	public ResponseEntity<Object> findMyList(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
+	) {
+		// TODO: 구현
+		return ResponseEntity.ok().build();
 	}
 }

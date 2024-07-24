@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -22,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
 @Hidden
@@ -43,9 +43,9 @@ public class MeetingQuestionCommentReplyController {
 	@PostMapping("/meeting/{meetingId}/questions/{meetingQuestionId}/comments/{meetingQuestionCommentId}")
 	public ResponseEntity<Object> saveCommentReply(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId,
-		@Parameter(description = "부모 댓글 ID", example = "1", required = true) @PathVariable Long meetingQuestionCommentId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") @Positive Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") @Positive Long meetingQuestionId,
+		@Parameter(description = "부모 댓글 ID", example = "1", required = true) @PathVariable("meetingQuestionCommentId") @Positive Long meetingQuestionCommentId,
 		@Valid @RequestBody MeetingQuestionCommentReplyRequest request
 	) {
 		meetingQuestionCommentReplyService.save(userId, meetingId, meetingQuestionId, meetingQuestionCommentId,
@@ -62,9 +62,9 @@ public class MeetingQuestionCommentReplyController {
 	@DeleteMapping("/meeting/{meetingId}/questions/{meetingQuestionId}/comments/replies/{meetingQuestionCommentReplyId}")
 	public ResponseEntity<Object> deleteCommentReply(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @RequestParam Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId,
-		@Parameter(description = "삭제할 대댓글 ID", example = "1", required = true) @PathVariable Long meetingQuestionCommentReplyId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") @Positive Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") @Positive Long meetingQuestionId,
+		@Parameter(description = "삭제할 대댓글 ID", example = "1", required = true) @PathVariable("meetingQuestionCommentReplyId") @Positive Long meetingQuestionCommentReplyId
 	) {
 		meetingQuestionCommentReplyService.delete(userId, meetingId, meetingQuestionId, meetingQuestionCommentReplyId);
 		return ResponseEntity.noContent().build();

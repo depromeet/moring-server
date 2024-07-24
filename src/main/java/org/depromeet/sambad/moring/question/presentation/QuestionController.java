@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,7 +40,7 @@ public class QuestionController {
 	})
 	@GetMapping("/questions/{questionId}")
 	public ResponseEntity<QuestionResponse> findQuestion(
-		@PathVariable(value = "questionId") @Positive Long questionId
+		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable(value = "questionId") @Positive Long questionId
 	) {
 		Question question = questionService.getById(questionId);
 		return ResponseEntity.ok().body(QuestionResponse.from(question));
@@ -52,8 +53,8 @@ public class QuestionController {
 	@GetMapping("/questions")
 	public ResponseEntity<Object> findQuestions(
 		@UserId Long userId,
-		@RequestParam(value = "page", defaultValue = "0") @Positive int page,
-		@RequestParam(value = "size", defaultValue = "10") @Positive int size
+		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
+		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
 		QuestionListResponse response = questionService.findQuestions(userId, page, size);
 		return ResponseEntity.ok(response);
