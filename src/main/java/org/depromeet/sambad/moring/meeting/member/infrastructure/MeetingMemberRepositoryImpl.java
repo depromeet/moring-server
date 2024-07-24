@@ -37,8 +37,8 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 	}
 
 	@Override
-	public List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		return meetingMemberQueryRepository.findNextTargetsByMeetingId(meetingId, loginMeetingMemberId);
+	public List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId, List<Long> excludeMemberIds) {
+		return meetingMemberQueryRepository.findNextTargetsByMeetingId(meetingId, loginMeetingMemberId, excludeMemberIds);
 	}
 
 	@Override

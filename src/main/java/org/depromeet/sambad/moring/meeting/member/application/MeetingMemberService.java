@@ -15,6 +15,7 @@ import org.depromeet.sambad.moring.meeting.member.presentation.exception.Meeting
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.NoMeetingMemberInConditionException;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -71,14 +72,15 @@ public class MeetingMemberService {
 		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
 	}
 
-	public MeetingMemberListResponse getNextTargets(Long userId) {
-		MeetingMember meetingMember = getByUserId(userId);
-		Meeting meeting = meetingMember.getMeeting();
-
-		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
-			meetingMember.getId());
-		return MeetingMemberListResponse.from(nextTargetMembers);
-	}
+	// TODO: 추후에 제거 여부 검토
+	// public MeetingMemberListResponse getNextTargets(Long userId) {
+	// 	MeetingMember meetingMember = getByUserId(userId);
+	// 	Meeting meeting = meetingMember.getMeeting();
+	//
+	// 	List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
+	// 		meetingMember.getId());
+	// 	return MeetingMemberListResponse.from(nextTargetMembers);
+	// }
 
 	@Transactional
 	public MeetingMemberPersistResponse registerMeetingMember(
@@ -96,21 +98,20 @@ public class MeetingMemberService {
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
-	public MeetingMemberResponse getRandomMeetingMember(Long userId, Long meetingId, List<Long> excludeMemberIds) {
+	public MeetingMemberListResponseDetail getRandomMeetingMember(Long userId, Long meetingId,
+		List<Long> excludeMemberIds) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 
-		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId).stream()
-			.filter(member -> !excludeMemberIds.contains(member.getId()))
-			.toList();
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId,
+			excludeMemberIds);
 
 		if (nextTargetMembers.isEmpty()) {
 			throw new NoMeetingMemberInConditionException();
 		}
 
 		MeetingMember randomMember = nextTargetMembers.get(new Random().nextInt(nextTargetMembers.size()));
-		return MeetingMemberResponse.from(randomMember);
+		return MeetingMemberListResponseDetail.from(randomMember);
 	}
-
 
 	private MeetingMember validateAndCreateMember(
 		Long userId, MeetingMemberPersistRequest request, Meeting meeting, User user
