@@ -49,13 +49,7 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 
 	@Override
 	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		Optional<MeetingQuestion> activeMeetingQuestion = Optional.ofNullable(
-			queryFactory
-				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId),
-					activeCond())
-				.fetchOne()
-		);
+		Optional<MeetingQuestion> activeMeetingQuestion = findActiveQuestion(meetingId);
 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
@@ -63,6 +57,21 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 
 		return ActiveMeetingQuestionResponse.of(activeMeetingQuestion.get(),
 			isAnswered(activeMeetingQuestion.get().getId(), loginMeetingMemberId));
+	}
+
+	@Override
+	public Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId) {
+		return findActiveQuestion(meetingId);
+	}
+
+	private Optional<MeetingQuestion> findActiveQuestion(Long meetingId) {
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(meetingQuestion)
+				.where(meetingQuestion.meeting.id.eq(meetingId),
+					activeCond())
+				.fetchOne()
+		);
 	}
 
 	@Override
@@ -142,14 +151,12 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	private BooleanExpression activeCond() {
 		DateTimeExpression<LocalDateTime> endTime = getEndTime();
 		DateTimeExpression<LocalDateTime> now = getNow();
-
 		return now.loe(endTime).and(isAnsweredByAllCond().not());
 	}
 
 	private BooleanExpression inactiveCond() {
 		DateTimeExpression<LocalDateTime> endTime = getEndTime();
 		DateTimeExpression<LocalDateTime> now = getNow();
-
 		return now.gt(endTime).or(isAnsweredByAllCond());
 	}
 

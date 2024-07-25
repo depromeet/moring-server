@@ -16,6 +16,8 @@ public interface MeetingQuestionRepository {
 
 	ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId);
 
+	Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId);
+
 	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId, Long loginMeetingMemberId);
 
 	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,

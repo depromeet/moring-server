@@ -131,6 +131,10 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		return !Objects.equals(this.meeting, targetMember.getMeeting());
 	}
 
+	public boolean isOwner() {
+		return role.equals(MeetingMemberRole.OWNER);
+	}
+
 	@Override
 	public int compareTo(MeetingMember o) {
 		// OWNER 역할을 가진 멤버가 우선순위를 가짐

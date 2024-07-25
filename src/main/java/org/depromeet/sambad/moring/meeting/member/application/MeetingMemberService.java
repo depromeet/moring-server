@@ -1,8 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -45,12 +43,6 @@ public class MeetingMemberService {
 		return MeetingMemberListResponse.from(meetingMemberRepository.findByMeetingIdOrderByName(meetingId));
 	}
 
-	// FIXME: userId 기반 조회 시, unique한 결과가 반환되지 않음. 해당 메서드 제거 및 `getByUserIdAndMeetingId` 사용 필요
-	public MeetingMember getByUserId(Long userId) {
-		return meetingMemberRepository.findByUserId(userId)
-			.orElseThrow(MeetingMemberNotFoundException::new);
-	}
-
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
 		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
 			.orElseThrow(MeetingMemberNotFoundException::new);
@@ -72,16 +64,6 @@ public class MeetingMemberService {
 
 		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
 	}
-
-	// TODO: 추후에 제거 여부 검토
-	// public MeetingMemberListResponse getNextTargets(Long userId) {
-	// 	MeetingMember meetingMember = getByUserId(userId);
-	// 	Meeting meeting = meetingMember.getMeeting();
-	//
-	// 	List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
-	// 		meetingMember.getId());
-	// 	return MeetingMemberListResponse.from(nextTargetMembers);
-	// }
 
 	@Transactional
 	public MeetingMemberPersistResponse registerMeetingMember(

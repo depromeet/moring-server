@@ -40,7 +40,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.select(meetingQuestion.question.id)
 			.from(meetingQuestion)
 			.where(meetingIdEq(meetingId))
-			.orderBy(meetingQuestion.question.createAt.asc())
+			.orderBy(meetingQuestion.question.createdAt.asc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -57,7 +57,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			))
 			.from(question)
 			.where(question.id.notIn(usedQuestionIds))
-			.orderBy(question.createAt.asc())
+			.orderBy(question.createdAt.asc())
 			.fetch();
 
 		List<Long> totalElementIds = queryFactory

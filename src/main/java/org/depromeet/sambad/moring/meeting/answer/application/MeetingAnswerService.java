@@ -32,9 +32,9 @@ public class MeetingAnswerService {
 	private final Clock clock;
 
 	@Transactional
-	public void save(Long userId, Long meetingId, MeetingAnswerRequest request) {
+	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, request.meetingQuestionId());
+		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
 
