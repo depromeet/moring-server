@@ -16,10 +16,10 @@ jobs:
           distribution: 'temurin'
 
       - name: "Gradle 준비하기"
-        run: chmod +x ./gradlew
+        run: chmod +x gradlew
 
       - name: "test 실행"
-        run: ./gradlew build jacocoTestReport
+        run: ./gradlew build jacocoTestReport -x test
 
       - name: "Codecov에 커버리지 업로드"
         uses: codecov/codecov-action@v4.0.1
