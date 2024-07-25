@@ -64,9 +64,29 @@ tasks.named('test') {
 }
 
 jacocoTestReport {
+	dependsOn test
 	reports {
-		html.required.set(true)
-		xml.required.set(true)
-		csv.required.set(false)
+		xml.required = true
+	}
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+			enabled = true
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.70
+			}
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.70
+			}
+		}
 	}
 }
