@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface MeetingQuestionRepository {
 
-	void save(MeetingQuestion meetingQuestion);
+	MeetingQuestion save(MeetingQuestion meetingQuestion);
 
 	boolean existsByQuestion(Long meetingId, Long questionId);
 

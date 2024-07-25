@@ -41,20 +41,22 @@ public class MeetingQuestionController {
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
 	})
 	@PostMapping("/meetings/{meetingId}/questions")
-	public ResponseEntity<Object> save(
+	public ResponseEntity<ActiveMeetingQuestionResponse> save(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {
-		meetingQuestionService.save(userId, meetingId, request);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		ActiveMeetingQuestionResponse response = meetingQuestionService.save(userId, meetingId, request);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@Operation(summary = "현재 진행 중인 릴레이 질문 조회")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "진행 중인 릴레이 질문이 없다면, 200 OK 코드와 body 는 null 을 반환합니다."
+			description = "- 현재 질문인과 릴레이 질문이 없다면, 200 OK 코드와 body 는 <b>null</b> 을 반환합니다.\n"
+				+ "- 현재 질문인이 있고 릴레이 질문이 없다면, 200 OK 코드와 body 의 <b>isQuestionRegistered: false</b> 로 구분합니다.\n"
+				+ "- 현재 질문인이 있고 릴레이 질문도 존재하면, 200 OK 코드와 <b>isQuestionRegistered: true</b> 로 구분합니다."
 		)
 	})
 	@GetMapping("/meetings/{meetingId}/questions/active")

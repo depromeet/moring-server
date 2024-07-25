@@ -33,6 +33,8 @@ public class MeetingAnswerService {
 
 	@Transactional
 	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
+		// FIXME: 모든 모임원이 답변했다면, MeetingQuestion 을 종료시키고 다음 MeetingQuestion 을 시작시켜야 한다.
+
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));

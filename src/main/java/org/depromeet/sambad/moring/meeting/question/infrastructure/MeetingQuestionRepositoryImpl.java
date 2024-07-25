@@ -38,8 +38,8 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public void save(MeetingQuestion meetingQuestion) {
-		meetingQuestionJpaRepository.save(meetingQuestion);
+	public MeetingQuestion save(MeetingQuestion meetingQuestion) {
+		return meetingQuestionJpaRepository.save(meetingQuestion);
 	}
 
 	@Override
@@ -54,8 +54,10 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
 		}
-
-		return ActiveMeetingQuestionResponse.of(activeMeetingQuestion.get(),
+		if (activeMeetingQuestion.get().getQuestion() == null) {
+			return ActiveMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion.get());
+		}
+		return ActiveMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion.get(),
 			isAnswered(activeMeetingQuestion.get().getId(), loginMeetingMemberId));
 	}
 

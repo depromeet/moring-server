@@ -11,6 +11,7 @@ import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.question.domain.Question;
 
 import jakarta.persistence.Column;
@@ -64,22 +65,23 @@ public class MeetingQuestion extends BaseTimeEntity {
 		this.startTime = now;
 	}
 
-	public static MeetingQuestion createFirstQuestion(Meeting meeting, LocalDateTime now) {
-		return new MeetingQuestion(meeting, meeting.getOwner(), null, now);
+	public static MeetingQuestion createActiveMeetingQuestion(Meeting meeting, MeetingMember targetMember,
+		Question activeQuestion, LocalDateTime now) {
+		return new MeetingQuestion(meeting, targetMember, activeQuestion, now);
 	}
 
-	public static MeetingQuestion createNotFirstQuestion(Meeting meeting, MeetingMember targetMember,
+	public static MeetingQuestion createNextMeetingQuestion(Meeting meeting, MeetingMember targetMember,
 		Optional<MeetingQuestion> activeQuestion, LocalDateTime startTime) {
 		if (activeQuestion.isPresent()) {
 			startTime = activeQuestion.get().startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
 		}
 
-		// FIXME: activeQuestion에 모든 모임원이 답한 경우, 이 MeetingQuestion의 startTime이 지금 시간으로 업데이트 되어야 한다.
 		return new MeetingQuestion(meeting, targetMember, null, startTime);
 	}
 
-	public boolean isTarget(MeetingMember targetMember) {
-		return this.targetMember.equals(targetMember);
+	public void setQuestion(MeetingMember targetMember, Question question) {
+		validateTarget(targetMember);
+		this.question = question;
 	}
 
 	public int getResponseCount() {
@@ -102,6 +104,12 @@ public class MeetingQuestion extends BaseTimeEntity {
 		LocalDateTime endTime = startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
 		if (now.isAfter(endTime)) {
 			throw new FinishedMeetingQuestionException();
+		}
+	}
+
+	private void validateTarget(MeetingMember targetMember) {
+		if (!this.targetMember.equals(targetMember)) {
+			throw new InvalidMeetingMemberTargetException();
 		}
 	}
 }
