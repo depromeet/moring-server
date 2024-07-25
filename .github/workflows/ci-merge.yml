@@ -21,7 +21,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: "Gradle 빌드"
-        run: ./gradlew build jacocoTestReport -x test
+        run: ./gradlew test jacocoTestReport
 
       - name: "Codecov에 커버리지 업로드"
         uses: codecov/codecov-action@v4.0.1
