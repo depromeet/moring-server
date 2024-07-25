@@ -1,5 +1,8 @@
 package org.depromeet.sambad.moring.meeting.answer.domain;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -45,5 +48,16 @@ public class MeetingAnswer extends BaseTimeEntity {
 		this.meetingQuestion = meetingQuestion;
 		this.answer = answer;
 		this.meetingMember = meetingMember;
+	}
+
+	public String getAnswerContent() {
+		return answer.getContent();
+	}
+
+	public static List<Long> getAnswerIds(List<MeetingAnswer> answers) {
+		return answers.stream()
+			.map(meetingAnswer -> meetingAnswer.answer.getId())
+			.filter(Objects::nonNull)
+			.toList();
 	}
 }
