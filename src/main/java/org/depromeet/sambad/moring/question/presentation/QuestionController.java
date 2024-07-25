@@ -51,7 +51,7 @@ public class QuestionController {
 		@ApiResponse(responseCode = "200")
 	})
 	@GetMapping("/meetings/{meetingId}/questions")
-	public ResponseEntity<Object> findQuestions(
+	public ResponseEntity<QuestionListResponse> findQuestions(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
