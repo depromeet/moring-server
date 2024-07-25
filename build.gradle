@@ -64,8 +64,6 @@ tasks.named('test') {
 }
 
 jacocoTestReport {
-	executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
-
 	reports {
 		html.required.set(true)
 		xml.required.set(true)
