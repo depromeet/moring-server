@@ -1,17 +1,27 @@
 package org.depromeet.sambad.moring.user.presentation.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
+
 import java.time.LocalDateTime;
 
 import org.depromeet.sambad.moring.user.domain.User;
 
-/**
- * TODO: 로그인 성공 여부 확인 용으로 임시로 만들었으며, 제공할 정보 및 API 스펙이 확정되면 수정이 필요합니다.
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record UserResponse(
+	@Schema(description = "유저 이름", example = "홍길동", requiredMode = REQUIRED)
 	String name,
+
+	@Schema(description = "유저 이메일", example = "example@abc.com", requiredMode = REQUIRED)
 	String email,
+
+	@Schema(description = "프로필 이미지 경로", example = "https://example.com/profile.jpg", requiredMode = REQUIRED)
 	String profileImageFileUrl,
+
+	@Schema(description = "생성일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
 	LocalDateTime createdAt,
+
+	@Schema(description = "수정일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
 	LocalDateTime updatedAt
 ) {
 
