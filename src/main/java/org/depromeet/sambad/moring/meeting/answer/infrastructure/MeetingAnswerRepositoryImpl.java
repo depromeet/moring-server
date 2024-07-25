@@ -12,6 +12,7 @@ import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
@@ -26,10 +27,26 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 
 	private final MeetingAnswerJpaRepository meetingAnswerJpaRepository;
 	private final JPAQueryFactory queryFactory;
+	private final MeetingAnswerQueryRepository meetingAnswerQueryRepository;
 
 	@Override
 	public void save(MeetingAnswer meetingAnswer) {
 		meetingAnswerJpaRepository.save(meetingAnswer);
+	}
+
+	@Override
+	public List<MeetingAnswer> findMostSelected(Long meetingQuestionId) {
+		return meetingAnswerQueryRepository.findMostSelectedMeetingAnswer(meetingQuestionId);
+	}
+
+	@Override
+	public List<MeetingAnswer> findByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId) {
+		return meetingAnswerJpaRepository.findByMeetingQuestionIdAndMeetingMemberId(meetingQuestionId, meetingMemberId);
+	}
+
+	@Override
+	public List<MeetingMember> findMeetingMembersSelectWith(Long questionId, List<Long> answerIds) {
+		return meetingAnswerQueryRepository.findSameAnswerSelectMembers(questionId, answerIds);
 	}
 
 	@Override
