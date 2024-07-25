@@ -1,19 +1,21 @@
 package org.depromeet.sambad.moring.file.application;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.file.domain.FileRepository;
 import org.depromeet.sambad.moring.file.presentation.exception.NotFoundFileException;
 import org.depromeet.sambad.moring.file.presentation.response.FileUrlResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class FileService {
 
 	private final FileUploader fileUploader;
@@ -46,6 +48,16 @@ public class FileService {
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to upload file", e);
 		}
+	}
+
+	public FileEntity getRandomProfileImage() {
+		List<FileEntity> defaultFiles = fileRepository.findAllByIsDefaultTrue();
+
+		if (defaultFiles.isEmpty()) {
+			return null;
+		}
+
+		return defaultFiles.get((int) (Math.random() * defaultFiles.size()));
 	}
 
 	private boolean isNotExistFile(Long fileId) {

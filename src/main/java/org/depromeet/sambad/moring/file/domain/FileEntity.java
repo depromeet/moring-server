@@ -29,9 +29,17 @@ public class FileEntity extends BaseTimeEntity {
 
 	private String physicalPath;
 
-	private FileEntity(String logicalName, String physicalPath) {
+	/*
+	 * TODO: ERD에 기반하면, 사용자 업로드 file과 시스템 file이 슈퍼-서브타입으로서 구분되어야 합니다.
+	 *  추후 마이그레이션 작업을 수행할 예정입니다.
+	 */
+	@Column(columnDefinition = "TINYINT")
+	private Boolean isDefault;
+
+	private FileEntity(String logicalName, String physicalPath, Boolean isDefault) {
 		this.logicalName = logicalName;
 		this.physicalPath = physicalPath;
+		this.isDefault = isDefault;
 	}
 
 	public static FileEntity of(String logicalName, String filePath) {
@@ -39,6 +47,6 @@ public class FileEntity extends BaseTimeEntity {
 			throw new ObjectStorageServerException();
 		}
 
-		return new FileEntity(logicalName, filePath);
+		return new FileEntity(logicalName, filePath, false);
 	}
 }
