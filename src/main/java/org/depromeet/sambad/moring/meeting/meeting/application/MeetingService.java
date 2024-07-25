@@ -27,6 +27,7 @@ public class MeetingService {
 		Meeting meeting = generateMeeting(request);
 		addTypesToMeeting(request, meeting);
 
+		// TODO: MeetingQuestion 모임장 타겟으로 설정 후, MeetingQuestion 추가
 		return meeting;
 	}
 

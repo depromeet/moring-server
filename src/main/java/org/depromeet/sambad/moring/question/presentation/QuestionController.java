@@ -50,13 +50,14 @@ public class QuestionController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200")
 	})
-	@GetMapping("/questions")
+	@GetMapping("/meetings/{meetingId}/questions")
 	public ResponseEntity<Object> findQuestions(
 		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
 		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") @Positive int size
 	) {
-		QuestionListResponse response = questionService.findQuestions(userId, page, size);
+		QuestionListResponse response = questionService.findQuestions(userId, meetingId, page, size);
 		return ResponseEntity.ok(response);
 	}
 }

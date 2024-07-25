@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "모임원의 답변", description = "모임 내 릴레이 질문에 대한 답변 api / 담당자 : 김나현")
@@ -37,13 +38,14 @@ public class MeetingAnswerController {
 			+ "NOT_FOUND_ANSWER"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_ANSWER")
 	})
-	@PostMapping("/meetings/{meetingId}/answers")
+	@PostMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "답변할 모임의 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") @Positive Long meetingQuestionId,
 		@Valid @RequestBody MeetingAnswerRequest request
 	) {
-		meetingAnswerService.save(userId, meetingId, request);
+		meetingAnswerService.save(userId, meetingId, meetingQuestionId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
@@ -54,7 +56,7 @@ public class MeetingAnswerController {
 		@ApiResponse(responseCode = "200"),
 		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
-	@GetMapping("/meetings/{meetingId}/questions")
+	@GetMapping("/meetings/{meetingId}/questions/answers/me")
 	public ResponseEntity<MyMeetingAnswerListResponse> findMyList(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId

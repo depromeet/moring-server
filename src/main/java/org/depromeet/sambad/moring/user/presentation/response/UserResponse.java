@@ -11,8 +11,8 @@ public record UserResponse(
 	String name,
 	String email,
 	String profileImageFileUrl,
-	LocalDateTime createAt,
-	LocalDateTime updateAt
+	LocalDateTime createdAt,
+	LocalDateTime updatedAt
 ) {
 
 	public static UserResponse from(User user) {
