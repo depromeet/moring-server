@@ -28,17 +28,12 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: "test 결과 PR 코멘트로 등록"
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: ${{ always() }}
+      - name: "테스트 커버리지를 PR에 코멘트로 등록"
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.2
         with:
-            files: build/test-results/**/*.xml
-
-      - name: "커버리지 통과 여부 확인"
-        run: |
-          COVERAGE=$(./gradlew jacocoTestReport --console=plain | grep -Po 'Total.*?\K[0-9]+(?=%)')
-          echo "Coverage is ${COVERAGE}%"
-          if [ $COVERAGE -lt 70 ]; then
-            echo "Test coverage is below 70%"
-            exit 1
-          fi
+          title: 📝 테스트 커버리지 리포트입니다
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 70
+          min-coverage-changed-files: 70
