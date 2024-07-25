@@ -5,6 +5,7 @@ import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestio
 import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.InvalidCommentWriterException;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +25,7 @@ public class MeetingQuestionCommentReply extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "meeting_question_comment_reply_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

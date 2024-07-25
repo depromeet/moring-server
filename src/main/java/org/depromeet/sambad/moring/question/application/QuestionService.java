@@ -26,8 +26,8 @@ public class QuestionService {
 			.orElseThrow(NotFoundQuestionException::new);
 	}
 
-	public QuestionListResponse findQuestions(Long userId, int page, int size) {
-		MeetingMember loginMember = meetingMemberService.getByUserId(userId);
+	public QuestionListResponse findQuestions(Long userId, Long meetingId, int page, int size) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = loginMember.getMeeting();
 		return questionRepository.findQuestionsByMeeting(meeting.getId(), PageRequest.of(page, size));
 	}

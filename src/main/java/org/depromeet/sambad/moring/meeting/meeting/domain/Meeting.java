@@ -1,10 +1,14 @@
 package org.depromeet.sambad.moring.meeting.meeting.domain;
 
+import static org.depromeet.sambad.moring.common.exception.GlobalExceptionCode.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+import org.depromeet.sambad.moring.common.exception.BusinessException;
+import org.depromeet.sambad.moring.common.logging.LoggingUtils;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
@@ -58,6 +62,17 @@ public class Meeting extends BaseTimeEntity {
 		return Optional.ofNullable(code)
 			.map(MeetingCode::getCode)
 			.orElseThrow(() -> new IllegalStateException("모임 코드가 존재하지 않습니다."));
+	}
+
+	public MeetingMember getOwner() {
+		return meetingMembers
+			.stream()
+			.filter(MeetingMember::isOwner)
+			.findAny()
+			.orElseThrow(() -> {
+				LoggingUtils.error("Meeting PK : " + id + " 에 OWNER 가 존재하지 않습니다.");
+				throw new BusinessException(SERVER_ERROR);
+			});
 	}
 
 	public int getTotalMemberCount() {
