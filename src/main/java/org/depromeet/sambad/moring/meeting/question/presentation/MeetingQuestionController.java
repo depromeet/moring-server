@@ -34,7 +34,7 @@ public class MeetingQuestionController {
 
 	private final MeetingQuestionService meetingQuestionService;
 
-	@Operation(summary = "다음 릴레이 질문 저장", description = "모임의 다음 릴레이 질문과 질문인을 저장합니다.")
+	@Operation(summary = "현재 릴레이 질문과 다음 질문인 저장", description = "모임의 현재 릴레이 질문과 다음 릴레이 질문인을 저장합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),

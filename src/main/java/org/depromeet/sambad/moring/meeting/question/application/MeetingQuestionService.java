@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.meeting.question.application;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
@@ -36,20 +37,27 @@ public class MeetingQuestionService {
 	@Transactional
 	public void save(Long userId, Long meetingId, MeetingQuestionRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		MeetingMember targetMember = meetingMemberService.getById(request.meetingMemberId());
-		loginMember.validateTargetMember(targetMember);
+		MeetingMember nextTargetMember = meetingMemberService.getById(request.meetingMemberId());
 
-		Meeting meeting = targetMember.getMeeting();
-		Question question = questionService.getById(request.questionId());
-		validateNonDuplicateMeetingQuestion(meeting, question);
+		Optional<MeetingQuestion> activeQuestion = findActiveQuestion(meetingId);
 
-		MeetingQuestion meetingQuestion = MeetingQuestion.builder()
-			.meeting(meeting)
-			.targetMember(targetMember)
-			.question(question)
-			.now(LocalDateTime.now(clock))
-			.build();
-		meetingQuestionRepository.save(meetingQuestion);
+		//TODO: 현재 진행 중인 질문이 없는 경우: 예외 처리
+
+		activeQuestion.get().isTarget(loginMember);
+		loginMember.validateTargetMember(nextTargetMember);
+
+		Question nextQuestion = questionService.getById(request.questionId());
+		validateNonDuplicateMeetingQuestion(meetingId, nextQuestion.getId());
+
+		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNotFirstQuestion(loginMember.getMeeting(),
+			nextTargetMember, activeQuestion, LocalDateTime.now(clock));
+		meetingQuestionRepository.save(nextMeetingQuestion);
+	}
+
+	@Transactional
+	public void createFirstQuestion(Meeting meeting) {
+		MeetingQuestion firstQuestion = MeetingQuestion.createFirstQuestion(meeting, LocalDateTime.now(clock));
+		meetingQuestionRepository.save(firstQuestion);
 	}
 
 	public ActiveMeetingQuestionResponse findActiveOne(Long userId, Long meetingId) {
@@ -76,8 +84,12 @@ public class MeetingQuestionService {
 			.orElseThrow(NotFoundMeetingQuestion::new);
 	}
 
-	private void validateNonDuplicateMeetingQuestion(Meeting meeting, Question question) {
-		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meeting.getId(), question.getId());
+	private Optional<MeetingQuestion> findActiveQuestion(Long meetingId) {
+		return meetingQuestionRepository.findActiveOneByMeeting(meetingId);
+	}
+
+	private void validateNonDuplicateMeetingQuestion(Long meetingId, Long questionId) {
+		boolean isDuplicateQuestion = meetingQuestionRepository.existsByQuestion(meetingId, questionId);
 		if (isDuplicateQuestion) {
 			throw new DuplicateMeetingQuestionException();
 		}

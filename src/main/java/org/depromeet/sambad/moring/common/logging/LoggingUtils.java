@@ -20,6 +20,10 @@ public class LoggingUtils {
 		log.error("[SERVER ERROR] {} {}", message, stackTraceElements[0], exception);
 	}
 
+	public static void error(String message) {
+		log.error("[SERVER ERROR] {}", message);
+	}
+
 	static List<String> getArguments(JoinPoint joinPoint) {
 		return Arrays.stream(joinPoint.getArgs())
 			.map(Object::toString)

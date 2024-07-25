@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
@@ -56,11 +57,29 @@ public class MeetingQuestion extends BaseTimeEntity {
 	private LocalDateTime startTime;
 
 	@Builder
-	public MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question, LocalDateTime now) {
+	private MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question, LocalDateTime now) {
 		this.meeting = meeting;
 		this.targetMember = targetMember;
 		this.question = question;
 		this.startTime = now;
+	}
+
+	public static MeetingQuestion createFirstQuestion(Meeting meeting, LocalDateTime now) {
+		return new MeetingQuestion(meeting, meeting.getOwner(), null, now);
+	}
+
+	public static MeetingQuestion createNotFirstQuestion(Meeting meeting, MeetingMember targetMember,
+		Optional<MeetingQuestion> activeQuestion, LocalDateTime startTime) {
+		if (activeQuestion.isPresent()) {
+			startTime = activeQuestion.get().startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		}
+
+		// FIXME: activeQuestion에 모든 모임원이 답한 경우, 이 MeetingQuestion의 startTime이 지금 시간으로 업데이트 되어야 한다.
+		return new MeetingQuestion(meeting, targetMember, null, startTime);
+	}
+
+	public boolean isTarget(MeetingMember targetMember) {
+		return this.targetMember.equals(targetMember);
 	}
 
 	public int getResponseCount() {

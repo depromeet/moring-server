@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record MeetingQuestionRequest(
-	@Schema(example = "1", description = "다음 릴레이 질문")
+	@Schema(example = "1", description = "현재 릴레이 질문")
 	@NotNull
 	Long questionId,
 
