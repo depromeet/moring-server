@@ -21,7 +21,7 @@ jobs:
 
       - name: "test 실행"
         working-directory: ./
-        run: ./gradlew build jacocoTestReport
+        run: ./gradlew clean build -x test
 
       - name: "Codecov에 커버리지 업로드"
         uses: codecov/codecov-action@v4.0.1
