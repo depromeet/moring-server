@@ -16,7 +16,7 @@ jobs:
           distribution: 'temurin'
 
       - name: "Gradle 준비하기"
-        run: chmod +x gradlew
+        run: chmod +x ./gradlew
 
       - name: "test 실행"
         run: ./gradlew build jacocoTestReport
