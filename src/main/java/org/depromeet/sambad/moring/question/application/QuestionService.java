@@ -1,11 +1,16 @@
 package org.depromeet.sambad.moring.question.application;
 
+import java.util.List;
+import java.util.Random;
+
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.presentation.exception.NotFoundAvailableQuestionException;
 import org.depromeet.sambad.moring.question.presentation.exception.NotFoundQuestionException;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionListResponse;
+import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,5 +35,16 @@ public class QuestionService {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = loginMember.getMeeting();
 		return questionRepository.findQuestionsByMeeting(meeting.getId(), PageRequest.of(page, size));
+	}
+
+	public QuestionResponse getRandomOne(List<Long> excludeQuestionIds) {
+		List<Question> questions = questionRepository.findAllByNotInQuestionIds(excludeQuestionIds);
+
+		if (questions.isEmpty()) {
+			throw new NotFoundAvailableQuestionException();
+		}
+
+		Question randomQuestion = questions.get(new Random().nextInt(questions.size()));
+		return QuestionResponse.from(randomQuestion);
 	}
 }
