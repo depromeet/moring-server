@@ -8,6 +8,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: "GitHub 에서 레포 받아오기"
+        uses: actions/checkout@v3
 
       - name: "JDK17 준비하기"
         uses: actions/setup-java@v3
@@ -16,11 +18,9 @@ jobs:
           distribution: 'temurin'
 
       - name: "Gradle 준비하기"
-        working-directory: ./
         run: chmod +x gradlew
 
-      - name: "test 실행"
-        working-directory: ./
+      - name: "Gradle 빌드"
         run: ./gradlew clean build -x test
 
       - name: "Codecov에 커버리지 업로드"
