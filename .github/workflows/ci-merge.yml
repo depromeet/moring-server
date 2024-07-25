@@ -28,6 +28,15 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: "테스트 커버리지 저장 xml 파일 확인"
+        run: |
+          if [ -f "${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml" ]; then
+            echo "Jacoco report exists."
+          else
+            echo "Jacoco report does not exist."
+            exit 1
+          fi
+
       - name: "테스트 커버리지를 PR에 코멘트로 등록"
         id: jacoco
         uses: madrapps/jacoco-report@v1.2
