@@ -1,10 +1,13 @@
 package org.depromeet.sambad.moring.meeting.member.presentation;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+
+import java.util.List;
 
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -93,5 +96,21 @@ public class MeetingMemberController {
 	) {
 		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);
 		return ResponseEntity.status(CREATED).body(response);
+	}
+
+	@Operation(summary = "다음 랜덤 질문 대상자 조회", description = "다음 릴레이 질문 랜덤 대상자를 조회합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "랜덤 질문 대상자 조회 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "NO_MEETING_MEMBER_IN_CONDITION")
+	})
+	@GetMapping("/questions/target")
+	public ResponseEntity<MeetingMemberListResponseDetail> getRandomQuestionMember(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "랜덤 대상자 제외할 모임원 ID 리스트", example = "2") @RequestParam("excludeMemberIds") List<Long> excludeMemberIds
+	) {
+		MeetingMemberListResponseDetail response = meetingMemberService.getRandomMeetingMember(userId, meetingId, excludeMemberIds);
+		return ResponseEntity.ok(response);
 	}
 }

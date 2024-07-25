@@ -17,6 +17,7 @@ public enum MeetingMemberExceptionCode implements ExceptionCode {
     USER_NOT_MEMBER_OF_MEETING(FORBIDDEN, "사용자가 해당 모임에 가입되어 있지 않습니다."),
 
     MEETING_MEMBER_NOT_FOUND(NOT_FOUND, "모임 참여자를 찾을 수 없습니다."),
+    NO_MEETING_MEMBER_IN_CONDITION(NOT_FOUND, "조건에 맞는 모임 참여자가 없습니다."),
 
     MEETING_MEMBER_ALREADY_EXISTS(CONFLICT, "이미 모임에 가입되어 있습니다."),
     ;

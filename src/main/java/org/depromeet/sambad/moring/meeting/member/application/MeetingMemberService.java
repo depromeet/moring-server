@@ -1,6 +1,8 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -10,8 +12,10 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberNotFoundException;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.NoMeetingMemberInConditionException;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class MeetingMemberService {
 
 	private final MeetingMemberValidator meetingMemberValidator;
+	private final MeetingMemberRandomGenerator meetingMemberRandomGenerator;
 	private final MeetingRepository meetingRepository;
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final UserRepository userRepository;
@@ -68,14 +73,15 @@ public class MeetingMemberService {
 		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
 	}
 
-	public MeetingMemberListResponse getNextTargets(Long userId) {
-		MeetingMember meetingMember = getByUserId(userId);
-		Meeting meeting = meetingMember.getMeeting();
-
-		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
-			meetingMember.getId());
-		return MeetingMemberListResponse.from(nextTargetMembers);
-	}
+	// TODO: 추후에 제거 여부 검토
+	// public MeetingMemberListResponse getNextTargets(Long userId) {
+	// 	MeetingMember meetingMember = getByUserId(userId);
+	// 	Meeting meeting = meetingMember.getMeeting();
+	//
+	// 	List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meeting.getId(),
+	// 		meetingMember.getId());
+	// 	return MeetingMemberListResponse.from(nextTargetMembers);
+	// }
 
 	@Transactional
 	public MeetingMemberPersistResponse registerMeetingMember(
@@ -91,6 +97,21 @@ public class MeetingMemberService {
 		addHobbies(meetingMember, request);
 
 		return MeetingMemberPersistResponse.from(meetingMember);
+	}
+
+	public MeetingMemberListResponseDetail getRandomMeetingMember(Long userId, Long meetingId,
+		List<Long> excludeMemberIds) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+
+		List<MeetingMember> nextTargetMembers = meetingMemberRepository.findNextTargetsByMeeting(meetingId, userId,
+			excludeMemberIds);
+
+		if (nextTargetMembers.isEmpty()) {
+			throw new NoMeetingMemberInConditionException();
+		}
+
+		MeetingMember randomMember = meetingMemberRandomGenerator.generate(nextTargetMembers);
+		return MeetingMemberListResponseDetail.from(randomMember);
 	}
 
 	private MeetingMember validateAndCreateMember(
