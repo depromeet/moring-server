@@ -1,8 +1,8 @@
 package org.depromeet.sambad.moring.auth.presentation.exception;
 
-import org.depromeet.sambad.moring.common.exception.BusinessException;
+import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.*;
 
-import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.ALREADY_REGISTERED_USER;
+import org.depromeet.sambad.moring.common.exception.BusinessException;
 
 public class AlreadyRegisteredUserException extends BusinessException {
 	public AlreadyRegisteredUserException() {

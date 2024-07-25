@@ -7,9 +7,9 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
 
 public interface MeetingRepository {
 
-    Optional<Meeting> findById(Long id);
+	Optional<Meeting> findById(Long id);
 
-    void save(Meeting meeting);
+	void save(Meeting meeting);
 
-    Optional<Meeting> findByCode(MeetingCode code);
+	Optional<Meeting> findByCode(MeetingCode code);
 }

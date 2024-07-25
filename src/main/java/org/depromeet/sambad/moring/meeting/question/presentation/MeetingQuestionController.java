@@ -4,6 +4,7 @@ import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionS
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionAndAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +51,7 @@ public class MeetingQuestionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@Operation(summary = "현재 진행 중인 릴레이 질문 조회")
+	@Operation(summary = "현재 진행 중인 릴레이 질문 조회", description = "모임원 참여율과 질문인에 대한 정보들을 함께 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -71,7 +72,7 @@ public class MeetingQuestionController {
 	@Operation(summary = "홈 화면 내 종료된 릴레이 질문 2건 조회", description = "- 참여율 순으로 내림차순 정렬한 후 2건 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
 	@GetMapping("/meetings/{meetingId}/questions/inactive/top")
 	public ResponseEntity<MostInactiveMeetingQuestionListResponse> findMostInactiveList(
@@ -83,11 +84,28 @@ public class MeetingQuestionController {
 		return ResponseEntity.ok(inactiveList);
 	}
 
+	@Operation(summary = "진행 중인 모임의 릴레이 질문과 답안 옵션 조회", description = "- 질문과 질문의 답변 목록을 함께 반환합니다.\n"
+		+ "- 등록된 모임 질문에 모임원이 답변을 할 때 사용하는 API 입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
+	})
+	@GetMapping("/meetings/{meetingId}/questions/active/answers")
+	public ResponseEntity<MeetingQuestionAndAnswerListResponse> findMeeingQuestionAndAnswerList(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
+	) {
+		MeetingQuestionAndAnswerListResponse response = meetingQuestionService.getActiveMeetingQuestionAndAnswerList(
+			userId, meetingId);
+		return ResponseEntity.ok(response);
+	}
+
 	@Operation(summary = "전체 종료된 릴레이 질문 리스트 조회", description = "- 페이징 적용 API 로, page는 0부터 시작합니다.\n"
 		+ "- 참여율 순으로 내림차순 정렬하여 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
 	@GetMapping("/meetings/{meetingId}/questions/inactive")
 	public ResponseEntity<FullInactiveMeetingQuestionListResponse> findFullInactiveList(

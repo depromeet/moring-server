@@ -1,11 +1,11 @@
 package org.depromeet.sambad.moring.user.presentation.resolver;
 
-import io.swagger.v3.oas.annotations.Parameter;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import io.swagger.v3.oas.annotations.Parameter;
 
 /**
  * 해당 Annotation을 부착한 파라미터에 UserId를 주입합니다.<br />

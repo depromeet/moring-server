@@ -19,29 +19,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingMemberHobby extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "meeting_member_hobby_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "meeting_member_hobby_id")
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_member_id")
-    private MeetingMember meetingMember;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "meeting_member_id")
+	private MeetingMember meetingMember;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hobby_id")
-    private Hobby hobby;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "hobby_id")
+	private Hobby hobby;
 
-    private MeetingMemberHobby(MeetingMember meetingMember, Hobby hobby) {
-        this.meetingMember = meetingMember;
-        this.hobby = hobby;
-    }
+	private MeetingMemberHobby(MeetingMember meetingMember, Hobby hobby) {
+		this.meetingMember = meetingMember;
+		this.hobby = hobby;
+	}
 
-    public static MeetingMemberHobby of(MeetingMember meetingMember, Hobby hobby) {
-        return new MeetingMemberHobby(meetingMember, hobby);
-    }
+	public static MeetingMemberHobby of(MeetingMember meetingMember, Hobby hobby) {
+		return new MeetingMemberHobby(meetingMember, hobby);
+	}
 
-    public String getHobbyContent() {
-        return hobby.getContent();
-    }
+	public String getHobbyContent() {
+		return hobby.getContent();
+	}
 }

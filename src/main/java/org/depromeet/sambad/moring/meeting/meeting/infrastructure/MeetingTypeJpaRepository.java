@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeetingTypeJpaRepository extends JpaRepository<MeetingType, Long> {
 
-    Set<MeetingType> findByIdIn(List<Long> ids);
+	Set<MeetingType> findByIdIn(List<Long> ids);
 }

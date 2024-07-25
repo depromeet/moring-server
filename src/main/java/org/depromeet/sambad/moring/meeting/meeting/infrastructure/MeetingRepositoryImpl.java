@@ -13,21 +13,20 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class MeetingRepositoryImpl implements MeetingRepository {
 
-    private final MeetingJpaRepository meetingJpaRepository;
+	private final MeetingJpaRepository meetingJpaRepository;
 
+	@Override
+	public Optional<Meeting> findById(Long id) {
+		return meetingJpaRepository.findById(id);
+	}
 
-    @Override
-    public Optional<Meeting> findById(Long id) {
-        return meetingJpaRepository.findById(id);
-    }
+	@Override
+	public void save(Meeting meeting) {
+		meetingJpaRepository.save(meeting);
+	}
 
-    @Override
-    public void save(Meeting meeting) {
-        meetingJpaRepository.save(meeting);
-    }
-
-    @Override
-    public Optional<Meeting> findByCode(MeetingCode code) {
-        return meetingJpaRepository.findByCode(code);
-    }
+	@Override
+	public Optional<Meeting> findByCode(MeetingCode code) {
+		return meetingJpaRepository.findByCode(code);
+	}
 }

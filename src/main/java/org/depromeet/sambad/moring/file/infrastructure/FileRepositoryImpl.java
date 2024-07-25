@@ -1,10 +1,11 @@
 package org.depromeet.sambad.moring.file.infrastructure;
 
-import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.file.domain.FileRepository;
 import org.depromeet.sambad.moring.file.presentation.exception.NotFoundFileException;
 import org.springframework.stereotype.Repository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Repository

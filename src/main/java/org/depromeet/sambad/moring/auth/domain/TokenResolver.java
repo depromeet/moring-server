@@ -1,8 +1,8 @@
 package org.depromeet.sambad.moring.auth.domain;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface TokenResolver {
 

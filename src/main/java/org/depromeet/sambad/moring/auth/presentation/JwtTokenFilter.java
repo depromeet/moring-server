@@ -1,14 +1,9 @@
 package org.depromeet.sambad.moring.auth.presentation;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.*;
+
+import java.io.IOException;
+
 import org.depromeet.sambad.moring.auth.domain.TokenResolver;
 import org.depromeet.sambad.moring.auth.presentation.exception.AuthenticationRequiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,9 +14,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ACCESS_TOKEN;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(
-			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
+		HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
 	) throws ServletException, IOException {
 		processTokenAuthentication(request, response);
 		filterChain.doFilter(request, response);
@@ -57,7 +58,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private String resolveTokenFromRequest(HttpServletRequest request) {
 		return tokenResolver.resolveTokenFromRequest(request)
-				.orElseThrow(AuthenticationRequiredException::new);
+			.orElseThrow(AuthenticationRequiredException::new);
 	}
 
 	private UserDetails getUserDetails(String token) {
@@ -67,7 +68,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private void setAuthentication(HttpServletRequest request, UserDetails userDetails) {
 		UsernamePasswordAuthenticationToken authentication =
-				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+			new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}

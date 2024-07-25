@@ -13,15 +13,15 @@ import lombok.RequiredArgsConstructor;
 @Repository
 public class MeetingTypeRepositoryImpl implements MeetingTypeRepository {
 
-    private final MeetingTypeJpaRepository meetingTypeJpaRepository;
+	private final MeetingTypeJpaRepository meetingTypeJpaRepository;
 
-    @Override
-    public List<MeetingType> findAll() {
-        return meetingTypeJpaRepository.findAll();
-    }
+	@Override
+	public List<MeetingType> findAll() {
+		return meetingTypeJpaRepository.findAll();
+	}
 
-    @Override
-    public Set<MeetingType> findByIdIn(List<Long> ids) {
-        return meetingTypeJpaRepository.findByIdIn(ids);
-    }
+	@Override
+	public Set<MeetingType> findByIdIn(List<Long> ids) {
+		return meetingTypeJpaRepository.findByIdIn(ids);
+	}
 }

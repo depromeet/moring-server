@@ -53,7 +53,7 @@ public class MeetingAnswerController {
 			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "404", description = "USER_NOT_MEMBER_OF_MEETING")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
 	@GetMapping("/meetings/{meetingId}/questions/answers/me")
 	public ResponseEntity<MyMeetingAnswerListResponse> findMyList(

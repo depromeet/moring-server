@@ -30,7 +30,8 @@ public class QuestionController {
 
 	private final QuestionService questionService;
 
-	@Operation(summary = "질문 리스트 내 질문 단건 조회")
+	@Operation(summary = "질문 리스트 내 질문 단건 조회",
+		description = "- 모임원이 질문을 선정할 때, 질문 리스트에서 질문을 클릭 시 사용하는 API 입니다.")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",

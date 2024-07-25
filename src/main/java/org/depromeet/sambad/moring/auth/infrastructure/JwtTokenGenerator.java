@@ -1,15 +1,17 @@
 package org.depromeet.sambad.moring.auth.infrastructure;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+import static io.jsonwebtoken.io.Decoders.*;
+
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.depromeet.sambad.moring.auth.domain.TokenGenerator;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
-
-import static io.jsonwebtoken.io.Decoders.BASE64;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
@@ -24,10 +26,10 @@ public class JwtTokenGenerator implements TokenGenerator {
 		SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
 
 		return Jwts.builder()
-				.subject(String.valueOf(userId))
-				.issuedAt(now)
-				.expiration(expiration)
-				.signWith(secretKey)
-				.compact();
+			.subject(String.valueOf(userId))
+			.issuedAt(now)
+			.expiration(expiration)
+			.signWith(secretKey)
+			.compact();
 	}
 }

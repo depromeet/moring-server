@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.auth.application;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moring.auth.domain.CustomOAuth2User;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,8 +13,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
@@ -20,13 +20,14 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 
-		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER"); // TODO: Implement role management
+		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
+			"ROLE_USER"); // TODO: Implement role management
 
 		ClientRegistration clientRegistration = userRequest.getClientRegistration();
 		String registrationId = clientRegistration.getRegistrationId();
 		String userNameAttributeName = clientRegistration.getProviderDetails()
-				.getUserInfoEndpoint()
-				.getUserNameAttributeName();
+			.getUserInfoEndpoint()
+			.getUserNameAttributeName();
 
 		AuthAttributes authAttributes = AuthAttributes.of(registrationId, oAuth2User.getAttributes());
 

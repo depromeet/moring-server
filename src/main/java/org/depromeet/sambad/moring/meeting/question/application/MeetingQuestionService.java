@@ -13,6 +13,7 @@ import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFo
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionAndAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
@@ -65,6 +66,18 @@ public class MeetingQuestionService {
 		MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(meeting, targetMember,
 			activeQuestion, LocalDateTime.now(clock));
 		return meetingQuestionRepository.save(activeMeetingQuestion);
+	}
+
+	public MeetingQuestionAndAnswerListResponse getActiveMeetingQuestionAndAnswerList(Long userId, Long meetingId) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		Optional<MeetingQuestion> activeMeetingQuestion = findActiveMeetingQuestion(loginMember.getMeeting().getId());
+		if (activeMeetingQuestion.isEmpty()) {
+			throw new NotFoundMeetingQuestion();
+		}
+		if (activeMeetingQuestion.get().getQuestion() == null) {
+			throw new NotFoundMeetingQuestion();
+		}
+		return MeetingQuestionAndAnswerListResponse.of(activeMeetingQuestion.get());
 	}
 
 	public ActiveMeetingQuestionResponse findActiveOne(Long userId, Long meetingId) {

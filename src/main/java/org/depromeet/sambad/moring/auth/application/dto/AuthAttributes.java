@@ -1,8 +1,8 @@
 package org.depromeet.sambad.moring.auth.application.dto;
 
-import org.depromeet.sambad.moring.user.domain.LoginProvider;
-
 import java.util.Map;
+
+import org.depromeet.sambad.moring.user.domain.LoginProvider;
 
 public interface AuthAttributes {
 

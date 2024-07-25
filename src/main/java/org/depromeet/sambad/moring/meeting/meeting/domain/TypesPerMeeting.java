@@ -19,25 +19,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TypesPerMeeting extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "types_per_meeting_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "types_per_meeting_id")
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "meeting_id")
+	private Meeting meeting;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_type_id")
-    private MeetingType meetingType;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "meeting_type_id")
+	private MeetingType meetingType;
 
-    private TypesPerMeeting(Meeting meeting, MeetingType meetingType) {
-        this.meeting = meeting;
-        this.meetingType = meetingType;
-    }
+	private TypesPerMeeting(Meeting meeting, MeetingType meetingType) {
+		this.meeting = meeting;
+		this.meetingType = meetingType;
+	}
 
-    public static TypesPerMeeting of(Meeting meeting, MeetingType type) {
-        return new TypesPerMeeting(meeting, type);
-    }
+	public static TypesPerMeeting of(Meeting meeting, MeetingType type) {
+		return new TypesPerMeeting(meeting, type);
+	}
 }

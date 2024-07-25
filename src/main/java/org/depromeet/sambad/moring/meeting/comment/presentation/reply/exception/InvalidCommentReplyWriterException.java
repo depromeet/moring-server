@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception;
 
-import static org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.MeetingQuestionCommentReplyExceptionCode.INVALID_COMMENT_REPLY_WRITER;
+import static org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.MeetingQuestionCommentReplyExceptionCode.*;
 
 import org.depromeet.sambad.moring.common.exception.BusinessException;
 

@@ -2,10 +2,11 @@ package org.depromeet.sambad.moring.auth.presentation.exception;
 
 import static org.springframework.http.HttpStatus.*;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moring.common.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor

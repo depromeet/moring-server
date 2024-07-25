@@ -1,8 +1,8 @@
 package org.depromeet.sambad.moring.auth.presentation.exception;
 
-import org.depromeet.sambad.moring.common.exception.BusinessException;
+import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.*;
 
-import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.AUTHENTICATION_REQUIRED;
+import org.depromeet.sambad.moring.common.exception.BusinessException;
 
 public class AuthenticationRequiredException extends BusinessException {
 	public AuthenticationRequiredException() {
