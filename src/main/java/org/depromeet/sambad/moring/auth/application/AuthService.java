@@ -1,6 +1,5 @@
 package org.depromeet.sambad.moring.auth.application;
 
-import lombok.RequiredArgsConstructor;
 import org.depromeet.sambad.moring.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moring.auth.domain.LoginResult;
 import org.depromeet.sambad.moring.auth.domain.TokenGenerator;
@@ -12,6 +11,8 @@ import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 인증 정보에 기반한 로그인 성공 처리를 담당합니다.<br />
@@ -31,8 +32,8 @@ public class AuthService {
 		String email = attributes.getEmail();
 
 		return userRepository.findByEmail(email)
-				.map(user -> handleExistUser(user, attributes))
-				.orElseGet(() -> handleFirstLogin(attributes));
+			.map(user -> handleExistUser(user, attributes))
+			.orElseGet(() -> handleFirstLogin(attributes));
 	}
 
 	private LoginResult handleExistUser(User user, AuthAttributes attributes) {
@@ -64,7 +65,7 @@ public class AuthService {
 		String profileImageUrl = attributes.getProfileImageUrl();
 
 		return StringUtils.hasText(profileImageUrl)
-				? fileService.uploadAndSave(profileImageUrl)
-				: null;
+			? fileService.uploadAndSave(profileImageUrl)
+			: null;
 	}
 }

@@ -30,7 +30,8 @@ public class QuestionController {
 
 	private final QuestionService questionService;
 
-	@Operation(summary = "질문 리스트 내 질문 단건 조회")
+	@Operation(summary = "질문 리스트 내 질문 단건 조회",
+		description = "- 모임원이 질문을 선정할 때, 질문 리스트에서 질문을 클릭 시 사용하는 API 입니다.")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -51,7 +52,7 @@ public class QuestionController {
 		@ApiResponse(responseCode = "200")
 	})
 	@GetMapping("/meetings/{meetingId}/questions")
-	public ResponseEntity<Object> findQuestions(
+	public ResponseEntity<QuestionListResponse> findQuestions(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,

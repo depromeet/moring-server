@@ -28,11 +28,29 @@ public record ActiveMeetingQuestionResponse(
 	String startTime,
 	@Schema(example = "false", description = "로그인한 유저의 답변 유무")
 	Boolean isAnswered,
+	@Schema(example = "true", description = "질문인의 질문 등록 여부")
+	Boolean isQuestionRegistered,
 	@Schema(description = "질문인에 대한 정보")
 	MeetingMemberListResponseDetail targetMember
 ) {
 
-	public static ActiveMeetingQuestionResponse of(MeetingQuestion meetingQuestion, Boolean isAnswered) {
+	public static ActiveMeetingQuestionResponse questionNotRegisteredOf(MeetingQuestion meetingQuestion) {
+		Meeting meeting = meetingQuestion.getMeeting();
+		return ActiveMeetingQuestionResponse.builder()
+			.meetingQuestionId(meetingQuestion.getId())
+			.questionNumber(meeting.getQuestionNumber(meetingQuestion))
+			.totalMeetingMemberCount(meeting.getTotalMemberCount())
+			.responseCount(0)
+			.engagementRate(0)
+			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
+			.isAnswered(false)
+			.isQuestionRegistered(false)
+			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
+			.build();
+	}
+
+	public static ActiveMeetingQuestionResponse questionRegisteredOf(MeetingQuestion meetingQuestion,
+		Boolean isAnswered) {
 		Meeting meeting = meetingQuestion.getMeeting();
 
 		return ActiveMeetingQuestionResponse.builder()
@@ -45,6 +63,7 @@ public record ActiveMeetingQuestionResponse(
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
 			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
 			.isAnswered(isAnswered)
+			.isQuestionRegistered(true)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
 	}

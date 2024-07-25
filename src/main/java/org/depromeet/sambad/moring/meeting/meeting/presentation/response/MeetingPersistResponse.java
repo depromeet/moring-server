@@ -7,14 +7,14 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingPersistResponse(
-        @Schema(example = "1", description = "모임 ID", requiredMode = REQUIRED)
-        Long meetingId,
+	@Schema(example = "1", description = "모임 ID", requiredMode = REQUIRED)
+	Long meetingId,
 
-        @Schema(example = "AB1234", description = "모임 초대 코드", requiredMode = REQUIRED)
-        String inviteCode
+	@Schema(example = "AB1234", description = "모임 초대 코드", requiredMode = REQUIRED)
+	String inviteCode
 ) {
 
-    public static MeetingPersistResponse from(Meeting meeting) {
-        return new MeetingPersistResponse(meeting.getId(), meeting.getCode());
-    }
+	public static MeetingPersistResponse from(Meeting meeting) {
+		return new MeetingPersistResponse(meeting.getId(), meeting.getCode());
+	}
 }

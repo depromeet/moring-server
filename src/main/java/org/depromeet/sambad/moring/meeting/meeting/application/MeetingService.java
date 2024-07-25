@@ -7,7 +7,6 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.TypesPerMeeting;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
-import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,7 @@ public class MeetingService {
 		Meeting meeting = generateMeeting(request);
 		addTypesToMeeting(request, meeting);
 
-		meetingQuestionService.createFirstQuestion(meeting);
+		meetingQuestionService.createActiveQuestion(meeting, meeting.getOwner(), null);
 		return meeting;
 	}
 

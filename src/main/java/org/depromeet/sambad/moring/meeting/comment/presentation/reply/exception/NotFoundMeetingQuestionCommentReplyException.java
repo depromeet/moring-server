@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception;
 
-import static org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.MeetingQuestionCommentReplyExceptionCode.NOT_FOUND_MEETING_QUESTION_COMMENT_REPLY;
+import static org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.MeetingQuestionCommentReplyExceptionCode.*;
 
 import org.depromeet.sambad.moring.common.exception.BusinessException;
 

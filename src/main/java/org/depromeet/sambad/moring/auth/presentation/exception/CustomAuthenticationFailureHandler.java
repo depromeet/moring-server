@@ -1,18 +1,18 @@
 package org.depromeet.sambad.moring.auth.presentation.exception;
 
+import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.*;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+
 import org.depromeet.sambad.moring.auth.infrastructure.SecurityProperties;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
-import static org.depromeet.sambad.moring.auth.presentation.exception.AuthExceptionCode.AUTHENTICATION_REQUIRED;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
@@ -22,7 +22,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
 	@Override
 	public void onAuthenticationFailure(
-			HttpServletRequest request, HttpServletResponse response, AuthenticationException exception
+		HttpServletRequest request, HttpServletResponse response, AuthenticationException exception
 	) throws IOException, ServletException {
 		// 에러 메시지를 쿼리 파라미터로 추가하여 리다이렉트
 		super.setDefaultFailureUrl(securityProperties.loginUrl() + "?error=true&exception=" + AUTHENTICATION_REQUIRED);

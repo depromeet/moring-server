@@ -1,4 +1,3 @@
-
 package org.depromeet.sambad.moring.meeting.member.domain;
 
 import static jakarta.persistence.EnumType.*;
@@ -148,7 +147,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		return this.name.compareTo(o.name);
 	}
 
-	public void validateTargetMember(MeetingMember targetMember) {
+	public void validateNextTarget(MeetingMember targetMember) {
 		if (isOtherMeeting(targetMember) || Objects.equals(this.user, targetMember.getUser())) {
 			throw new InvalidMeetingMemberTargetException();
 		}

@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeetingMemberJpaRepository extends JpaRepository<MeetingMember, Long> {
 
-    Optional<MeetingMember> findByUserId(Long userId);
+	Optional<MeetingMember> findByUserId(Long userId);
 
-    List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+	List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
 
-    Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId);
+	Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId);
 }

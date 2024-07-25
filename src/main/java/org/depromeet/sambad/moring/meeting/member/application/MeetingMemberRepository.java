@@ -16,7 +16,8 @@ public interface MeetingMemberRepository {
 
 	List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
 
-	List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId, List<Long> excludeMemberIds);
+	List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId,
+		List<Long> excludeMemberIds);
 
 	boolean isUserExceedingMaxMeetings(Long userId, int maxMeetings);
 

@@ -44,7 +44,8 @@ public class MeetingMemberQueryRepository {
 			.fetchFirst() != null;
 	}
 
-	public List<MeetingMember> findNextTargetsByMeetingId(Long meetingId, Long loginMeetingMemberId, List<Long> excludeMemberIds) {
+	public List<MeetingMember> findNextTargetsByMeetingId(Long meetingId, Long loginMeetingMemberId,
+		List<Long> excludeMemberIds) {
 		return query.selectFrom(meetingMember)
 			.where(meetingMember.id.ne(loginMeetingMemberId),
 				meetingMember.meeting.id.eq(meetingId),

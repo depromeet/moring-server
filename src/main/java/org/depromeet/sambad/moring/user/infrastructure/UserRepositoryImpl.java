@@ -1,11 +1,12 @@
 package org.depromeet.sambad.moring.user.infrastructure;
 
-import lombok.RequiredArgsConstructor;
-import org.depromeet.sambad.moring.user.domain.UserRepository;
+import java.util.Optional;
+
 import org.depromeet.sambad.moring.user.domain.User;
+import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Repository
