@@ -19,10 +19,10 @@ public record UserResponse(
 	String profileImageFileUrl,
 
 	@Schema(description = "생성일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
-	LocalDateTime createAt,
+	LocalDateTime createdAt,
 
 	@Schema(description = "수정일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
-	LocalDateTime updateAt
+	LocalDateTime updatedAt
 ) {
 
 	public static UserResponse from(User user) {
