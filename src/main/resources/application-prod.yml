@@ -13,3 +13,7 @@ decorator:
   datasource:
     p6spy:
       enable-logging: false
+
+file:
+  upload-path: uploaded
+  base-url: https://file.moring.one

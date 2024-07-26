@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "모임원", description = "모임 멤버 관련 api / 담당자 : 권기준")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/meetings/{meetingId}/members")
+@RequestMapping("/v1/meetings")
 public class MeetingMemberController {
 
 	private final MeetingMemberService meetingMemberService;
@@ -42,7 +42,7 @@ public class MeetingMemberController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/{memberId}")
+	@GetMapping("/{meetingId}/members/{memberId}")
 	public ResponseEntity<MeetingMemberResponse> getMeetingMember(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
@@ -52,13 +52,13 @@ public class MeetingMemberController {
 		return ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "모임원 정보 조회", description = "특정 모임의 특정 모임원을 조회합니다.")
+	@Operation(summary = "자기 자신 모임원 정보 조회", description = "자기 자신의 모임원 정보를 조회합니다.")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "모임원 조회 성공"),
+		@ApiResponse(responseCode = "200", description = "정보 조회 성공"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/me")
+	@GetMapping("/{meetingId}/members/me")
 	public ResponseEntity<MeetingMemberResponse> getMyMeetingMember(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
@@ -72,7 +72,7 @@ public class MeetingMemberController {
 		@ApiResponse(responseCode = "200", description = "모임원 목록 조회 성공"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
-	@GetMapping
+	@GetMapping("/{meetingId}/members")
 	public ResponseEntity<MeetingMemberListResponse> getMeetingMembers(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
@@ -88,7 +88,7 @@ public class MeetingMemberController {
 		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND / USER_NOT_FOUND"),
 		@ApiResponse(responseCode = "409", description = "MEETING_MEMBER_ALREADY_EXISTS")
 	})
-	@PostMapping
+	@PostMapping("/members")
 	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(
 		@UserId Long userId,
 		@Parameter(description = "모임의 고유 초대 코드", example = "A1G05C", required = true) @RequestParam("code") String code,
@@ -104,7 +104,7 @@ public class MeetingMemberController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "NO_MEETING_MEMBER_IN_CONDITION")
 	})
-	@GetMapping("/questions/target")
+	@GetMapping("/{meetingId}/members/questions/target")
 	public ResponseEntity<MeetingMemberListResponseDetail> getRandomQuestionMember(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,

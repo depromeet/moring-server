@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.file.infrastructure;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ public class ObjectStorageFileUploader implements FileUploader {
 
 	private final AmazonS3 amazonS3;
 	private final FileRepository fileRepository;
+	private final FileProperties fileProperties;
 
 	@Override
 	public void delete(Long Id) {
@@ -49,30 +51,30 @@ public class ObjectStorageFileUploader implements FileUploader {
 		try {
 			File uploadFile = convert(multipartFile)
 				.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File convert failed."));
+			String filePath = generateUploadPath(logicalName);
 			amazonS3.putObject(
-				new PutObjectRequest(bucketName, logicalName, uploadFile)
+				new PutObjectRequest(bucketName, filePath, uploadFile)
 					.withCannedAcl(CannedAccessControlList.PublicRead)
 			);
 			removeNewFile(uploadFile);
+			return filePath;
 		} catch (ObjectStorageServerException e) {
 			throw new ObjectStorageServerException();
 		}
-		return amazonS3.getUrl(bucketName, logicalName).toString();
 	}
 
 	@Override
 	public String upload(String fileUrl) throws ObjectStorageServerException {
 		try {
-			String fileName = getFileNameFromUrl(fileUrl);
-			amazonS3.putObject(bucketName, fileName, fileUrl);
-			return amazonS3.getUrl(bucketName, fileName).toString();
+			String filePath = generateUploadPath(fileUrl);
+			amazonS3.putObject(bucketName, filePath, fileUrl);
+			return filePath;
 		} catch (ObjectStorageServerException e) {
 			throw new ObjectStorageServerException();
 		}
 	}
 
 	private Optional<File> convert(MultipartFile file) throws IOException {
-		log.info(file.getOriginalFilename());
 		File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
 		if (convertFile.createNewFile()) {
 			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
@@ -89,5 +91,12 @@ public class ObjectStorageFileUploader implements FileUploader {
 		} else {
 			log.info("File could not deleted");
 		}
+	}
+
+	private String generateUploadPath(String originalFileName) {
+		String fileExtension = getFileExtension(originalFileName);
+		String fileName = generateUniqueFileName(fileExtension);
+
+		return Path.of(fileProperties.uploadPath(), fileName).toString();
 	}
 }

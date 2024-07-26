@@ -24,7 +24,7 @@ public class FileService {
 		String url = fileUploader.upload(multipartFile, multipartFile.getOriginalFilename());
 		FileEntity fileEntity = FileEntity.of(multipartFile.getOriginalFilename(), url);
 		fileRepository.save(fileEntity);
-		return FileUrlResponse.of(url);
+		return FileUrlResponse.of(fileEntity.getPhysicalPath());
 	}
 
 	@Transactional

@@ -4,6 +4,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.time.LocalDateTime;
 
+import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.user.domain.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,7 @@ public record UserResponse(
 	@Schema(description = "유저 이메일", example = "example@abc.com", requiredMode = REQUIRED)
 	String email,
 
+	@FullFileUrl
 	@Schema(description = "프로필 이미지 경로", example = "https://example.com/profile.jpg", requiredMode = REQUIRED)
 	String profileImageFileUrl,
 

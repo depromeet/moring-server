@@ -4,7 +4,8 @@ spring:
       ddl-auto: update
 
 file:
-  upload-path: ./temp
+  upload-path: temp
+  base-url: http://localhost:8080
 
 sentry:
   enabled: false
