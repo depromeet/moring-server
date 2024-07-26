@@ -1,11 +1,16 @@
 package org.depromeet.sambad.moring.common.handler;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.poi.ooxml.util.SAXHelper;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
@@ -14,6 +19,7 @@ import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 public class ExcelSheetHandler implements XSSFSheetXMLHandler.SheetContentsHandler {
@@ -40,8 +46,8 @@ public class ExcelSheetHandler implements XSSFSheetXMLHandler.SheetContentsHandl
 			xmlReader.parse(inputSource);
 			inputStream.close();
 			opc.close();
-		} catch (Exception e) {
-			throw new Exception("Failed to read excel file");
+		} catch (SAXException | OpenXML4JException | IOException | ParserConfigurationException e) {
+			throw new Exception(e);
 		}
 		return sheetHandler;
 	}

@@ -64,7 +64,7 @@ public class QuestionService {
 		questionRepository.save(question);
 	}
 
-	public void addAnswer(Question question, Answer answer){
+	public void addAnswer(Question question, Answer answer) {
 		question.addAnswer(answer);
 		questionRepository.save(question);
 	}
