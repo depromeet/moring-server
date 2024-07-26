@@ -14,4 +14,6 @@ public interface QuestionRepository {
 	QuestionListResponse findQuestionsByMeeting(Long meetingId, Pageable pageable);
 
 	List<Question> findAllByNotInQuestionIds(List<Long> excludeQuestionIds);
+
+	void save(Question question);
 }

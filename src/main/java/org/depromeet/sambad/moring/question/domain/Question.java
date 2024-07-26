@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -49,5 +50,11 @@ public class Question extends BaseTimeEntity {
 		return Optional.ofNullable(questionImageFile)
 			.map(FileEntity::getPhysicalPath)
 			.orElse(null);
+	}
+
+	@Builder
+	public Question(String title, FileEntity questionImageFile) {
+		this.title = title;
+		this.questionImageFile = questionImageFile;
 	}
 }

@@ -76,6 +76,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.fetch();
 	}
 
+	@Override
+	public void save(Question question) {
+		questionJpaRepository.save(question);
+	}
+
 	private static BooleanExpression questionEq() {
 		return meetingQuestion.question.id.eq(question.id);
 	}

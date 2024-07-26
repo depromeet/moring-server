@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.presentation.request.QuestionRequest;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionListResponse;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
@@ -76,4 +80,17 @@ public class QuestionController {
 		QuestionResponse randomOne = questionService.getRandomOne(excludeQuestionIds);
 		return ResponseEntity.ok(randomOne);
 	}
+
+	@Operation(summary = "질문 추가", description = "새로운 질문을 등록하는 API 입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "질문 추가 등록성공")
+	})
+	@PostMapping("/questions")
+	public ResponseEntity<Void> addQuestion(
+		@Valid @RequestBody QuestionRequest questionRequest
+	) {
+		questionService.saveQuestion(questionRequest);
+		return ResponseEntity.ok().build();
+	}
+
 }
