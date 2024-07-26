@@ -30,7 +30,9 @@ public class MeetingService {
 		Meeting meeting = generateMeeting(request);
 		addTypesToMeeting(request, meeting);
 
-		meetingQuestionService.createActiveQuestion(meeting, meeting.getOwner(), null);
+		// NOTE: 모임 생성 시점엔 아직 모임장도 모임원 가입이 안된 상태이므로, 오류 발생
+		// 해당 로직 추가한 이유가 궁금합니다.
+		// meetingQuestionService.createActiveQuestion(meeting, meeting.getOwner(), null);
 		return meeting;
 	}
 

@@ -50,7 +50,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_image_file_id")
 	private FileEntity profileImageFile;
 

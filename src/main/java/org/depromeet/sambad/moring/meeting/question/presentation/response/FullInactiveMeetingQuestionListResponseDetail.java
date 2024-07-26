@@ -5,6 +5,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.response.DateFormatter;
+import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
@@ -16,6 +17,7 @@ import lombok.Builder;
 public record FullInactiveMeetingQuestionListResponseDetail(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
+  @FullFileUrl
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL", requiredMode = REQUIRED)
 	String questionImageFileUrl,
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)

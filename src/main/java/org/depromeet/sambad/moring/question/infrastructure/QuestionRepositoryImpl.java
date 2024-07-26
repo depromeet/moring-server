@@ -68,6 +68,14 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 		return QuestionListResponse.of(questionSummaryResponses, PageableResponse.of(pageable, totalElementIds));
 	}
 
+	@Override
+	public List<Question> findAllByNotInQuestionIds(List<Long> excludeQuestionIds) {
+		return queryFactory
+			.selectFrom(question)
+			.where(question.id.notIn(excludeQuestionIds))
+			.fetch();
+	}
+
 	private static BooleanExpression questionEq() {
 		return meetingQuestion.question.id.eq(question.id);
 	}

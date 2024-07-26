@@ -66,6 +66,6 @@ public class AuthService {
 
 		return StringUtils.hasText(profileImageUrl)
 			? fileService.uploadAndSave(profileImageUrl)
-			: null;
+			: fileService.getRandomProfileImage();
 	}
 }
