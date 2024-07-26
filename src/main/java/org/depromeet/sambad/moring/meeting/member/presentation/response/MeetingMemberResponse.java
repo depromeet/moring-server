@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.Gender;
+import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.member.domain.MBTI;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberRole;
@@ -19,6 +20,7 @@ public record MeetingMemberResponse(
 	@Schema(description = "모임원 이름", example = "이한음", requiredMode = REQUIRED)
 	String name,
 
+	@FullFileUrl
 	@Schema(description = "모임원 프로필 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
 	String profileImageFileUrl,
 

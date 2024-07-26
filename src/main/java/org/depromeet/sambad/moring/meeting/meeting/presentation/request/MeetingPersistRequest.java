@@ -16,7 +16,7 @@ public record MeetingPersistRequest(
 	@Size(min = 2, max = 10)
 	String name,
 
-	@Schema(description = "모임 유형의 ID 목록", example = "[1,3,5]", requiredMode = REQUIRED)
+	@Schema(description = "모임 유형의 ID 목록", example = "[1,3]", requiredMode = REQUIRED)
 	@NotNull
 	@Size(max = 2)
 	List<Long> typeIds
