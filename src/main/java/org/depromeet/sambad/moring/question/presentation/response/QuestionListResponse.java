@@ -1,10 +1,19 @@
 package org.depromeet.sambad.moring.question.presentation.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.response.PageableResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record QuestionListResponse<T>(
+	@Schema(
+		description = "질문 목록",
+		example = "[{\"questionId\":1,\"questionImageFileUrl\":\"https://example.com\",\"title\":\"갖고 싶은 초능력은?\",\"usedCount\":3}]",
+		requiredMode = REQUIRED
+	)
 	List<QuestionSummaryResponse> content,
 	PageableResponse<T> pageable
 ) {
