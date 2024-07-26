@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -38,4 +39,10 @@ public class Answer extends BaseTimeEntity {
 	private List<MeetingAnswer> meetingAnswers = new ArrayList<>();
 
 	private String content;
+
+	@Builder
+	public Answer(Question question, String content) {
+		this.question = question;
+		this.content = content;
+	}
 }

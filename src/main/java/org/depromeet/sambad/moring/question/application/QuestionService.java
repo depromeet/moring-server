@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.question.application;
 import java.util.List;
 import java.util.Random;
 
+import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.application.FileService;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -60,6 +61,11 @@ public class QuestionService {
 			.title(questionRequest.title())
 			.questionImageFile(image)
 			.build();
+		questionRepository.save(question);
+	}
+
+	public void addAnswer(Question question, Answer answer){
+		question.addAnswer(answer);
 		questionRepository.save(question);
 	}
 }

@@ -57,4 +57,8 @@ public class Question extends BaseTimeEntity {
 		this.title = title;
 		this.questionImageFile = questionImageFile;
 	}
+
+	public void addAnswer(Answer answer) {
+		answers.add(answer);
+	}
 }
