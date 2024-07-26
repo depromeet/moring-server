@@ -9,7 +9,11 @@ import org.depromeet.sambad.moring.meeting.member.domain.Hobby;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record HobbyResponse(
-	@Schema(example = "[{\"id\": 1, \"content\": \"💩 똥\"}]", description = "모임원 취미 목록", requiredMode = REQUIRED)
+	@Schema(
+		example = "[{\"id\": 1, \"content\": \"💩 똥\"}]",
+		description = "모임원 취미 목록",
+		requiredMode = REQUIRED
+	)
 	List<HobbyDetail> contents
 ) {
 

@@ -12,10 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record MyMeetingAnswerListResponseDetail(
 	@Schema(title = "질문 인덱스", example = "1", requiredMode = REQUIRED)
 	int idx,
+
 	@Schema(title = "릴레이 질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
+
 	@Schema(title = "유저가 선택한 답변", example = "분신술", requiredMode = REQUIRED)
 	String content,
+
 	@Schema(title = "유저가 단 댓글", example = "요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!", requiredMode = REQUIRED)
 	String commentContent
 ) {

@@ -13,11 +13,12 @@ import lombok.Builder;
 
 @Builder
 public record MeetingCommentListResponseDetail(
-
 	@Schema(description = "릴레이질문 코멘트 ID", example = "1", requiredMode = REQUIRED)
 	Long id,
+
 	@Schema(description = "릴레이질문 코멘트 내용", example = "코멘트 예시 입니다.", requiredMode = REQUIRED)
 	String content,
+
 	@Schema(description = "코멘트 작성자", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail writer
 ) {

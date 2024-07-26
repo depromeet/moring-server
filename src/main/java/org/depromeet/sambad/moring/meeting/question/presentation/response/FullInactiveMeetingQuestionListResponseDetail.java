@@ -17,15 +17,20 @@ import lombok.Builder;
 public record FullInactiveMeetingQuestionListResponseDetail(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
-  @FullFileUrl
+
+  	@FullFileUrl
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL", requiredMode = REQUIRED)
 	String questionImageFileUrl,
+
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
 	String title,
+
 	@Schema(example = "18", description = "모임 내 질문 인덱스로 1 부터 시작합니다.", requiredMode = REQUIRED)
 	int questionNumber,
+
 	@Schema(example = "2024-07-09", description = "릴레이 질문 시작 날짜", requiredMode = REQUIRED)
 	String startDate,
+
 	@Schema(description = "질문 대상자에 대한 정보", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail targetMember
 ) {

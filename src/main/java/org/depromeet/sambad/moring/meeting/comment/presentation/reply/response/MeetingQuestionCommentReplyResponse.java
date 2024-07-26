@@ -13,8 +13,10 @@ import lombok.Builder;
 public record MeetingQuestionCommentReplyResponse(
 	@Schema(description = "릴레이질문 코멘트 답글 ID", example = "1", requiredMode = REQUIRED)
 	Long id,
+
 	@Schema(description = "릴레이질문 코멘트 답글 내용", example = "코멘트 답글 예시 입니다.", requiredMode = REQUIRED)
 	String content,
+
 	@Schema(description = "릴레이질문 코멘트 답글 작성자", example = "{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail writer
 ) {

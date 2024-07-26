@@ -13,11 +13,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record QuestionResponse(
 	@Schema(description = "질문 ID", example = "1", requiredMode = REQUIRED)
 	Long questionId,
-  @FullFileUrl
+
+  	@FullFileUrl
 	@Schema(description = "질문 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
 	String questionImageFileUrl,
+
 	@Schema(description = "질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
+
 	@Schema(description = "질문에 대한 답변 목록", requiredMode = REQUIRED)
 	List<AnswerResponse> answers
 ) {
