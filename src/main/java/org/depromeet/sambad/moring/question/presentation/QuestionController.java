@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.question.presentation;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionListResponse;
@@ -60,5 +62,18 @@ public class QuestionController {
 	) {
 		QuestionListResponse response = questionService.findQuestions(userId, meetingId, page, size);
 		return ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "랜덤 질문 조회", description = "모임원이 질문을 선정할 때, 랜덤으로 질문을 추천해주는 API 입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "랜덤 질문 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_AVAILABLE_QUESTION")
+	})
+	@GetMapping("/questions/random")
+	public ResponseEntity<QuestionResponse> findRandomOne(
+		@Parameter(description = "제외할 질문 ID 리스트", example = "1,2,3") @RequestParam List<Long> excludeQuestionIds
+	) {
+		QuestionResponse randomOne = questionService.getRandomOne(excludeQuestionIds);
+		return ResponseEntity.ok(randomOne);
 	}
 }
