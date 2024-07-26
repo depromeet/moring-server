@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.file.infrastructure;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.file.domain.FileRepository;
 import org.depromeet.sambad.moring.file.presentation.exception.NotFoundFileException;
@@ -31,5 +33,10 @@ public class FileRepositoryImpl implements FileRepository {
 	public FileEntity findById(Long id) {
 		return fileJpaRepository.findById(id)
 			.orElseThrow(NotFoundFileException::new);
+	}
+
+	@Override
+	public List<FileEntity> findAllByIsDefaultTrue() {
+		return fileJpaRepository.findAllByIsDefaultTrue();
 	}
 }

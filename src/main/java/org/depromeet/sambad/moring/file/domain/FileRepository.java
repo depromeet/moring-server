@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.file.domain;
 
+import java.util.List;
+
 public interface FileRepository {
 
 	FileEntity save(FileEntity fileEntity);
@@ -9,4 +11,6 @@ public interface FileRepository {
 	void deleteById(Long id);
 
 	FileEntity findById(Long id);
+
+	List<FileEntity> findAllByIsDefaultTrue();
 }
