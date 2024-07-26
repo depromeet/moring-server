@@ -4,6 +4,7 @@ import org.depromeet.sambad.moring.auth.domain.LoginResult;
 import org.depromeet.sambad.moring.auth.domain.RefreshToken;
 import org.depromeet.sambad.moring.auth.domain.TokenGenerator;
 import org.depromeet.sambad.moring.auth.domain.TokenResolver;
+import org.depromeet.sambad.moring.auth.infrastructure.TokenProperties;
 import org.depromeet.sambad.moring.auth.presentation.exception.AuthenticationRequiredException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class RefreshTokenService {
 	private final TokenGenerator tokenGenerator;
 	private final TokenResolver tokenResolver;
 	private final TokenInjector tokenInjector;
+	private final TokenProperties tokenProperties;
 
 	@Transactional
 	public LoginResult reissueBasedOnRefreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -33,8 +35,8 @@ public class RefreshTokenService {
 	}
 
 	private LoginResult getReissuedTokenResult(HttpServletResponse response, RefreshToken savedRefreshToken) {
-		String rotatedRefreshToken = this.rotate(savedRefreshToken);
 		String reissuedAccessToken = tokenGenerator.generateAccessToken(savedRefreshToken.getUserId());
+		String rotatedRefreshToken = this.rotate(savedRefreshToken);
 
 		LoginResult loginResult = new LoginResult(reissuedAccessToken, rotatedRefreshToken, false);
 
@@ -60,6 +62,7 @@ public class RefreshTokenService {
 	private String rotate(RefreshToken refreshToken) {
 		String reissuedToken = tokenGenerator.generateRefreshToken(refreshToken.getUserId());
 		refreshToken.rotate(reissuedToken);
+		refreshToken.updateExpirationIfExpired(tokenProperties.expirationTime().refreshToken());
 		refreshTokenRepository.save(refreshToken);
 
 		return reissuedToken;
