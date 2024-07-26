@@ -2,5 +2,7 @@ package org.depromeet.sambad.moring.auth.domain;
 
 public interface TokenGenerator {
 
-	String generate(Long userId);
+	String generateAccessToken(Long userId);
+
+	String generateRefreshToken(Long userId);
 }

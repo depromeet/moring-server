@@ -8,5 +8,7 @@ public interface TokenResolver {
 
 	Optional<String> resolveTokenFromRequest(HttpServletRequest request);
 
+	Optional<String> resolveRefreshTokenFromRequest(HttpServletRequest request);
+
 	String getSubjectFromToken(String token);
 }

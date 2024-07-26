@@ -4,8 +4,10 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 
 import java.io.IOException;
 
+import org.depromeet.sambad.moring.auth.application.RefreshTokenService;
 import org.depromeet.sambad.moring.auth.domain.TokenResolver;
 import org.depromeet.sambad.moring.auth.presentation.exception.AuthenticationRequiredException;
+import org.depromeet.sambad.moring.auth.presentation.exception.RefreshTokenNotValidaException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -31,6 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private final TokenResolver tokenResolver;
 	private final UserDetailsService userDetailsService;
+	private final RefreshTokenService refreshTokenService;
 
 	@Override
 	protected void doFilterInternal(
@@ -42,28 +44,39 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private void processTokenAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			String token = resolveTokenFromRequest(request);
-			setAuthentication(request, getUserDetails(token));
+			String token = resolveTokenFromRequest(request, response);
+			setAuthentication(request, getUserDetails(token, request, response));
 		} catch (ExpiredJwtException | AuthenticationRequiredException e) {
-			log.debug("Failed to authenticate", e);
-			invalidateCookie(response);
-		} catch (JwtException e) {
 			log.warn("Failed to authenticate", e);
-			invalidateCookie(response);
+			invalidateCookie(ACCESS_TOKEN, response);
+		} catch (RefreshTokenNotValidaException e) {
+			log.warn("Failed to authenticate", e);
+			invalidateCookie(ACCESS_TOKEN, response);
+			invalidateCookie(REFRESH_TOKEN, response);
 		} catch (Exception e) {
 			log.error("Failed to authenticate", e);
-			invalidateCookie(response);
+			invalidateCookie(ACCESS_TOKEN, response);
 		}
 	}
 
-	private String resolveTokenFromRequest(HttpServletRequest request) {
-		return tokenResolver.resolveTokenFromRequest(request)
-			.orElseThrow(AuthenticationRequiredException::new);
+	private String resolveTokenFromRequest(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			return tokenResolver.resolveTokenFromRequest(request)
+				.orElseGet(() -> refreshTokenService.reissueBasedOnRefreshToken(request, response).accessToken());
+		} catch (ExpiredJwtException e) {
+			return refreshTokenService.reissueBasedOnRefreshToken(request, response).accessToken();
+		}
 	}
 
-	private UserDetails getUserDetails(String token) {
-		String subject = tokenResolver.getSubjectFromToken(token);
-		return userDetailsService.loadUserByUsername(subject);
+	private UserDetails getUserDetails(String token, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String subject = tokenResolver.getSubjectFromToken(token);
+			return userDetailsService.loadUserByUsername(subject);
+		} catch (ExpiredJwtException e) {
+			String accessToken = refreshTokenService.reissueBasedOnRefreshToken(request, response).accessToken();
+			String subject = tokenResolver.getSubjectFromToken(accessToken);
+			return userDetailsService.loadUserByUsername(subject);
+		}
 	}
 
 	private void setAuthentication(HttpServletRequest request, UserDetails userDetails) {
@@ -73,8 +86,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
-	private void invalidateCookie(HttpServletResponse response) {
-		Cookie cookieForInvalidate = new Cookie(ACCESS_TOKEN, null);
+	private void invalidateCookie(String cookieName, HttpServletResponse response) {
+		Cookie cookieForInvalidate = new Cookie(cookieName, null);
 		cookieForInvalidate.setMaxAge(0);
 		response.addCookie(cookieForInvalidate);
 
