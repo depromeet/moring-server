@@ -47,7 +47,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			String token = resolveTokenFromRequest(request, response);
 			setAuthentication(request, getUserDetails(token, request, response));
 		} catch (ExpiredJwtException | AuthenticationRequiredException e) {
-			log.warn("Failed to authenticate", e);
+			log.debug("Failed to authenticate", e);
 			invalidateCookie(ACCESS_TOKEN, response);
 		} catch (RefreshTokenNotValidaException e) {
 			log.warn("Failed to authenticate", e);
