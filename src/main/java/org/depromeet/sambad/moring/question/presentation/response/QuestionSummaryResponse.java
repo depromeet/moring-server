@@ -1,20 +1,22 @@
 package org.depromeet.sambad.moring.question.presentation.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import com.querydsl.core.annotations.QueryProjection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record QuestionSummaryResponse(
-	@Schema(example = "1")
+	@Schema(description = "질문 ID", example = "1", requiredMode = REQUIRED)
 	Long questionId,
 
-	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4")
+	@Schema(description = "질문 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
 	String questionImageFileUrl,
 
-	@Schema(example = "국내 여행지 중에서 추천하고 싶은 곳은?")
+	@Schema(description = "질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
 
-	@Schema(example = "18")
+	@Schema(description = "질문 사용 횟수", example = "3", requiredMode = REQUIRED)
 	int usedCount
 ) {
 

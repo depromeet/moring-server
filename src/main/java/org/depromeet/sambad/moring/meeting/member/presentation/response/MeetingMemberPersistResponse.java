@@ -7,7 +7,6 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingMemberPersistResponse(
-
 	@Schema(description = "모임 ID", example = "1", requiredMode = REQUIRED)
 	Long meetingId,
 
