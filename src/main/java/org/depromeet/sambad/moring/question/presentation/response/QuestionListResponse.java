@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ public record QuestionListResponse<T>(
 		requiredMode = REQUIRED
 	)
 	List<QuestionSummaryResponse> content,
+
+	@Schema(description = "페이징 정보", requiredMode = REQUIRED)
 	PageableResponse<T> pageable
 ) {
 	public static <T> QuestionListResponse<T> of(List<QuestionSummaryResponse> content,
