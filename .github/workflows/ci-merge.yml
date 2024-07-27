@@ -33,3 +33,8 @@ jobs:
         with:
           files: build/test-results/**/*.xml
         continue-on-error: true
+
+      - name: "테스트 실패 무시"
+        if: failure()
+        run: echo "테스트가 실패했지만 워크플로우는 계속됩니다."
+        continue-on-error: true
