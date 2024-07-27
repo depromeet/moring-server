@@ -20,9 +20,6 @@ jobs:
       - name: "Gradle 권한 부여"
         run: chmod +x gradlew
 
-      - name: "Gradle 빌드"
-        run: ./gradlew build -x test
-
       - name: "테스트 실행"
         run: ./gradlew --info test
         continue-on-error: true
@@ -32,9 +29,3 @@ jobs:
         if: ${{ always() }}
         with:
           files: build/test-results/**/*.xml
-        continue-on-error: true
-
-      - name: "테스트 실패 무시"
-        if: failure()
-        run: echo "테스트가 실패했지만 워크플로우는 계속됩니다."
-        continue-on-error: true
