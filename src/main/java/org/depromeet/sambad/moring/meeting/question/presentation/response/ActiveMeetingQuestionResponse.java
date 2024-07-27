@@ -17,7 +17,8 @@ public record ActiveMeetingQuestionResponse(
 	Long meetingQuestionId,
 
   	@FullFileUrl
-	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL", requiredMode = REQUIRED)
+	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
+		requiredMode = REQUIRED)
 	String questionImageFileUrl,
 
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)

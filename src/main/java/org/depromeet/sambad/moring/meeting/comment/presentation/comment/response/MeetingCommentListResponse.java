@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.comment.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ public record MeetingCommentListResponse(
 		description = "릴레이질문 코멘트 목록",
 		example = "[{\"id\":1,\"content\":\"코멘트 예시 입니다.\",\"writer\":{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}}]",
 		requiredMode = REQUIRED
-
 	)
 	List<MeetingCommentListResponseDetail> content
 ) {
