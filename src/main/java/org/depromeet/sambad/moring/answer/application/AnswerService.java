@@ -30,7 +30,6 @@ public class AnswerService {
 			.question(question)
 			.content(answerRequest.content())
 			.build();
-		questionService.addAnswer(question, answer);
 		answerRepository.save(answer);
 	}
 }
