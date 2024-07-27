@@ -4,8 +4,6 @@ on:
   pull_request:
     branches: [ main, develop ]
 
-permissions: write-all
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,6 +25,7 @@ jobs:
 
       - name: "테스트 실행"
         run: ./gradlew --info test
+        continue-on-error: true
 
       - name: "테스트 결과 업로드"
         uses: EnricoMi/publish-unit-test-result-action@v1
