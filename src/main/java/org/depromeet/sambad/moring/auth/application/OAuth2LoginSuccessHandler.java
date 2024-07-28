@@ -53,6 +53,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		cookie.setMaxAge(expirationSeconds);
 		cookie.setHttpOnly(true);
 		cookie.setDomain(securityProperties.subDomain());
+		cookie.setSecure(true);
 
 		response.addCookie(cookie);
 	}
