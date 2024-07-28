@@ -110,7 +110,7 @@ public class MeetingMemberService {
 			meetingMemberValidator.validateHostMaxCount(meeting.getId());
 		}
 
-		meetingMemberValidator.validateAlreadyExistMember(userId);
+		meetingMemberValidator.validateAlreadyExistMember(userId, meeting.getId());
 		meetingMemberValidator.validateMeetingMaxCount(userId);
 		meetingMemberValidator.validateMeetingMemberMaxCount(meeting.getId());
 	}
