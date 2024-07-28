@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum QuestionExceptionCode implements ExceptionCode {
 
-	NOT_FOUND_QUESTION(NOT_FOUND, "모임 릴레이 질문이 존재하지 않습니다."),
+	NOT_FOUND_QUESTION(NOT_FOUND, "릴레이 질문이 존재하지 않습니다."),
 	NOT_FOUND_AVAILABLE_QUESTION(NOT_FOUND, "사용 가능한 질문이 존재하지 않습니다."),
 	;
 

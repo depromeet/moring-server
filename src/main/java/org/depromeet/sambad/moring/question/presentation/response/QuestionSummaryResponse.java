@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -17,7 +17,7 @@ public record QuestionSummaryResponse(
 	String title,
 
 	@Schema(description = "질문 사용 횟수", example = "3", requiredMode = REQUIRED)
-	int usedCount
+	Long usedCount
 ) {
 
 	@QueryProjection

@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ExecutionLoggingAdvice {
 
+	// FIXME : AOP 타겟 설정 이슈
 	@Pointcut(
 		"within(org.depromeet.sambad.moring..*) && " + "!@within(org.depromeet.sambad.moring.auth.presentation.*Filter)"
 	)
