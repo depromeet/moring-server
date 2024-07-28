@@ -31,6 +31,9 @@ public class LoggingUtils {
 	}
 
 	static String getParameterMessage(String[] parameterNames, List<String> arguments) {
+		if (parameterNames == null || arguments == null)
+			return "";
+
 		return IntStream.range(0, parameterNames.length)
 			.mapToObj(i -> parameterNames[i] + " = " + arguments.get(i))
 			.collect(Collectors.joining(" | "));
