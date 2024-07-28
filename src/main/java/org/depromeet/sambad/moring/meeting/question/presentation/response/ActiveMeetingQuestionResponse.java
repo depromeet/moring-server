@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import org.depromeet.sambad.moring.common.response.DateFormatter;
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
@@ -16,7 +16,7 @@ public record ActiveMeetingQuestionResponse(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
 
-  	@FullFileUrl
+	@FullFileUrl
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
 		requiredMode = REQUIRED)
 	String questionImageFileUrl,
