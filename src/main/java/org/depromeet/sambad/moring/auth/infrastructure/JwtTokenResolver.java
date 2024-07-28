@@ -40,7 +40,12 @@ public class JwtTokenResolver implements TokenResolver {
 	@Override
 	public Optional<String> resolveTokenFromRequest(HttpServletRequest request) {
 		return resolveFromHeader(request)
-			.or(() -> resolveFromCookie(request));
+			.or(() -> resolveFromCookie(request, ACCESS_TOKEN));
+	}
+
+	@Override
+	public Optional<String> resolveRefreshTokenFromRequest(HttpServletRequest request) {
+		return resolveFromCookie(request, REFRESH_TOKEN);
 	}
 
 	@Override
@@ -48,18 +53,6 @@ public class JwtTokenResolver implements TokenResolver {
 		return getClaims(token, secretKey)
 			.getPayload()
 			.getSubject();
-	}
-
-	private Optional<String> resolveFromCookie(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		if (Objects.isNull(cookies)) {
-			return Optional.empty();
-		}
-
-		return Arrays.stream(cookies)
-			.filter(cookie -> Objects.equals(cookie.getName(), ACCESS_TOKEN))
-			.map(Cookie::getValue)
-			.findFirst();
 	}
 
 	private static Optional<String> resolveFromHeader(HttpServletRequest request) {
@@ -70,6 +63,18 @@ public class JwtTokenResolver implements TokenResolver {
 			.map(Iterator::next)
 			.filter(auth -> StringUtils.hasText(auth) && BEARER_PATTERN.matcher(auth).matches())
 			.map(auth -> auth.replaceAll(REPLACE_BEARER_PATTERN, ""));
+	}
+
+	private Optional<String> resolveFromCookie(HttpServletRequest request, String cookieName) {
+		Cookie[] cookies = request.getCookies();
+		if (Objects.isNull(cookies)) {
+			return Optional.empty();
+		}
+
+		return Arrays.stream(cookies)
+			.filter(cookie -> Objects.equals(cookie.getName(), cookieName))
+			.map(Cookie::getValue)
+			.findFirst();
 	}
 
 	private Jws<Claims> getClaims(String token, SecretKey secretKey) {

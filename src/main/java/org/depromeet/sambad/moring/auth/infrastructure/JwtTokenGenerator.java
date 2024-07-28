@@ -19,16 +19,30 @@ public class JwtTokenGenerator implements TokenGenerator {
 
 	private final TokenProperties tokenProperties;
 
-	public String generate(Long userId) {
+	@Override
+	public String generateAccessToken(Long userId) {
 		long currentTimeMillis = System.currentTimeMillis();
 		Date now = new Date(currentTimeMillis);
-		Date expiration = new Date(currentTimeMillis + tokenProperties.expirationTimeMs());
+		Date expiration = new Date(currentTimeMillis + tokenProperties.expirationTime().accessToken() * 1000);
 		SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
 
 		return Jwts.builder()
 			.subject(String.valueOf(userId))
 			.issuedAt(now)
 			.expiration(expiration)
+			.signWith(secretKey)
+			.compact();
+	}
+
+	@Override
+	public String generateRefreshToken(Long userId) {
+		long currentTimeMillis = System.currentTimeMillis();
+		Date now = new Date(currentTimeMillis);
+		SecretKey secretKey = Keys.hmacShaKeyFor(BASE64.decode(tokenProperties.secretKey()));
+
+		return Jwts.builder()
+			.subject(String.valueOf(userId))
+			.issuedAt(now)
 			.signWith(secretKey)
 			.compact();
 	}
