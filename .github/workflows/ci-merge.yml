@@ -21,7 +21,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: "테스트 실행"
-        run: ./gradlew build
+        run: ./gradlew --info test
         continue-on-error: true
 
 #      - name: "테스트 결과 업로드"
