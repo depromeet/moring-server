@@ -1,0 +1,18 @@
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  expiration-time-ms: ${JWT_EXPIRATION_TIME_MS:18000000}
+
+cloud:
+  ncp:
+    object-storage:
+      endpoint: "https://kr.object.ncloudstorage.com"
+      credentials:
+        access-key: ${NCP_ACCESS_KEY}
+        secret-key: ${NCP_SECRET_KEY}
+        bucket: ${NCP_BUCKET_NAME}
+    region:
+      auto: false
+      static-region: "ap-southeast-2"
+    stack:
+      auto: false
+
