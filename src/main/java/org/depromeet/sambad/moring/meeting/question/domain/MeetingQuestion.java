@@ -16,6 +16,8 @@ import org.depromeet.sambad.moring.question.domain.Question;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -57,17 +59,29 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	private LocalDateTime startTime;
 
+	@Enumerated(EnumType.STRING)
+	private MeetingQuestionStatus meetingQuestionStatus;
+
 	@Builder
-	private MeetingQuestion(Meeting meeting, MeetingMember targetMember, Question question, LocalDateTime now) {
+	private MeetingQuestion(Meeting meeting,
+		MeetingMember targetMember,
+		Question question,
+		LocalDateTime now,
+		MeetingQuestionStatus status) {
 		this.meeting = meeting;
 		this.targetMember = targetMember;
 		this.question = question;
 		this.startTime = now;
+		this.meetingQuestionStatus = status;
+
+		meeting.addMeetingQuestion(this);
+		targetMember.addMeetingQuestion(this);
+		question.addMeetingQuestion(this);
 	}
 
 	public static MeetingQuestion createActiveMeetingQuestion(Meeting meeting, MeetingMember targetMember,
 		Question activeQuestion, LocalDateTime now) {
-		return new MeetingQuestion(meeting, targetMember, activeQuestion, now);
+		return new MeetingQuestion(meeting, targetMember, activeQuestion, now, MeetingQuestionStatus.ACTIVE);
 	}
 
 	public static MeetingQuestion createNextMeetingQuestion(Meeting meeting, MeetingMember targetMember,
@@ -76,12 +90,25 @@ public class MeetingQuestion extends BaseTimeEntity {
 			startTime = activeQuestion.get().startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
 		}
 
-		return new MeetingQuestion(meeting, targetMember, null, startTime);
+		return new MeetingQuestion(meeting, targetMember, null, startTime, MeetingQuestionStatus.NOT_STARTED);
+	}
+
+	public void addMeetingAnswer(MeetingAnswer meetingAnswer) {
+		this.memberAnswers.add(meetingAnswer);
 	}
 
 	public void setQuestion(MeetingMember targetMember, Question question) {
 		validateTarget(targetMember);
 		this.question = question;
+	}
+
+	public void updateStatusToInactive() {
+		this.meetingQuestionStatus = MeetingQuestionStatus.INACTIVE;
+	}
+
+	public void updateStatusToActive(LocalDateTime now) {
+		this.startTime = now;
+		this.meetingQuestionStatus = MeetingQuestionStatus.ACTIVE;
 	}
 
 	public int getResponseCount() {
