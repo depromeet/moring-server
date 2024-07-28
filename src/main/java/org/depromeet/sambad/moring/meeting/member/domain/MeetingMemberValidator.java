@@ -28,8 +28,8 @@ public class MeetingMemberValidator {
 		}
 	}
 
-	public void validateAlreadyExistMember(Long userId) {
-		meetingMemberRepository.findByUserId(userId)
+	public void validateAlreadyExistMember(Long userId, Long meetingId) {
+		meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
 			.ifPresent(meetingMember -> {
 				throw new MeetingMemberAlreadyExistsException();
 			});

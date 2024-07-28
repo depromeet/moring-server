@@ -10,7 +10,7 @@ public interface MeetingMemberRepository {
 
 	Optional<MeetingMember> findById(Long meetingMemberId);
 
-	Optional<MeetingMember> findByUserId(Long userId);
+	List<MeetingMember> findByUserId(Long userId);
 
 	Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId);
 

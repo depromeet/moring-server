@@ -10,6 +10,7 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingType;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingPersistResponse;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingResponse;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingTypeResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,17 @@ public class MeetingController {
 
 	private final MeetingService meetingService;
 	private final MeetingTypeService meetingTypeService;
+
+	@Operation(summary = "모임 조회", description = "가입되어 있는 모임 목록을 조회합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "모임 조회 성공"),
+	})
+	@GetMapping
+	public ResponseEntity<MeetingResponse> getMeetings(@UserId Long userId) {
+		MeetingResponse response = meetingService.getMeetingResponse(userId);
+
+		return ResponseEntity.ok(response);
+	}
 
 	@Operation(summary = "모임 생성", description = "모임을 생성합니다.")
 	@ApiResponses({
