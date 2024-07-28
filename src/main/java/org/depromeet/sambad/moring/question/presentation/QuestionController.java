@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,10 +33,7 @@ public class QuestionController {
 	@Operation(summary = "질문 리스트 내 질문 단건 조회",
 		description = "- 모임원이 질문을 선정할 때, 질문 리스트에서 질문을 클릭 시 사용하는 API 입니다.")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			content = @Content(schema = @Schema(implementation = QuestionResponse.class))
-		),
+		@ApiResponse(responseCode = "200"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
 	@GetMapping("/questions/{questionId}")
@@ -51,7 +46,8 @@ public class QuestionController {
 
 	@Operation(summary = "선택 가능한 질문 리스트 조회")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200")
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
 	@GetMapping("/meetings/{meetingId}/questions")
 	public ResponseEntity<QuestionListResponse> findQuestions(

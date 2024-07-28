@@ -76,9 +76,8 @@ public class MeetingAnswerController {
 	@GetMapping("/meetings/{meetingId}/questions/{questionId}/answers/most-selected")
 	public ResponseEntity<SelectedAnswerResponse> getMostSelectedMeetingAnswer(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true)
-		@PathVariable(name = "questionId") Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable(name = "meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable(name = "questionId") Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getMostSelectedAnswer(
 			userId, meetingId, meetingQuestionId);
