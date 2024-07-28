@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,9 +56,12 @@ public class MeetingQuestionController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "- 현재 질문인과 릴레이 질문이 없다면, 200 OK 코드와 body 는 <b>null</b> 을 반환합니다.\n"
-				+ "- 현재 질문인이 있고 릴레이 질문이 없다면, 200 OK 코드와 body 의 <b>isQuestionRegistered: false</b> 로 구분합니다.\n"
+			description = "- 현재 질문인이 있고 릴레이 질문이 없다면, 200 OK 코드와 body 의 <b>isQuestionRegistered: false</b> 로 구분합니다.\n"
 				+ "- 현재 질문인이 있고 릴레이 질문도 존재하면, 200 OK 코드와 <b>isQuestionRegistered: true</b> 로 구분합니다."
+		),
+		@ApiResponse(responseCode = "204",
+			description = "- 현재 질문인과 릴레이 질문이 없는 경우 204 응답합니다.",
+			content = @Content(schema = @Schema(implementation = Object.class))
 		)
 	})
 	@GetMapping("/meetings/{meetingId}/questions/active")
@@ -65,6 +70,9 @@ public class MeetingQuestionController {
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
 		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId, meetingId);
+		if (activeOne == null) {
+			return ResponseEntity.noContent().build();
+		}
 		return ResponseEntity.ok(activeOne);
 	}
 
