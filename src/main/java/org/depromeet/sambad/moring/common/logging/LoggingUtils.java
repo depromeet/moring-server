@@ -31,7 +31,7 @@ public class LoggingUtils {
 	}
 
 	static String getParameterMessage(String[] parameterNames, List<String> arguments) {
-		if (parameterNames == null)
+		if (parameterNames == null || arguments == null)
 			return "";
 
 		return IntStream.range(0, parameterNames.length)
