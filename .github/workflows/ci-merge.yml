@@ -21,22 +21,22 @@ jobs:
         run: chmod +x gradlew
 
       - name: "테스트 실행"
-        run: ./gradlew jacocoTestReport
+        run: ./gradlew test
         continue-on-error: true
 
-#      - name: "테스트 결과 업로드"
-#        uses: EnricoMi/publish-unit-test-result-action@v1
-#        if: ${{ always() }}
-#        with:
-#          files: build/test-results/**/*.xml
-
-      - name: Jacoco Report to PR
-        id: jacoco
-        uses: madrapps/jacoco-report@v1.6.1
+      - name: "테스트 결과 업로드"
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ always() }}
         with:
-          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 40
-          min-coverage-changed-files: 40
-          title: "Code Coverage"
-          update-comment: true
+          files: build/test-results/**/*.xml
+
+#      - name: Jacoco Report to PR
+#        id: jacoco
+#        uses: madrapps/jacoco-report@v1.6.1
+#        with:
+#          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          min-coverage-overall: 40
+#          min-coverage-changed-files: 40
+#          title: "Code Coverage"
+#          update-comment: true
