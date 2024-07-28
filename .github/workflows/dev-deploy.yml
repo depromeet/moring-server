@@ -1,4 +1,4 @@
-name: Build and Deploy to NCP
+name: Deploy DEV to NCP
 
 on:
   workflow_dispatch:
