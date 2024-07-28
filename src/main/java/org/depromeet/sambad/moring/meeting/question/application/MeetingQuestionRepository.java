@@ -12,6 +12,8 @@ public interface MeetingQuestionRepository {
 
 	MeetingQuestion save(MeetingQuestion meetingQuestion);
 
+	Optional<MeetingQuestion> findNextQuestion(Long meetingId);
+
 	boolean existsByQuestion(Long meetingId, Long questionId);
 
 	ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId);

@@ -10,13 +10,15 @@ public interface MeetingAnswerRepository {
 
 	void save(MeetingAnswer meetingAnswer);
 
+	boolean existsByMeetingMember(Long meetingQuestionId, Long meetingMemberId);
+
+	boolean isAllAnsweredByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId);
+
 	List<MeetingAnswer> findMostSelected(Long meetingQuestionId);
 
 	List<MeetingAnswer> findByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId);
 
 	List<MeetingMember> findMeetingMembersSelectWith(Long questionId, List<Long> answerIds);
-
-	boolean existsByMeetingMember(Long meetingQuestionId, Long meetingMemberId);
 
 	MyMeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId);
 }
