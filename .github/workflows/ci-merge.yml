@@ -1,0 +1,42 @@
+name: Check test coverage and merge
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "GitHub 에서 레포 받아오기"
+        uses: actions/checkout@v3
+
+      - name: "JDK17 준비하기"
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: "Gradle 권한 부여"
+        run: chmod +x gradlew
+
+      - name: "테스트 실행"
+        run: ./gradlew test
+        continue-on-error: true
+
+      - name: "테스트 결과 업로드"
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ always() }}
+        with:
+          files: build/test-results/**/*.xml
+
+#      - name: Jacoco Report to PR
+#        id: jacoco
+#        uses: madrapps/jacoco-report@v1.6.1
+#        with:
+#          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          min-coverage-overall: 40
+#          min-coverage-changed-files: 40
+#          title: "Code Coverage"
+#          update-comment: true
