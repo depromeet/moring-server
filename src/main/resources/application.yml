@@ -12,6 +12,11 @@ spring:
       default_batch_fetch_size: 1000
       jdbc:
         time_zone: Asia/Seoul
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:/db/data.sql
+      mode: never
   data:
     redis:
       host: ${REDIS_HOST:localhost}
