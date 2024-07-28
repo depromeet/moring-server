@@ -24,7 +24,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "모임의 릴레이 질문", description = "모임원이 선택한 릴레이 질문 관련 api / 담당자: 김나현")
@@ -111,8 +110,8 @@ public class MeetingQuestionController {
 	public ResponseEntity<FullInactiveMeetingQuestionListResponse> findFullInactiveList(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
-		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") @Positive int page,
-		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") @Positive int size
+		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") int page,
+		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") int size
 	) {
 		FullInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findFullInactiveList(userId,
 			meetingId,
