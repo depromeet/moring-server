@@ -19,12 +19,9 @@ import org.depromeet.sambad.moring.meeting.question.presentation.response.MostIn
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DateTimeExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -151,32 +148,20 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	private BooleanExpression activeCond() {
-		DateTimeExpression<LocalDateTime> endTime = getEndTime();
-		DateTimeExpression<LocalDateTime> now = getNow();
-		return now.loe(endTime).and(isAnsweredByAllCond().not());
+		LocalDateTime now = LocalDateTime.now();
+		return meetingQuestion.startTime.loe(now)
+			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
+			.and(isAnsweredByAllCond().not());
 	}
 
 	private BooleanExpression inactiveCond() {
-		DateTimeExpression<LocalDateTime> endTime = getEndTime();
-		DateTimeExpression<LocalDateTime> now = getNow();
-		return now.gt(endTime).or(isAnsweredByAllCond());
+		LocalDateTime now = LocalDateTime.now();
+		return meetingQuestion.startTime.gt(now)
+			.or(meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
+			.or(isAnsweredByAllCond());
 	}
 
 	private BooleanExpression isAnsweredByAllCond() {
 		return meetingQuestion.memberAnswers.size().eq(meetingQuestion.meeting.meetingMembers.size());
-	}
-
-	private DateTimeExpression<LocalDateTime> getEndTime() {
-		DateTimeExpression<LocalDateTime> endTime = Expressions.dateTimeTemplate(
-			LocalDateTime.class,
-			"{0} + {1} hours",
-			meetingQuestion.startTime,
-			RESPONSE_TIME_LIMIT_HOURS
-		);
-		return endTime;
-	}
-
-	private DateTimeExpression<LocalDateTime> getNow() {
-		return Expressions.dateTimeOperation(LocalDateTime.class, Ops.DateTimeOps.CURRENT_TIMESTAMP);
 	}
 }
