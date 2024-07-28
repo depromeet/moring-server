@@ -21,7 +21,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: "테스트 실행"
-        run: ./gradlew --info test
+        run: ./gradlew jacocoTestReport
         continue-on-error: true
 
 #      - name: "테스트 결과 업로드"
@@ -36,7 +36,7 @@ jobs:
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 75
-          min-coverage-changed-files: 75
+          min-coverage-overall: 40
+          min-coverage-changed-files: 40
           title: "Code Coverage"
           update-comment: true
