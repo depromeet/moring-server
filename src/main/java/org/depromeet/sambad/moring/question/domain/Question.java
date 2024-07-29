@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Question extends BaseTimeEntity {
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
 	private List<MeetingQuestion> meetingQuestions = new ArrayList<>();
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Answer> answers = new ArrayList<>();
 
 	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
@@ -56,9 +57,14 @@ public class Question extends BaseTimeEntity {
 	}
 
 	@Builder
-	public Question(String title, FileEntity questionImageFile) {
+	public Question(String title, FileEntity questionImageFile, List<String> answerContents) {
 		this.title = title;
 		this.questionImageFile = questionImageFile;
+
+		answerContents.forEach(answerContent -> answers.add(Answer.builder()
+			.question(this)
+			.content(answerContent)
+			.build()));
 	}
 
 	public void addAnswer(Answer answer) {
