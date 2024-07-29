@@ -74,11 +74,11 @@ public class MeetingAnswerController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
 	})
-	@GetMapping("/meetings/{meetingId}/questions/{questionId}/answers/most-selected")
+	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/most-selected")
 	public ResponseEntity<SelectedAnswerResponse> getMostSelectedMeetingAnswer(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable(name = "meetingId") Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable(name = "questionId") Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getMostSelectedAnswer(
 			userId, meetingId, meetingQuestionId);
@@ -92,11 +92,11 @@ public class MeetingAnswerController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/meetings/{meetingId}/questions/{questionId}/answers/selected-same")
+	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/selected-same")
 	public ResponseEntity<SelectedAnswerResponse> getSelectedSameMeetingAnswers(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable(name = "meetingId") Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable(name = "questionId") Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getSelectedSameAnswer(
 			userId, meetingId, meetingQuestionId);

@@ -17,6 +17,7 @@ import org.depromeet.sambad.moring.meeting.question.presentation.response.Meetin
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.question.application.QuestionService;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,6 +103,14 @@ public class MeetingQuestionService {
 	public MeetingQuestion getById(Long meetingId, Long meetingQuestionId) {
 		return meetingQuestionRepository.findByMeetingIdAndMeetingQuestionId(meetingId, meetingQuestionId)
 			.orElseThrow(NotFoundMeetingQuestion::new);
+	}
+
+	/*
+	 * 질문 정보의 경우 Public한 데이터이므로, 따로 권한 체크를 하지 않는다.
+	 */
+	public QuestionResponse getQuestionResponseById(Long meetingId, Long meetingQuestionId) {
+		MeetingQuestion meetingQuestion = getById(meetingId, meetingQuestionId);
+		return QuestionResponse.from(meetingQuestion.getQuestion());
 	}
 
 	private Optional<MeetingQuestion> findActiveMeetingQuestion(Long meetingId) {

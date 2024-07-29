@@ -21,8 +21,7 @@ public record SelectedAnswerResponse(
 	@Schema(description = "선택한 멤버들", requiredMode = REQUIRED)
 	List<MeetingMemberListResponseDetail> selectedMembers
 ) {
-	public static SelectedAnswerResponse from(List<MeetingMember> members,
-		List<MeetingAnswer> answers) {
+	public static SelectedAnswerResponse from(List<MeetingMember> members, List<MeetingAnswer> answers) {
 		return new SelectedAnswerResponse(
 			answers.stream()
 				.map(MeetingAnswer::getAnswerContent)
