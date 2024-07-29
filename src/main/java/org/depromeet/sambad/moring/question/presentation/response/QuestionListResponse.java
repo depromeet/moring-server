@@ -14,7 +14,7 @@ public record QuestionListResponse<T>(
 		example = "[{\"questionId\":1,\"questionImageFileUrl\":\"https://example.com\",\"title\":\"갖고 싶은 초능력은?\",\"usedCount\":3}]",
 		requiredMode = REQUIRED
 	)
-	List<QuestionSummaryResponse> content,
+	List<QuestionSummaryResponse> contents,
 
 	@Schema(description = "페이징 정보", requiredMode = REQUIRED)
 	PageableResponse<T> pageable

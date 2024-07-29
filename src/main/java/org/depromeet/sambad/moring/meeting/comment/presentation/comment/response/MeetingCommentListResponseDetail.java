@@ -14,7 +14,7 @@ import lombok.Builder;
 @Builder
 public record MeetingCommentListResponseDetail(
 	@Schema(description = "릴레이질문 코멘트 ID", example = "1", requiredMode = REQUIRED)
-	Long id,
+	Long meetingQuestionCommentId,
 
 	@Schema(description = "릴레이질문 코멘트 내용", example = "코멘트 예시 입니다.", requiredMode = REQUIRED)
 	String content,
@@ -26,7 +26,7 @@ public record MeetingCommentListResponseDetail(
 		MeetingMember writer = meetingQuestionComment.getMeetingMember();
 
 		return MeetingCommentListResponseDetail.builder()
-			.id(meetingQuestionComment.getId())
+			.meetingQuestionCommentId(meetingQuestionComment.getId())
 			.content(meetingQuestionComment.getContent())
 			.writer(MeetingMemberListResponseDetail.from(writer))
 			.build();

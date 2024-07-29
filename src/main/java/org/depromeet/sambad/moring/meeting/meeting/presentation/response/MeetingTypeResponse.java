@@ -9,13 +9,13 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingTypeResponse(
-	@Schema(example = "[{\"id\": 1, \"content\": \"💩 똥\"}]", description = "모임 유형 목록", requiredMode = REQUIRED)
+	@Schema(example = "[{\"meetingTypeId\": 1, \"content\": \"💩 똥\"}]", description = "모임 유형 목록", requiredMode = REQUIRED)
 	List<MeetingTypeDetail> contents
 ) {
 
 	record MeetingTypeDetail(
 		@Schema(example = "1", description = "모임 타입 ID", requiredMode = REQUIRED)
-		Long id,
+		Long meetingTypeId,
 
 		@Schema(example = "💩 똥", description = "모임 유형", requiredMode = REQUIRED)
 		String content

@@ -11,10 +11,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record MeetingCommentListResponse(
 	@Schema(
 		description = "릴레이질문 코멘트 목록",
-		example = "[{\"id\":1,\"content\":\"코멘트 예시 입니다.\",\"writer\":{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}}]",
+		example = "[{\"meetingQuestionCommentId\":1,\"content\":\"코멘트 예시 입니다.\",\"writer\":{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}}]",
 		requiredMode = REQUIRED
 	)
-	List<MeetingCommentListResponseDetail> content
+	List<MeetingCommentListResponseDetail> contents
 ) {
 	public static MeetingCommentListResponse from(List<MeetingQuestionComment> comments) {
 		return new MeetingCommentListResponse(MeetingCommentListResponseDetail.from(comments));

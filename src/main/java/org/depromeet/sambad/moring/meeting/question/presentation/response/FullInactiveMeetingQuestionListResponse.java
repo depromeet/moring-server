@@ -15,7 +15,7 @@ public record FullInactiveMeetingQuestionListResponse<T>(
 		description = "비활성화된 모임 질문 목록",
 		requiredMode = REQUIRED
 	)
-	List<FullInactiveMeetingQuestionListResponseDetail> content,
+	List<FullInactiveMeetingQuestionListResponseDetail> contents,
 
 	@Schema(description = "페이징 정보", requiredMode = REQUIRED)
 	PageableResponse<T> pageable

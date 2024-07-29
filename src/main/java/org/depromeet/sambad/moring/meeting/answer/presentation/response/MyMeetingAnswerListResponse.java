@@ -14,7 +14,7 @@ public record MyMeetingAnswerListResponse(
 		example = "[{\"idx\":1,\"title\":\"갖고 싶은 초능력은?\",\"content\":\"분신술\",\"commentContent\":\"요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!\"}]",
 		requiredMode = REQUIRED
 	)
-	List<MyMeetingAnswerListResponseDetail> content
+	List<MyMeetingAnswerListResponseDetail> contents
 ) {
 
 	public static MyMeetingAnswerListResponse from(List<MyMeetingAnswerResponseCustom> content) {

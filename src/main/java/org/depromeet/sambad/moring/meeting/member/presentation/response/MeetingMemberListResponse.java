@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record MeetingMemberListResponse(
 	@Schema(
 		description = "모임원 목록",
-		example = "[{\"id\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}]",
+		example = "[{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}]",
 		requiredMode = REQUIRED
 	)
 	List<MeetingMemberListResponseDetail> contents

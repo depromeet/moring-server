@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record HobbyResponse(
 	@Schema(
-		example = "[{\"id\": 1, \"content\": \"💩 똥\"}]",
+		example = "[{\"hobbyId\": 1, \"content\": \"💩 똥\"}]",
 		description = "모임원 취미 목록",
 		requiredMode = REQUIRED
 	)
@@ -19,7 +19,7 @@ public record HobbyResponse(
 
 	record HobbyDetail(
 		@Schema(example = "1", description = "모임원 취미 ID", requiredMode = REQUIRED)
-		Long id,
+		Long hobbyId,
 
 		@Schema(example = "💩 똥", description = "모임원 취미 내용", requiredMode = REQUIRED)
 		String content
