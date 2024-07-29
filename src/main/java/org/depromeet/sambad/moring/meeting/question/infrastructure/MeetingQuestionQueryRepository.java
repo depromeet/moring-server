@@ -194,7 +194,7 @@ public class MeetingQuestionQueryRepository {
 		for (int i = 0; i < details.size(); i++) {
 			MeetingQuestionStatisticsDetail detail = details.get(i);
 			details.set(i,
-				new MeetingQuestionStatisticsDetail(i + 1, detail.answer(), detail.count(),
+				new MeetingQuestionStatisticsDetail(i + 1, detail.answerContent(), detail.count(),
 					detail.percentage()));
 		}
 
