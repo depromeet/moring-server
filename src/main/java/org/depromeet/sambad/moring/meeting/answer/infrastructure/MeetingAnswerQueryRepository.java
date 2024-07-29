@@ -68,7 +68,7 @@ public class MeetingAnswerQueryRepository {
 			.from(meetingAnswer)
 			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId)
 				.and(meetingAnswer.answer.id.in(answerIds)))
-			.groupBy(meetingAnswer.meetingMember.id)
+			.groupBy(meetingAnswer.meetingMember)
 			.fetch();
 
 		String answerIdsToString = String.join(",", answerIds.stream().map(String::valueOf).toList());
