@@ -1,11 +1,13 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -58,5 +60,10 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	@Override
 	public Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId) {
 		return meetingQuestionJpaRepository.findByMeetingIdAndId(meetingId, meetingQuestionId);
+	}
+
+	@Override
+	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {
+		return meetingQuestionQueryRepository.findStatistics(meetingQuestionId);
 	}
 }
