@@ -8,7 +8,9 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.question.presentation.exception.AnswerCountOutOfRangeException;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +29,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
+
+	private final static int MIN_ANSWER_COUNT = 2;
+	private final static int MAX_ANSWER_COUNT = 16;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +47,7 @@ public class Question extends BaseTimeEntity {
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
 	private List<MeetingQuestion> meetingQuestions = new ArrayList<>();
 
-	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Answer> answers = new ArrayList<>();
 
 	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
@@ -52,5 +58,28 @@ public class Question extends BaseTimeEntity {
 		return Optional.ofNullable(questionImageFile)
 			.map(FileEntity::getPhysicalPath)
 			.orElse(null);
+	}
+
+	@Builder
+	public Question(String title, FileEntity questionImageFile, List<String> answerContents) {
+		checkAnswerContents(answerContents);
+
+		this.title = title;
+		this.questionImageFile = questionImageFile;
+
+		answerContents.forEach(answerContent -> answers.add(Answer.builder()
+			.question(this)
+			.content(answerContent)
+			.build()));
+	}
+
+	public void addAnswer(Answer answer) {
+		answers.add(answer);
+	}
+
+	private void checkAnswerContents(List<String> answerContents) {
+		if (answerContents.size() < MIN_ANSWER_COUNT || answerContents.size() > MAX_ANSWER_COUNT) {
+			throw new AnswerCountOutOfRangeException();
+		}
 	}
 }

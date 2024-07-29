@@ -18,4 +18,9 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 	public Optional<Answer> findByQuestionIdAndAnswerId(Long questionId, Long answerId) {
 		return answerJpaRepository.findByIdAndQuestionId(answerId, questionId);
 	}
+
+	@Override
+	public void save(Answer answer) {
+		answerJpaRepository.save(answer);
+	}
 }
