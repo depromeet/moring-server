@@ -2,7 +2,9 @@ package org.depromeet.sambad.moring.auth.application;
 
 import org.depromeet.sambad.moring.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moring.auth.domain.LoginResult;
+import org.depromeet.sambad.moring.auth.domain.RefreshToken;
 import org.depromeet.sambad.moring.auth.domain.TokenGenerator;
+import org.depromeet.sambad.moring.auth.infrastructure.TokenProperties;
 import org.depromeet.sambad.moring.auth.presentation.exception.AlreadyRegisteredUserException;
 import org.depromeet.sambad.moring.file.application.FileService;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
@@ -26,6 +28,8 @@ public class AuthService {
 	private final UserRepository userRepository;
 	private final TokenGenerator tokenGenerator;
 	private final FileService fileService;
+	private final RefreshTokenRepository refreshTokenRepository;
+	private final TokenProperties tokenProperties;
 
 	@Transactional
 	public LoginResult handleLoginSuccess(AuthAttributes attributes) {
@@ -41,17 +45,26 @@ public class AuthService {
 			throw new AlreadyRegisteredUserException();
 		}
 
-		return new LoginResult(generateTokenFromUser(user), false);
+		return generateLoginResult(user, false);
 	}
 
 	private LoginResult handleFirstLogin(AuthAttributes attributes) {
 		User newUser = saveNewUser(attributes);
 
-		return new LoginResult(generateTokenFromUser(newUser), true);
+		return generateLoginResult(newUser, true);
 	}
 
-	private String generateTokenFromUser(User user) {
-		return tokenGenerator.generate(user.getId());
+	private LoginResult generateLoginResult(User user, boolean firstLogin) {
+		String accessToken = tokenGenerator.generateAccessToken(user.getId());
+		String refreshToken = tokenGenerator.generateRefreshToken(user.getId());
+
+		RefreshToken refreshTokenEntity = refreshTokenRepository.findByUserId(user.getId())
+			.orElse(RefreshToken.of(user.getId(), refreshToken, tokenProperties.expirationTime().refreshToken()));
+
+		refreshTokenEntity.rotate(refreshToken);
+		refreshTokenRepository.save(refreshTokenEntity);
+
+		return new LoginResult(accessToken, refreshToken, firstLogin);
 	}
 
 	private User saveNewUser(AuthAttributes attributes) {

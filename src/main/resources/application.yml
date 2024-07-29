@@ -12,6 +12,11 @@ spring:
       default_batch_fetch_size: 1000
       jdbc:
         time_zone: Asia/Seoul
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:/db/data.sql
+      mode: never
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -26,9 +31,12 @@ spring:
       max-request-size: ${MAX_REQUEST_SIZE:5MB}
       enabled: true
   security:
-    sub-domain: ${SUB_DOMAIN:moring.one}
     login-url: ${LOGIN_URL:/login}
     redirect-url: ${REDIRECT_URL:/}
+    cookie:
+      domain: ${COOKIE_DOMAIN:moring.one}
+      secure: ${COOKIE_SECURE:true}
+      http-only: ${COOKIE_HTTP_ONLY:true}
     oauth2:
       client:
         provider:
@@ -69,7 +77,9 @@ decorator:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  expiration-time-ms: ${JWT_EXPIRATION_TIME_MS:18000000}
+  expiration-time:
+    access-token: ${JWT_EXPIRATION_TIME_ACCESS_TOKEN:1800} # 30 minutes
+    refresh-token: ${JWT_EXPIRATION_TIME_REFRESH_TOKEN:7776000} # 90 days
 
 cloud:
   ncp:

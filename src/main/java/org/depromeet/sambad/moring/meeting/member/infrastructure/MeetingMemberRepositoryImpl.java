@@ -27,7 +27,7 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 	}
 
 	@Override
-	public Optional<MeetingMember> findByUserId(Long userId) {
+	public List<MeetingMember> findByUserId(Long userId) {
 		return meetingMemberJpaRepository.findByUserId(userId);
 	}
 

@@ -58,6 +58,10 @@ public class Meeting extends BaseTimeEntity {
 		return new Meeting(request.name(), meetingCode);
 	}
 
+	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
+		this.meetingQuestions.add(meetingQuestion);
+	}
+
 	public String getCode() {
 		return Optional.ofNullable(code)
 			.map(MeetingCode::getCode)

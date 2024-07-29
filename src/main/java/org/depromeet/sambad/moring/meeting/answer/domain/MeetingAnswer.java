@@ -48,6 +48,8 @@ public class MeetingAnswer extends BaseTimeEntity {
 		this.meetingQuestion = meetingQuestion;
 		this.answer = answer;
 		this.meetingMember = meetingMember;
+
+		meetingQuestion.addMeetingAnswer(this);
 	}
 
 	public String getAnswerContent() {

@@ -1,21 +1,29 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.reply.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import org.depromeet.sambad.moring.meeting.comment.domain.reply.MeetingQuestionCommentReply;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
 public record MeetingQuestionCommentReplyResponse(
-	Long id,
+	@Schema(description = "릴레이질문 코멘트 답글 ID", example = "1", requiredMode = REQUIRED)
+	Long meetingQuestionCommentReplyId,
+
+	@Schema(description = "릴레이질문 코멘트 답글 내용", example = "코멘트 답글 예시 입니다.", requiredMode = REQUIRED)
 	String content,
+
+	@Schema(description = "릴레이질문 코멘트 답글 작성자", example = "{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail writer
 ) {
 	public static MeetingQuestionCommentReplyResponse from(MeetingQuestionCommentReply commentReply) {
 		MeetingMember writer = commentReply.getMeetingMember();
 		MeetingQuestionCommentReplyResponseBuilder builder = MeetingQuestionCommentReplyResponse.builder()
-			.id(commentReply.getId())
+			.meetingQuestionCommentReplyId(commentReply.getId())
 			.content(commentReply.getContent())
 			.writer(MeetingMemberListResponseDetail.from(writer));
 		return builder.build();

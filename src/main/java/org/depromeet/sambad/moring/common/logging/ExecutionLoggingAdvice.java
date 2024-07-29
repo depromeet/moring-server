@@ -25,10 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ExecutionLoggingAdvice {
 
-	@Pointcut(
-		"within(org.depromeet.sambad.moring..*) && " + "!@within(org.depromeet.sambad.moring.auth.presentation.*Filter)"
+	@Pointcut("execution(public * org.depromeet.sambad.moring..*(..)) && "
+		+ "!execution(* org.depromeet.sambad.moring.*.infrastructure.*Properties.*(..)) && "
+		+ "!execution(* org.depromeet.sambad.moring.*.*.infrastructure.*Properties.*(..)) && "
+		+ "!execution(* org.depromeet.sambad.moring.common..*(..)) && "
+		+ "!execution(* org.depromeet.sambad.moring.*.*.annotation..*(..))"
 	)
-	private void allPointcut() {
+	private void logPointcut() {
 	}
 
 	@Pointcut("@annotation(org.depromeet.sambad.moring.common.logging.ExecutionTimer)")
@@ -52,7 +55,7 @@ public class ExecutionLoggingAdvice {
 		return proceed;
 	}
 
-	@Before("allPointcut()")
+	@Before("logPointcut()")
 	public void logBeforeExecution(JoinPoint joinPoint) {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		Class className = signature.getDeclaringType();
@@ -65,7 +68,7 @@ public class ExecutionLoggingAdvice {
 		log.info("[START] {} | {} {}", className.getSimpleName(), method.getName(), parameterMessage);
 	}
 
-	@AfterReturning(value = "allPointcut()", returning = "result")
+	@AfterReturning(value = "logPointcut()", returning = "result")
 	public void logAfterReturning(JoinPoint joinPoint, Object result) {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		Class className = signature.getDeclaringType();
@@ -74,7 +77,7 @@ public class ExecutionLoggingAdvice {
 		log.info("[SUCCESS] {} | {} | return = {}", className.getSimpleName(), method.getName(), result);
 	}
 
-	@AfterThrowing(value = "allPointcut()", throwing = "exception")
+	@AfterThrowing(value = "logPointcut()", throwing = "exception")
 	public void logAfterThrowing(JoinPoint joinPoint, BusinessException exception) {
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		String className = signature.getDeclaringType().getSimpleName();

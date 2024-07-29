@@ -5,8 +5,10 @@ import java.util.List;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.TypesPerMeeting;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingResponse;
+import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
-import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class MeetingService {
 
-	private final MeetingQuestionService meetingQuestionService;
-
 	private final MeetingRepository meetingRepository;
+	private final MeetingMemberRepository meetingMemberRepository;
 	private final MeetingTypeRepository meetingTypeRepository;
 	private final MeetingCodeGenerator meetingCodeGenerator;
 	private final MeetingMemberValidator meetingMemberValidator;
@@ -36,8 +38,17 @@ public class MeetingService {
 		return meeting;
 	}
 
+	public MeetingResponse getMeetingResponse(Long userId) {
+		List<MeetingMember> membersOfUser = meetingMemberRepository.findByUserId(userId);
+		List<Meeting> meetings = membersOfUser.stream()
+			.map(MeetingMember::getMeeting)
+			.toList();
+
+		return MeetingResponse.from(meetings);
+	}
+
 	private void addTypesToMeeting(MeetingPersistRequest request, Meeting meeting) {
-		List<TypesPerMeeting> types = meetingTypeRepository.findByIdIn(request.typeIds())
+		List<TypesPerMeeting> types = meetingTypeRepository.findByIdIn(request.meetingTypeIds())
 			.stream()
 			.map(type -> TypesPerMeeting.of(meeting, type))
 			.toList();
@@ -46,7 +57,7 @@ public class MeetingService {
 	}
 
 	private Meeting generateMeeting(MeetingPersistRequest request) {
-		meetingTypeRepository.findByIdIn(request.typeIds());
+		meetingTypeRepository.findByIdIn(request.meetingTypeIds());
 		Meeting meeting = Meeting.of(request, meetingCodeGenerator.generate());
 		meetingRepository.save(meeting);
 

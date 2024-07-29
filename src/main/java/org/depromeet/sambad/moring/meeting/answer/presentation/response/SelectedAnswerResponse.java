@@ -14,8 +14,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record SelectedAnswerResponse(
 	@Schema(description = "답변 내용", example = "[\"토마토\"]", requiredMode = REQUIRED)
 	List<String> content,
+
 	@Schema(description = "답변 수", example = "3", requiredMode = REQUIRED)
 	int count,
+
 	@Schema(description = "선택한 멤버들", requiredMode = REQUIRED)
 	List<MeetingMemberListResponseDetail> selectedMembers
 ) {

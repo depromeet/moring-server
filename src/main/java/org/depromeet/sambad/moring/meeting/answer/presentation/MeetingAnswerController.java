@@ -1,10 +1,10 @@
 package org.depromeet.sambad.moring.meeting.answer.presentation;
 
+import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerResultService;
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerService;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.SelectedAnswerResponse;
-import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerResultService;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +53,8 @@ public class MeetingAnswerController {
 
 	@Operation(summary = "내가 작성한 모든 질문의 답변 리스트 조회", description =
 		"- 프로필 페이지 내 릴레이 질문 영역 조회 시 사용합니다.\n"
-			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.")
+			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.\n"
+			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
@@ -76,9 +77,8 @@ public class MeetingAnswerController {
 	@GetMapping("/meetings/{meetingId}/questions/{questionId}/answers/most-selected")
 	public ResponseEntity<SelectedAnswerResponse> getMostSelectedMeetingAnswer(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true)
-		@PathVariable(name = "questionId") Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable(name = "meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable(name = "questionId") Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getMostSelectedAnswer(
 			userId, meetingId, meetingQuestionId);
@@ -95,9 +95,8 @@ public class MeetingAnswerController {
 	@GetMapping("/meetings/{meetingId}/questions/{questionId}/answers/selected-same")
 	public ResponseEntity<SelectedAnswerResponse> getSelectedSameMeetingAnswers(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true)
-		@PathVariable(name = "questionId") Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable(name = "meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable(name = "questionId") Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getSelectedSameAnswer(
 			userId, meetingId, meetingQuestionId);

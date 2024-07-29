@@ -11,6 +11,7 @@ import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAn
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class MeetingAnswerService {
 
 	private final MeetingAnswerRepository meetingAnswerRepository;
+	private final MeetingQuestionRepository meetingQuestionRepository;
 
 	private final MeetingMemberService meetingMemberService;
 	private final MeetingQuestionService meetingQuestionService;
@@ -33,8 +35,6 @@ public class MeetingAnswerService {
 
 	@Transactional
 	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
-		// FIXME: 모든 모임원이 답변했다면, MeetingQuestion 을 종료시키고 다음 MeetingQuestion 을 시작시켜야 한다.
-
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
@@ -48,6 +48,18 @@ public class MeetingAnswerService {
 			.answer(selectedAnswer)
 			.build();
 		meetingAnswerRepository.save(meetingAnswer);
+
+		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
+	}
+
+	private void advanceToNextQuestionIfAllAnswered(Long meetingId, MeetingQuestion currentQuestion) {
+		boolean isAllAnswered = meetingAnswerRepository.isAllAnsweredByMeetingIdAndMeetingQuestionId(
+			meetingId, currentQuestion.getId());
+		if (isAllAnswered) {
+			currentQuestion.updateStatusToInactive();
+			meetingQuestionRepository.findNextQuestion(meetingId)
+				.ifPresent(nextQuestion -> nextQuestion.updateStatusToActive(LocalDateTime.now(clock)));
+		}
 	}
 
 	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {

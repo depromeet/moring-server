@@ -27,7 +27,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -112,6 +111,10 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			request.location(),
 			request.mbti(),
 			request.introduction());
+	}
+
+	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
+		this.meetingQuestions.add(meetingQuestion);
 	}
 
 	public String getProfileImageUrl() {

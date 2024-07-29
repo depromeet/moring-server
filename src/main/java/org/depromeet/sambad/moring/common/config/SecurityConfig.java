@@ -67,9 +67,12 @@ public class SecurityConfig {
 	private void configureCorsPolicy(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.cors(cors -> cors.configurationSource(request -> {
 			var corsConfiguration = new CorsConfiguration();
-			corsConfiguration.setAllowedOrigins(List.of("*"));
-			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-			corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+			corsConfiguration.setAllowedOrigins(List.of(
+				"http://localhost:8080", "http://localhost:3000", "http://local.moring.one:3000"));
+			corsConfiguration.setAllowedOriginPatterns(List.of("https://*.moring.one"));
+			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
+			corsConfiguration.setAllowedHeaders(List.of("*"));
+			corsConfiguration.setAllowCredentials(true);
 			return corsConfiguration;
 		}));
 	}

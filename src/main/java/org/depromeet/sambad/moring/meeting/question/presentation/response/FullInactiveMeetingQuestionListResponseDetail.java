@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.response.DateFormatter;
@@ -13,18 +15,24 @@ import lombok.Builder;
 
 @Builder
 public record FullInactiveMeetingQuestionListResponseDetail(
-	@Schema(example = "1", description = "모임 질문 식별자")
+	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
-	@FullFileUrl
-	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL")
+
+  	@FullFileUrl
+	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
+		requiredMode = REQUIRED)
 	String questionImageFileUrl,
-	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE")
+
+	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
 	String title,
-	@Schema(example = "18", description = "모임 내 질문 인덱스로 1 부터 시작합니다.")
+
+	@Schema(example = "18", description = "모임 내 질문 인덱스로 1 부터 시작합니다.", requiredMode = REQUIRED)
 	int questionNumber,
-	@Schema(example = "2024-07-09", description = "릴레이 질문 시작 날짜")
+
+	@Schema(example = "2024-07-09", description = "릴레이 질문 시작 날짜", requiredMode = REQUIRED)
 	String startDate,
-	@Schema(description = "질문 대상자에 대한 정보")
+
+	@Schema(description = "질문 대상자에 대한 정보", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail targetMember
 ) {
 

@@ -18,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +44,10 @@ public class Question extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
 	private List<Answer> answers = new ArrayList<>();
+
+	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
+		this.meetingQuestions.add(meetingQuestion);
+	}
 
 	public String getQuestionImageUrl() {
 		return Optional.ofNullable(questionImageFile)
