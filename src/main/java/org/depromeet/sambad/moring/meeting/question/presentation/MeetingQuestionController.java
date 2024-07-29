@@ -53,11 +53,10 @@ public class MeetingQuestionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@Operation(summary = "현재 릴레이 질문과 다음 질문인 저장", description = "모임의 현재 릴레이 질문과 다음 릴레이 질문인을 저장합니다.")
+	@Operation(summary = "모임 질문 상세 조회", description = "모임 질문 상세 정보를 반환합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201"),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
-		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION"),
 	})
 	@GetMapping("/{meetingQuestionId}")
 	public ResponseEntity<QuestionResponse> getById(
