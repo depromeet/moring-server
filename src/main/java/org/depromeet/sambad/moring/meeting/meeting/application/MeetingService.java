@@ -48,7 +48,7 @@ public class MeetingService {
 	}
 
 	private void addTypesToMeeting(MeetingPersistRequest request, Meeting meeting) {
-		List<TypesPerMeeting> types = meetingTypeRepository.findByIdIn(request.typeIds())
+		List<TypesPerMeeting> types = meetingTypeRepository.findByIdIn(request.meetingTypeIds())
 			.stream()
 			.map(type -> TypesPerMeeting.of(meeting, type))
 			.toList();
@@ -57,7 +57,7 @@ public class MeetingService {
 	}
 
 	private Meeting generateMeeting(MeetingPersistRequest request) {
-		meetingTypeRepository.findByIdIn(request.typeIds());
+		meetingTypeRepository.findByIdIn(request.meetingTypeIds());
 		Meeting meeting = Meeting.of(request, meetingCodeGenerator.generate());
 		meetingRepository.save(meeting);
 
