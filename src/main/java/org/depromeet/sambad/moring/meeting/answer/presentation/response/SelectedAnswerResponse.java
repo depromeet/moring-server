@@ -21,12 +21,13 @@ public record SelectedAnswerResponse(
 	@Schema(description = "선택한 멤버들", requiredMode = REQUIRED)
 	List<MeetingMemberListResponseDetail> selectedMembers
 ) {
-	public static SelectedAnswerResponse from(List<MeetingMember> members, List<MeetingAnswer> answers) {
+	public static SelectedAnswerResponse from(List<MeetingMember> members, List<MeetingAnswer> meetingAnswers) {
 		return new SelectedAnswerResponse(
-			answers.stream()
+			meetingAnswers.stream()
 				.map(MeetingAnswer::getAnswerContent)
+				.distinct()
 				.toList(),
-			answers.size(),
+			meetingAnswers.size(),
 			MeetingMemberListResponse.from(members).contents()
 		);
 	}
