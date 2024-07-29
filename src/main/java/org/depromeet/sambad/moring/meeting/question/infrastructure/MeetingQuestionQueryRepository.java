@@ -14,6 +14,7 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponseDetail;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -157,5 +160,44 @@ public class MeetingQuestionQueryRepository {
 
 	private BooleanExpression isAnsweredByAllCond() {
 		return meetingQuestion.memberAnswers.size().eq(meetingQuestion.meeting.meetingMembers.size());
+	}
+
+	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {
+		// Get total count for the percentage calculation
+		Optional<Long> optionalTotalCount = Optional.ofNullable(queryFactory
+			.select(meetingAnswer.count())
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId))
+			.fetchOne());
+
+		if (optionalTotalCount.isEmpty()) {
+			return List.of();
+		}
+
+		long totalCount = optionalTotalCount.get();
+
+		List<MeetingQuestionStatisticsDetail> details = queryFactory
+			.select(Projections.constructor(MeetingQuestionStatisticsDetail.class,
+				Expressions.constant(0), // rank will be handled later
+				meetingAnswer.answer.content,
+				meetingAnswer.answer.id.count().intValue().as("count"),
+				meetingAnswer.answer.id.count().doubleValue().divide(totalCount)
+					.multiply(100).castToNum(Integer.class).as("percentage")
+			))
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId))
+			.groupBy(meetingAnswer.answer.id, meetingAnswer.answer.content)
+			.orderBy(meetingAnswer.answer.id.count().desc())
+			.fetch();
+
+		// Adjust rank based on the order
+		for (int i = 0; i < details.size(); i++) {
+			MeetingQuestionStatisticsDetail detail = details.get(i);
+			details.set(i,
+				new MeetingQuestionStatisticsDetail(i + 1, detail.answerContent(), detail.count(),
+					detail.percentage()));
+		}
+
+		return details;
 	}
 }

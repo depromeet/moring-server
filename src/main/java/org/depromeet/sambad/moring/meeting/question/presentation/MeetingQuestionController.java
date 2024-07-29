@@ -5,6 +5,7 @@ import org.depromeet.sambad.moring.meeting.question.presentation.request.Meeting
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionAndAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -64,6 +65,24 @@ public class MeetingQuestionController {
 		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
 	) {
 		QuestionResponse response = meetingQuestionService.getQuestionResponseById(meetingId, meetingQuestionId);
+
+		return ResponseEntity.ok().body(response);
+	}
+
+	@Operation(summary = "모임 질문 통계 조회", description = "모임 질문에 대한 통계 정보를 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "질문에 대한 통계 정보 반환 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
+	})
+	@GetMapping("/{meetingQuestionId}/statistics")
+	public ResponseEntity<MeetingQuestionStatisticsResponse> getStatisticsByQuestionId(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+	) {
+		MeetingQuestionStatisticsResponse response = meetingQuestionService.getStatistics(
+			userId, meetingId, meetingQuestionId);
 
 		return ResponseEntity.ok().body(response);
 	}

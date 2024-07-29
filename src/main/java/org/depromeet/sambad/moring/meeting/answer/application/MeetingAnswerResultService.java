@@ -32,24 +32,24 @@ public class MeetingAnswerResultService {
 				meetingId, meetingQuestionId)
 			.orElseThrow(NotFoundMeetingQuestion::new);
 
-		List<MeetingAnswer> answers = meetingAnswerRepository.findMostSelected(meetingQuestion.getId());
+		List<MeetingAnswer> meetingAnswers = meetingAnswerRepository.findMostSelected(meetingQuestion.getId());
 
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
-			meetingQuestionId, MeetingAnswer.getAnswerIds(answers));
+			meetingQuestionId, MeetingAnswer.getAnswerIds(meetingAnswers));
 
-		return SelectedAnswerResponse.from(members, answers);
+		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
 
 	public SelectedAnswerResponse getSelectedSameAnswer(Long userId, Long meetingId, Long meetingQuestionId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
-		List<MeetingAnswer> answers = meetingAnswerRepository.findByMeetingQuestionIdAndMeetingMemberId(
+		List<MeetingAnswer> meetingAnswers = meetingAnswerRepository.findByMeetingQuestionIdAndMeetingMemberId(
 			meetingQuestionId, meetingMember.getId());
 
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
-			meetingQuestionId, MeetingAnswer.getAnswerIds(answers));
+			meetingQuestionId, MeetingAnswer.getAnswerIds(meetingAnswers));
 
-		return SelectedAnswerResponse.from(members, answers);
+		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
 }
