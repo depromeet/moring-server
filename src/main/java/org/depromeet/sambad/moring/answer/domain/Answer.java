@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.answer.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.depromeet.sambad.moring.answer.presentation.exception.InvalidAnswerContentException;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.question.domain.Question;
@@ -42,8 +43,16 @@ public class Answer extends BaseTimeEntity {
 
 	@Builder
 	public Answer(Question question, String content) {
+		validateIsNullOrBlank(content);
 		this.question = question;
 		this.content = content;
 		question.addAnswer(this);
 	}
+
+	private void validateIsNullOrBlank(String content) {
+		if (content == null || content.isBlank()) {
+			throw new InvalidAnswerContentException();
+		}
+	}
+
 }

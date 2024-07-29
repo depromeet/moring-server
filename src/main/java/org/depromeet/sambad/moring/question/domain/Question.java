@@ -30,6 +30,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
+	private final static int MIN_ANSWER_COUNT = 2;
+	private final static int MAX_ANSWER_COUNT = 16;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "question_id")
@@ -75,7 +78,7 @@ public class Question extends BaseTimeEntity {
 	}
 
 	private void checkAnswerContents(List<String> answerContents) {
-		if (answerContents.size() < 2 || answerContents.size() > 16) {
+		if (answerContents.size() < MIN_ANSWER_COUNT || answerContents.size() > MAX_ANSWER_COUNT) {
 			throw new AnswerCountOutOfRangeException();
 		}
 	}
