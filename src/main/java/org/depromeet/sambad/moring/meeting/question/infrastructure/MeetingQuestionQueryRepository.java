@@ -1,16 +1,18 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
-import static com.querydsl.jpa.JPAExpressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
+import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
+import static org.depromeet.sambad.moring.question.domain.QQuestion.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
+import org.depromeet.sambad.moring.file.domain.QFileEntity;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
@@ -25,7 +27,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -67,15 +68,17 @@ public class MeetingQuestionQueryRepository {
 		return findActiveQuestion(meetingId);
 	}
 
-	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId, Long loginMeetingMemberId) {
+	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
 		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
 			.select(meetingQuestion)
 			.from(meetingQuestion)
+			.leftJoin(meetingQuestion.question, question).fetchJoin()
+			.leftJoin(meetingQuestion.memberAnswers, meetingAnswer).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
 				inactiveCond()
 			)
-			.orderBy(orderDescByMeetingAnswerCount())
+			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
 			.limit(2)
 			.fetch();
 
@@ -86,16 +89,22 @@ public class MeetingQuestionQueryRepository {
 		return MostInactiveMeetingQuestionListResponse.from(responseDetails);
 	}
 
-	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,
-		Pageable pageable) {
+	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
+		QFileEntity profileImageFile = new QFileEntity("profileImageFile");
+		QFileEntity questionImageFile = new QFileEntity("questionImageFile");
+
 		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
 			.select(meetingQuestion)
 			.from(meetingQuestion)
+			.leftJoin(meetingQuestion.targetMember, meetingMember).fetchJoin()
+			.leftJoin(meetingQuestion.targetMember.profileImageFile, profileImageFile).fetchJoin()
+			.leftJoin(meetingQuestion.question, question).fetchJoin()
+			.leftJoin(meetingQuestion.question.questionImageFile, questionImageFile).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
 				inactiveCond()
 			)
-			.orderBy(orderDescByMeetingAnswerCount())
+			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -109,19 +118,14 @@ public class MeetingQuestionQueryRepository {
 				.selectFrom(meetingQuestion)
 				.where(meetingQuestion.meeting.id.eq(meetingId),
 					activeCond())
+				.orderBy(meetingQuestion.startTime.asc())
+				.limit(1)
 				.fetchOne()
 		);
 	}
 
-	private OrderSpecifier<Long> orderDescByMeetingAnswerCount() {
-		// 서브쿼리를 사용하여 각 meetingQuestion에 대한 답변 수를 계산
-		NumberExpression<Long> count = meetingAnswer.count();
-
-		// OrderSpecifier를 사용하여 내림차순 정렬
-		return new OrderSpecifier<>(Order.DESC,
-			select(count)
-				.from(meetingAnswer)
-				.groupBy(meetingAnswer.meetingQuestion));
+	private OrderSpecifier<Integer> orderDescByMeetingAnswerCount() {
+		return new OrderSpecifier<>(Order.DESC, meetingQuestion.memberAnswers.size());
 	}
 
 	private Answer getBestAnswer(MeetingQuestion meetingQuestion) {
@@ -131,6 +135,7 @@ public class MeetingQuestionQueryRepository {
 			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
 			.groupBy(meetingAnswer.answer)
 			.orderBy(meetingAnswer.count().desc())
+			.limit(1)
 			.fetchOne();
 	}
 
@@ -153,8 +158,7 @@ public class MeetingQuestionQueryRepository {
 
 	private BooleanExpression inactiveCond() {
 		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.gt(now)
-			.or(meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
+		return meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS))
 			.or(isAnsweredByAllCond());
 	}
 

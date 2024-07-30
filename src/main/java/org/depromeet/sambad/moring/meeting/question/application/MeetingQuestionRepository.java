@@ -22,10 +22,9 @@ public interface MeetingQuestionRepository {
 
 	Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId);
 
-	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId, Long loginMeetingMemberId);
+	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId);
 
-	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,
-		Pageable pageable);
+	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable);
 
 	Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId);
 

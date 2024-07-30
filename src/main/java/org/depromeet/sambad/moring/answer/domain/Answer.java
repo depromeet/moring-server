@@ -54,5 +54,4 @@ public class Answer extends BaseTimeEntity {
 			throw new InvalidAnswerContentException();
 		}
 	}
-
 }

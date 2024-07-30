@@ -91,7 +91,7 @@ public class MeetingMemberController {
 	@PostMapping("/members")
 	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(
 		@UserId Long userId,
-		@Parameter(description = "모임의 고유 초대 코드", example = "A1G05C", required = true) @RequestParam("code") String code,
+		@Parameter(description = "모임의 고유 초대 코드", example = "0AF781", required = true) @RequestParam("code") String code,
 		@Valid @RequestBody MeetingMemberPersistRequest request
 	) {
 		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);

@@ -47,14 +47,13 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId, Long loginMeetingMemberId) {
-		return meetingQuestionQueryRepository.findMostInactiveList(meetingId, loginMeetingMemberId);
+	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
+		return meetingQuestionQueryRepository.findMostInactiveList(meetingId);
 	}
 
 	@Override
-	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Long loginMeetingMemberId,
-		Pageable pageable) {
-		return meetingQuestionQueryRepository.findFullInactiveList(meetingId, loginMeetingMemberId, pageable);
+	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
+		return meetingQuestionQueryRepository.findFullInactiveList(meetingId, pageable);
 	}
 
 	@Override
