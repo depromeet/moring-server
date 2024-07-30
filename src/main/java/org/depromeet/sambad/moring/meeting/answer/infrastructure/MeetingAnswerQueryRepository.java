@@ -50,6 +50,11 @@ public class MeetingAnswerQueryRepository {
 			.orderBy(meetingAnswer.answer.id.count().desc())
 			.fetchFirst();
 
+		// 답변이 하나도 등록되지 않은 경우
+		if (mostSelectedAnswerId == null) {
+			return List.of();
+		}
+
 		return queryFactory.selectFrom(meetingAnswer)
 			.where(meetingAnswer.answer.id.eq(mostSelectedAnswerId))
 			.fetch();
@@ -59,7 +64,7 @@ public class MeetingAnswerQueryRepository {
 	 * 주어진 답변 리스트와 동일한 답변을 선택한 회원을 조회합니다.<br />
 	 * "," 기반으로 유저의 답변 리스트를 CONCAT하여 비교합니다.
 	 */
-	public List<MeetingMember> findSameAnswerSelectMembers(Long meetingQuestionId, List<Long> answerIds) {
+	public List<MeetingMember> findMeetingMembersSelectWith(Long meetingQuestionId, List<Long> answerIds) {
 		StringExpression answerIdsExpression = stringTemplate(
 			"GROUP_CONCAT(DISTINCT {0})", meetingAnswer.answer.id)
 			.as("answer_ids");

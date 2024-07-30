@@ -56,10 +56,11 @@ public class MeetingAnswer extends BaseTimeEntity {
 		return answer.getContent();
 	}
 
-	public static List<Long> getAnswerIds(List<MeetingAnswer> answers) {
+	public static List<Long> getDistinctAnswerIds(List<MeetingAnswer> answers) {
 		return answers.stream()
 			.map(meetingAnswer -> meetingAnswer.answer.getId())
 			.filter(Objects::nonNull)
+			.distinct()
 			.toList();
 	}
 }
