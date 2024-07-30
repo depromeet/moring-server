@@ -266,6 +266,28 @@ insert into answer (question_id, content, created_at, updated_at) values (40, '�
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏀 농구');
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚽️ 축구');
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚾️ 야구');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📖 스터디');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📚 독서');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','👩‍👩‍👧‍👦️ 동아리');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🍳 취미 생활');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏫 동창회');
+
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏊 수영');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📺 넷플릭스');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📚 독서');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🥾 등산');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎤 노래');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚾ 야구');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏂 스노우보드');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎨 그림');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎮 게임');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🕺 춤');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📸 사진');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🍖 음식');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🖥 ️유튜브');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🧑‍💻 자기계발');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏃 조깅');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','😍 덕질');
 
 INSERT INTO meeting_member (birth,created_at,meeting_id,profile_image_file_id,updated_at,user_id,introduction,job,location,name,gender,mbti,role) VALUES ('2023-12-24','2024-01-06 13:24:03',1,1,'2023-11-05 22:29:10',1,'안녕하세요! 저는 식물 가게 사장 권기준입니다.','식물 가게 사장','서울시 광진구 구의동','단기준','FEMALE','ISFP','MEMBER');
 INSERT INTO meeting_member (birth,created_at,meeting_id,profile_image_file_id,updated_at,user_id,introduction,job,location,name,gender,mbti,role) VALUES ('2024-06-04','2024-03-11 16:43:54',1,2,'2024-06-20 02:00:33',2,'안녕하세요! 저는 식물 가게 사장 권기준입니다.','식물 가게 사장','서울시 광진구 구의동','나기준','FEMALE','ISFP','MEMBER');
