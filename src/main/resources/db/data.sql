@@ -35,8 +35,6 @@ INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) V
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT2.png','defaults/profileT2.png');
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT3.png','defaults/profileT3.png');
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT4.png','defaults/profileT4.png');
-INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (0,'2024-07-29 15:35:43.216494','2024-07-29 15:35:43.216562','img_640x640.jpg','uploaded/8c4e5b89-cdb4-4397-b1dd-8c225b9fc568.jpg');
-INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (0,'2024-07-30 05:08:30.816789','2024-07-30 05:08:30.816872','img_640x640.jpg','uploaded/48dcc3c4-e2a4-4c24-9acd-797b2edb605b.jpg');
 
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',1,'2023-10-13 10:13:26','test1@gmail.com','60211','test1','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',2,'2023-12-22 17:37:24','test2@gmail.com','10262','test2','kakao');
