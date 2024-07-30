@@ -71,6 +71,7 @@ public class MeetingAnswerController {
 	@Operation(summary = "가장 많이 선택된 답변 조회", description = "가장 많이 선택된 답변과 이를 선택한 모임원 리스트를 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "조회 성공"),
+		@ApiResponse(responseCode = "204", description = "아직 등록된 답변이 없는 경우"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
 	})
@@ -83,7 +84,9 @@ public class MeetingAnswerController {
 		SelectedAnswerResponse response = meetingAnswerResultService.getMostSelectedAnswer(
 			userId, meetingId, meetingQuestionId);
 
-		return ResponseEntity.ok(response);
+		return response.content().isEmpty()
+			? ResponseEntity.noContent().build()
+			: ResponseEntity.ok(response);
 	}
 
 	@Operation(summary = "같은 답변을 선택한 모임원 리스트 조회", description = "같은 답변을 선택한 모임원 리스트를 조회합니다.")

@@ -44,8 +44,8 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 	}
 
 	@Override
-	public List<MeetingMember> findMeetingMembersSelectWith(Long questionId, List<Long> answerIds) {
-		return meetingAnswerQueryRepository.findSameAnswerSelectMembers(questionId, answerIds);
+	public List<MeetingMember> findMeetingMembersSelectWith(Long meetingQuestionId, List<Long> answerIds) {
+		return meetingAnswerQueryRepository.findSameAnswerSelectMembers(meetingQuestionId, answerIds);
 	}
 
 	@Override

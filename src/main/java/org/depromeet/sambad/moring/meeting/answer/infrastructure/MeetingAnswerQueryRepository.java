@@ -50,6 +50,11 @@ public class MeetingAnswerQueryRepository {
 			.orderBy(meetingAnswer.answer.id.count().desc())
 			.fetchFirst();
 
+		// 답변이 하나도 등록되지 않은 경우
+		if (mostSelectedAnswerId == null) {
+			return List.of();
+		}
+
 		return queryFactory.selectFrom(meetingAnswer)
 			.where(meetingAnswer.answer.id.eq(mostSelectedAnswerId))
 			.fetch();

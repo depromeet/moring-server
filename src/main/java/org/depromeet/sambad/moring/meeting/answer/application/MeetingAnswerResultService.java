@@ -34,8 +34,9 @@ public class MeetingAnswerResultService {
 
 		List<MeetingAnswer> meetingAnswers = meetingAnswerRepository.findMostSelected(meetingQuestion.getId());
 
+		List<Long> answerIds = MeetingAnswer.getDistinctAnswerIds(meetingAnswers);
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
-			meetingQuestionId, MeetingAnswer.getAnswerIds(meetingAnswers));
+			meetingQuestion.getId(), answerIds);
 
 		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
@@ -48,7 +49,7 @@ public class MeetingAnswerResultService {
 			meetingQuestionId, meetingMember.getId());
 
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
-			meetingQuestionId, MeetingAnswer.getAnswerIds(meetingAnswers));
+			meetingQuestionId, MeetingAnswer.getDistinctAnswerIds(meetingAnswers));
 
 		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
