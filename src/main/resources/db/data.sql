@@ -58,11 +58,6 @@ INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',18,'2024-03-14 22:27:13','test18@gmail.com','504918','test18','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',19,'2024-06-15 11:48:50','test19@gmail.com','47319','test19','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',20,'2023-10-17 10:31:40','test20@gmail.com','68320','test20','kakao');
-INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-29 15:35:43.379223',38,'2024-07-29 15:35:43.379260','leeyn98@naver.com','3619389367','권기준','kakao');
-INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-30 05:08:31.167522',39,'2024-07-30 05:08:31.167569','nahyeonee99@gmail.com','3639712523','김나현','kakao');
-
-INSERT INTO refresh_token (user_id,token,expired_at,created_at,updated_at) VALUES (21,'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImlhdCI6MTcyMjI2NzM0M30.0UPha7vDH77bXfqNF7QNOPVzqAqF11bpBWplKGac294','2024-10-27 15:35:43.421740','2024-07-29 15:35:43.422225','2024-07-29 15:35:43.422249');
-INSERT INTO refresh_token (user_id,token,expired_at,created_at,updated_at) VALUES (22,'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMiIsImlhdCI6MTcyMjMxNjExMX0.EM5ywhZPiUxNQsA0z9kdNsdVelh41r2fFnMWsqFHZSY','2024-10-28 05:08:31.392441','2024-07-30 05:08:31.394956','2024-07-30 05:08:31.394981');
 
 INSERT INTO meeting (created_at,updated_at,code,name) VALUES ('2024-03-08 07:43:34','2023-12-20 05:19:49','0AF781','삼밧드의 모험');
 
