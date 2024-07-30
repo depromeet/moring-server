@@ -77,8 +77,8 @@ public class MeetingAnswerController {
 	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/most-selected")
 	public ResponseEntity<SelectedAnswerResponse> getMostSelectedMeetingAnswer(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getMostSelectedAnswer(
 			userId, meetingId, meetingQuestionId);
@@ -95,8 +95,8 @@ public class MeetingAnswerController {
 	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/selected-same")
 	public ResponseEntity<SelectedAnswerResponse> getSelectedSameMeetingAnswers(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
 		SelectedAnswerResponse response = meetingAnswerResultService.getSelectedSameAnswer(
 			userId, meetingId, meetingQuestionId);

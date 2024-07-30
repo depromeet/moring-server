@@ -10,7 +10,7 @@ public record MeetingPersistResponse(
 	@Schema(example = "1", description = "모임 ID", requiredMode = REQUIRED)
 	Long meetingId,
 
-	@Schema(example = "AB1234", description = "모임 초대 코드", requiredMode = REQUIRED)
+	@Schema(example = "0AF781", description = "모임 초대 코드", requiredMode = REQUIRED)
 	String inviteCode
 ) {
 

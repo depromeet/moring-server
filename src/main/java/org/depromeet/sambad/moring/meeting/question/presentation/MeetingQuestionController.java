@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.meeting.question.presentation;
 
+import static org.springframework.http.HttpStatus.*;
+
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
@@ -10,7 +12,6 @@ import org.depromeet.sambad.moring.meeting.question.presentation.response.MostIn
 import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,8 @@ public class MeetingQuestionController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
-		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / INVALID_MEETING_MEMBER_TARGET")
+		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / DUPLICATE_QUESTION / "
+			+ "INVALID_MEETING_MEMBER_TARGET")
 	})
 	@PostMapping
 	public ResponseEntity<ActiveMeetingQuestionResponse> save(
@@ -51,18 +53,18 @@ public class MeetingQuestionController {
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {
 		ActiveMeetingQuestionResponse response = meetingQuestionService.save(userId, meetingId, request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(CREATED).body(response);
 	}
 
 	@Operation(summary = "모임 질문 상세 조회", description = "모임 질문 상세 정보를 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
 	})
 	@GetMapping("/{meetingQuestionId}")
 	public ResponseEntity<QuestionResponse> getById(
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
 		QuestionResponse response = meetingQuestionService.getQuestionResponseById(meetingId, meetingQuestionId);
 
@@ -78,8 +80,8 @@ public class MeetingQuestionController {
 	@GetMapping("/{meetingQuestionId}/statistics")
 	public ResponseEntity<MeetingQuestionStatisticsResponse> getStatisticsByQuestionId(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") Long meetingQuestionId
 	) {
 		MeetingQuestionStatisticsResponse response = meetingQuestionService.getStatistics(
 			userId, meetingId, meetingQuestionId);

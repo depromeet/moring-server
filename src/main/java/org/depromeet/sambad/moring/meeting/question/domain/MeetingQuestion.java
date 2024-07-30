@@ -1,15 +1,17 @@
 package org.depromeet.sambad.moring.meeting.question.domain;
 
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.DuplicateMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.question.domain.Question;
@@ -76,7 +78,9 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 		meeting.addMeetingQuestion(this);
 		targetMember.addMeetingQuestion(this);
-		question.addMeetingQuestion(this);
+		if (question != null) {
+			question.addMeetingQuestion(this);
+		}
 	}
 
 	public static MeetingQuestion createActiveMeetingQuestion(Meeting meeting, MeetingMember targetMember,
@@ -85,12 +89,8 @@ public class MeetingQuestion extends BaseTimeEntity {
 	}
 
 	public static MeetingQuestion createNextMeetingQuestion(Meeting meeting, MeetingMember targetMember,
-		Optional<MeetingQuestion> activeQuestion, LocalDateTime startTime) {
-		if (activeQuestion.isPresent()) {
-			startTime = activeQuestion.get().startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
-		}
-
-		return new MeetingQuestion(meeting, targetMember, null, startTime, MeetingQuestionStatus.NOT_STARTED);
+		LocalDateTime startTime) {
+		return new MeetingQuestion(meeting, targetMember, null, startTime, NOT_STARTED);
 	}
 
 	public void addMeetingAnswer(MeetingAnswer meetingAnswer) {
@@ -99,7 +99,11 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public void setQuestion(MeetingMember targetMember, Question question) {
 		validateTarget(targetMember);
+		if (this.question != null) {
+			throw new DuplicateMeetingQuestionException();
+		}
 		this.question = question;
+		this.question.addMeetingQuestion(this);
 	}
 
 	public void updateStatusToInactive() {
@@ -125,6 +129,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public LocalDate getStartDate() {
 		return startTime.toLocalDate();
+	}
+
+	public LocalDateTime getNextStartTime() {
+		return startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
 	}
 
 	public void validateNotFinished(LocalDateTime now) {

@@ -19,7 +19,8 @@ public record MyMeetingAnswerListResponseDetail(
 	@Schema(title = "유저가 선택한 답변", example = "분신술", requiredMode = REQUIRED)
 	String content,
 
-	@Schema(title = "유저가 단 댓글", example = "요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!", requiredMode = NOT_REQUIRED)
+	@Schema(title = "유저가 단 댓글", example = "요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!",
+		description = "댓글이 없으면 null 응답합니다.", requiredMode = NOT_REQUIRED)
 	String commentContent
 ) {
 
@@ -31,7 +32,7 @@ public record MyMeetingAnswerListResponseDetail(
 					i + 1,
 					response.meetingQuestion().getTitle(),
 					response.meetingAnswer().getAnswer().getContent(),
-					response.comment().getContent()
+					response.comment() != null ? response.comment().getContent() : null
 				);
 			})
 			.toList();
