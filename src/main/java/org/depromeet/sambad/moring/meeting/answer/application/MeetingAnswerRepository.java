@@ -18,7 +18,7 @@ public interface MeetingAnswerRepository {
 
 	List<MeetingAnswer> findByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId);
 
-	List<MeetingMember> findMeetingMembersSelectWith(Long questionId, List<Long> answerIds);
+	List<MeetingMember> findMeetingMembersSelectWith(Long meetingQuestionId, List<Long> answerIds);
 
 	MyMeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId);
 }
