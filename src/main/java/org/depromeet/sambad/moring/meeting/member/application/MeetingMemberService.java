@@ -48,6 +48,10 @@ public class MeetingMemberService {
 			.orElseThrow(MeetingMemberNotFoundException::new);
 	}
 
+	public boolean isNotEnterAnyMeeting(Long userId) {
+		return meetingMemberRepository.findByUserId(userId).isEmpty();
+	}
+
 	public MeetingMember getById(Long meetingMemberId) {
 		return meetingMemberRepository.findById(meetingMemberId)
 			.orElseThrow(MeetingMemberNotFoundException::new);

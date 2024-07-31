@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public record SecurityProperties(
 	String loginUrl,
 	String redirectUrl,
+	String newUserRedirectUrl,
 	@NestedConfigurationProperty
 	Cookie cookie
 ) {
