@@ -139,15 +139,16 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 	@Override
 	public int compareTo(MeetingMember o) {
+		// 지연로딩 객체일 경우, getter를 통해 필드를 가져와야 프록시 객체가 초기화되어 정상적인 비교 수행 가능
 		// OWNER 역할을 가진 멤버가 우선순위를 가짐
-		if (this.role == MeetingMemberRole.OWNER && o.role != MeetingMemberRole.OWNER) {
+		if (this.role == MeetingMemberRole.OWNER && o.getRole() != MeetingMemberRole.OWNER) {
 			return -1;
-		} else if (this.role != MeetingMemberRole.OWNER && o.role == MeetingMemberRole.OWNER) {
+		} else if (this.role != MeetingMemberRole.OWNER && o.getRole() == MeetingMemberRole.OWNER) {
 			return 1;
 		}
 
 		// 둘 다 OWNER 역할이 아니거나 둘 다 OWNER 역할일 때 이름순으로 정렬
-		return this.name.compareTo(o.name);
+		return this.name.compareTo(o.getName());
 	}
 
 	public void validateNextTarget(MeetingMember targetMember) {
