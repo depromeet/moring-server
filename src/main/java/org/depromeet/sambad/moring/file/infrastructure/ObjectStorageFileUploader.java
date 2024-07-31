@@ -1,8 +1,14 @@
 package org.depromeet.sambad.moring.file.infrastructure;
 
+import static org.apache.http.HttpHeaders.*;
+import static org.springframework.http.HttpMethod.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -67,9 +74,15 @@ public class ObjectStorageFileUploader implements FileUploader {
 	public String upload(String fileUrl) throws ObjectStorageServerException {
 		try {
 			String filePath = generateUploadPath(fileUrl);
-			amazonS3.putObject(bucketName, filePath, fileUrl);
+			HttpURLConnection conn = getHttpURLConnection(fileUrl);
+			String contentType = conn.getHeaderField(CONTENT_TYPE);
+
+			try (InputStream in = conn.getInputStream()) {
+				amazonS3.putObject(bucketName, filePath, in, setObjectMetaData(in, contentType));
+			}
+
 			return filePath;
-		} catch (ObjectStorageServerException e) {
+		} catch (ObjectStorageServerException | IOException e) {
 			throw new ObjectStorageServerException();
 		}
 	}
@@ -98,5 +111,20 @@ public class ObjectStorageFileUploader implements FileUploader {
 		String fileName = generateUniqueFileName(fileExtension);
 
 		return Path.of(fileProperties.uploadPath(), fileName).toString();
+	}
+
+	private HttpURLConnection getHttpURLConnection(String fileUrl) throws IOException {
+		HttpURLConnection conn = (HttpURLConnection)new URL(fileUrl).openConnection();
+		conn.setRequestMethod(GET.name());
+		conn.setDoOutput(true);
+		return conn;
+	}
+
+	private ObjectMetadata setObjectMetaData(InputStream in, String contentType) throws IOException {
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+
+		objectMetadata.setContentLength(in.available());
+		objectMetadata.setContentType(contentType);
+		return objectMetadata;
 	}
 }
