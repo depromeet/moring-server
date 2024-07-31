@@ -68,7 +68,8 @@ public class SecurityConfig {
 		httpSecurity.cors(cors -> cors.configurationSource(request -> {
 			var corsConfiguration = new CorsConfiguration();
 			corsConfiguration.setAllowedOrigins(List.of(
-				"http://localhost:8080", "http://localhost:3000", "http://local.moring.one:3000"));
+				"http://localhost:8080", "http://localhost:3000", "http://local.moring.one:3000",
+				"http://localhost:5500", "https://localhost:3000", "https://local.moring.one:3000"));
 			corsConfiguration.setAllowedOriginPatterns(List.of("https://*.moring.one"));
 			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
 			corsConfiguration.setAllowedHeaders(List.of("*"));
