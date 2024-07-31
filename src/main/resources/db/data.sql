@@ -35,8 +35,6 @@ INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) V
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT2.png','defaults/profileT2.png');
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT3.png','defaults/profileT3.png');
 INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (1,'2024-07-27 11:09:47.197367','2024-07-27 11:09:47.197367','profileT4.png','defaults/profileT4.png');
-INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (0,'2024-07-29 15:35:43.216494','2024-07-29 15:35:43.216562','img_640x640.jpg','uploaded/8c4e5b89-cdb4-4397-b1dd-8c225b9fc568.jpg');
-INSERT INTO file (is_default,created_at,updated_at,logical_name,physical_path) VALUES (0,'2024-07-30 05:08:30.816789','2024-07-30 05:08:30.816872','img_640x640.jpg','uploaded/48dcc3c4-e2a4-4c24-9acd-797b2edb605b.jpg');
 
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',1,'2023-10-13 10:13:26','test1@gmail.com','60211','test1','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',2,'2023-12-22 17:37:24','test2@gmail.com','10262','test2','kakao');
@@ -58,11 +56,6 @@ INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',18,'2024-03-14 22:27:13','test18@gmail.com','504918','test18','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',19,'2024-06-15 11:48:50','test19@gmail.com','47319','test19','kakao');
 INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-25 00:00:00',20,'2023-10-17 10:31:40','test20@gmail.com','68320','test20','kakao');
-INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-29 15:35:43.379223',38,'2024-07-29 15:35:43.379260','leeyn98@naver.com','3619389367','권기준','kakao');
-INSERT INTO user (created_at,profile_image_file_id,updated_at,email,external_id,name,login_provider) VALUES ('2024-07-30 05:08:31.167522',39,'2024-07-30 05:08:31.167569','nahyeonee99@gmail.com','3639712523','김나현','kakao');
-
-INSERT INTO refresh_token (user_id,token,expired_at,created_at,updated_at) VALUES (21,'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImlhdCI6MTcyMjI2NzM0M30.0UPha7vDH77bXfqNF7QNOPVzqAqF11bpBWplKGac294','2024-10-27 15:35:43.421740','2024-07-29 15:35:43.422225','2024-07-29 15:35:43.422249');
-INSERT INTO refresh_token (user_id,token,expired_at,created_at,updated_at) VALUES (22,'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMiIsImlhdCI6MTcyMjMxNjExMX0.EM5ywhZPiUxNQsA0z9kdNsdVelh41r2fFnMWsqFHZSY','2024-10-28 05:08:31.392441','2024-07-30 05:08:31.394956','2024-07-30 05:08:31.394981');
 
 INSERT INTO meeting (created_at,updated_at,code,name) VALUES ('2024-03-08 07:43:34','2023-12-20 05:19:49','0AF781','삼밧드의 모험');
 
@@ -271,6 +264,28 @@ insert into answer (question_id, content, created_at, updated_at) values (40, '�
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏀 농구');
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚽️ 축구');
 INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚾️ 야구');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📖 스터디');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📚 독서');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','👩‍👩‍👧‍👦️ 동아리');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🍳 취미 생활');
+INSERT INTO meeting_type (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏫 동창회');
+
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏊 수영');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📺 넷플릭스');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📚 독서');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🥾 등산');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎤 노래');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','⚾ 야구');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏂 스노우보드');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎨 그림');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🎮 게임');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🕺 춤');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','📸 사진');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🍖 음식');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🖥 ️유튜브');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🧑‍💻 자기계발');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','🏃 조깅');
+INSERT INTO hobby (created_at,updated_at,content) VALUES ('2024-07-29 15:36:19.119663','2024-07-29 15:36:19.119663','😍 덕질');
 
 INSERT INTO meeting_member (birth,created_at,meeting_id,profile_image_file_id,updated_at,user_id,introduction,job,location,name,gender,mbti,role) VALUES ('2023-12-24','2024-01-06 13:24:03',1,1,'2023-11-05 22:29:10',1,'안녕하세요! 저는 식물 가게 사장 권기준입니다.','식물 가게 사장','서울시 광진구 구의동','단기준','FEMALE','ISFP','MEMBER');
 INSERT INTO meeting_member (birth,created_at,meeting_id,profile_image_file_id,updated_at,user_id,introduction,job,location,name,gender,mbti,role) VALUES ('2024-06-04','2024-03-11 16:43:54',1,2,'2024-06-20 02:00:33',2,'안녕하세요! 저는 식물 가게 사장 권기준입니다.','식물 가게 사장','서울시 광진구 구의동','나기준','FEMALE','ISFP','MEMBER');
