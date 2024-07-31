@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.common.config;
 import static java.lang.String.*;
 import static org.springframework.security.config.Elements.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class SwaggerConfig {
 
 	private List<Server> initializeServers() {
 		return PROFILE_SERVER_URL_MAP.entrySet().stream()
+			.filter(entry -> environment.matchesProfiles(entry.getKey()))
 			.map(entry -> openApiServer(entry.getValue(), "Moring API " + entry.getKey().toUpperCase()))
 			.collect(Collectors.toList());
 	}
@@ -75,15 +77,15 @@ public class SwaggerConfig {
 
 	private String getDescription() {
 		return format("""
-			우리 친해져요! 모임 관리 서비스 MORING API 입니다.\n\n
-			로그인 페이지에 접속 후, 카카오 로그인을 수행하세요.\n\n
-			<ul>
-				<li>1. Local Login Page: <a href="%s" target="_blank">%s</a></li>
-				<li>2. Dev Login Page: <a href="%s" target="_blank">%s</a></li>
-				<li>3. Prod Login Page: <a href="%s" target="_blank">%s</a></li>
-			</ul>\n\n
-			쿠키에 액세스 토큰이 저장되며, 별다른 절차 없이 API를 사용하실 수 있습니다.\n\n
-			예외 응답 안내 문서는 <a href="%s" target="_blank">해당 링크</a>에서 확인하실 수 있습니다.\n\n""",
+				우리 친해져요! 모임 관리 서비스 MORING API 입니다.\n\n
+				로그인 페이지에 접속 후, 카카오 로그인을 수행하세요.\n\n
+				<ul>
+					<li>1. Local Login Page: <a href="%s" target="_blank">%s</a></li>
+					<li>2. Dev Login Page: <a href="%s" target="_blank">%s</a></li>
+					<li>3. Prod Login Page: <a href="%s" target="_blank">%s</a></li>
+				</ul>\n\n
+				쿠키에 액세스 토큰이 저장되며, 별다른 절차 없이 API를 사용하실 수 있습니다.\n\n
+				예외 응답 안내 문서는 <a href="%s" target="_blank">해당 링크</a>에서 확인하실 수 있습니다.\n\n""",
 			getLoginUrlByProfile("local"), getLoginUrlByProfile("local"),
 			getLoginUrlByProfile("dev"), getLoginUrlByProfile("dev"),
 			getLoginUrlByProfile("prod"), getLoginUrlByProfile("prod"),

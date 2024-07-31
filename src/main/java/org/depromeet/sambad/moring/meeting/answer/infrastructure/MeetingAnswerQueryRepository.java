@@ -69,18 +69,19 @@ public class MeetingAnswerQueryRepository {
 			"GROUP_CONCAT(DISTINCT {0})", meetingAnswer.answer.id)
 			.as("answer_ids");
 
-		List<Tuple> answerIdsByMember = queryFactory.select(meetingAnswer.meetingMember, answerIdsExpression)
-			.from(meetingAnswer)
+		List<Tuple> answerIdsByMember = queryFactory.select(meetingMember, answerIdsExpression)
+			.from(meetingMember)
+			.join(meetingAnswer).on(meetingAnswer.meetingMember.eq(meetingMember))
 			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId)
 				.and(meetingAnswer.answer.id.in(answerIds)))
-			.groupBy(meetingAnswer.meetingMember)
+			.groupBy(meetingMember)
 			.fetch();
 
 		String answerIdsToString = String.join(",", answerIds.stream().map(String::valueOf).toList());
 
 		return answerIdsByMember.stream()
 			.filter(tuple -> Objects.equals(tuple.get(answerIdsExpression), answerIdsToString))
-			.map(tuple -> tuple.get(meetingAnswer.meetingMember))
+			.map(tuple -> tuple.get(meetingMember))
 			.toList();
 	}
 
