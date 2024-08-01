@@ -40,7 +40,7 @@ public class MeetingQuestionPollingController {
 	public ResponseEntity<MeetingQuestionPollingResponse> getNewMeetingQuestion(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
-		@Parameter(description = "현재 모임 질문 ID", example = "1") @PathVariable(value = "meetingId", required = false) Long meetingQuestionId
+		@Parameter(description = "현재 모임 질문 ID", example = "1") @PathVariable(value = "meetingQuestionId", required = false) Long meetingQuestionId
 	) {
 		Optional<MeetingQuestionPollingResponse> newMeetingQuestion = meetingQuestionPollingService.getNewMeetingQuestion(
 			userId, meetingId, meetingQuestionId);
