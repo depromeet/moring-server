@@ -12,7 +12,6 @@ import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -75,10 +74,8 @@ public class AuthService {
 	}
 
 	private FileEntity uploadProfileImage(AuthAttributes attributes) {
-		String profileImageUrl = attributes.getProfileImageUrl();
-
-		return StringUtils.hasText(profileImageUrl)
-			? fileService.uploadAndSave(profileImageUrl)
-			: fileService.getRandomProfileImage();
+		return attributes.hasDefaultProfileImage()
+			? fileService.getRandomProfileImage()
+			: fileService.uploadAndSave(attributes.getProfileImageUrl());
 	}
 }
