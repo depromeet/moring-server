@@ -2,11 +2,14 @@ package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
-import org.depromeet.sambad.moring.common.response.DateFormatter;
+import java.time.LocalDateTime;
+
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -37,7 +40,8 @@ public record ActiveMeetingQuestionResponse(
 	double engagementRate,
 
 	@Schema(example = "yyyy-MM-dd HH:mm:ss", description = "릴레이 질문 시작 시간", requiredMode = REQUIRED)
-	String startTime,
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	LocalDateTime startTime,
 
 	@Schema(example = "false", description = "로그인한 유저의 답변 유무", requiredMode = REQUIRED)
 	Boolean isAnswered,
@@ -57,7 +61,7 @@ public record ActiveMeetingQuestionResponse(
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(0)
 			.engagementRate(0)
-			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
+			.startTime(meetingQuestion.getStartTime())
 			.isAnswered(false)
 			.isQuestionRegistered(false)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
@@ -76,7 +80,7 @@ public record ActiveMeetingQuestionResponse(
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
-			.startTime(DateFormatter.format(meetingQuestion.getStartTime()))
+			.startTime(meetingQuestion.getStartTime())
 			.isAnswered(isAnswered)
 			.isQuestionRegistered(true)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))

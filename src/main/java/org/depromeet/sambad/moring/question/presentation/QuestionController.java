@@ -71,7 +71,7 @@ public class QuestionController {
 	})
 	@GetMapping("/questions/random")
 	public ResponseEntity<QuestionResponse> findRandomOne(
-		@Parameter(description = "제외할 질문 ID 리스트", example = "1,2,3") @RequestParam("excludeQuestionIds") List<Long> excludeQuestionIds
+		@Parameter(description = "제외할 질문 ID 리스트", example = "1,2,3") @RequestParam(value = "excludeQuestionIds", required = false) List<Long> excludeQuestionIds
 	) {
 		QuestionResponse randomOne = questionService.getRandomOne(excludeQuestionIds);
 		return ResponseEntity.ok(randomOne);
