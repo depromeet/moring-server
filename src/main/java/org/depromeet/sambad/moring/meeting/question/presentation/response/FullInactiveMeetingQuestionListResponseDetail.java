@@ -1,14 +1,16 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import org.depromeet.sambad.moring.common.response.DateFormatter;
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -18,7 +20,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
 
-  	@FullFileUrl
+	@FullFileUrl
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
 		requiredMode = REQUIRED)
 	String questionImageFileUrl,
@@ -30,7 +32,8 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 	int questionNumber,
 
 	@Schema(example = "2024-07-09", description = "릴레이 질문 시작 날짜", requiredMode = REQUIRED)
-	String startDate,
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+	LocalDate startDate,
 
 	@Schema(description = "질문 대상자에 대한 정보", requiredMode = REQUIRED)
 	MeetingMemberListResponseDetail targetMember
@@ -45,7 +48,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 			.questionImageFileUrl(meetingQuestion.getQuestionImageUrl())
 			.title(meetingQuestion.getTitle())
 			.questionNumber(questionNumber)
-			.startDate(DateFormatter.format(meetingQuestion.getStartDate()))
+			.startDate(meetingQuestion.getStartDate())
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
