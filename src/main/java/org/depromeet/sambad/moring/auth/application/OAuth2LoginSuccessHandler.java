@@ -52,9 +52,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 	private String determineRedirectUrl(LoginResult result) {
-		Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
-
-		if (meetingMemberService.isNotEnterAnyMeeting(userId)) {
+		if (meetingMemberService.isNotEnterAnyMeeting(result.userId())) {
 			return result.isNewUser()
 				? securityProperties.newUserRedirectUrl() + "?newUser=true"
 				: securityProperties.newUserRedirectUrl();
