@@ -8,7 +8,9 @@ import org.depromeet.sambad.moring.auth.domain.CustomOAuth2User;
 import org.depromeet.sambad.moring.auth.domain.LoginResult;
 import org.depromeet.sambad.moring.auth.infrastructure.SecurityProperties;
 import org.depromeet.sambad.moring.auth.presentation.exception.AlreadyRegisteredUserException;
+import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	private final AuthService authService;
 	private final TokenInjector tokenInjector;
+	private final MeetingMemberService meetingMemberService;
 
 	private final SecurityProperties securityProperties;
 
@@ -49,11 +52,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 	private String determineRedirectUrl(LoginResult result) {
-		String redirectUrl = securityProperties.redirectUrl();
-		if (result.isNewUser()) {
-			redirectUrl += "?newUser=true";
+		Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+
+		if (meetingMemberService.isNotEnterAnyMeeting(userId)) {
+			return result.isNewUser()
+				? securityProperties.newUserRedirectUrl() + "?newUser=true"
+				: securityProperties.newUserRedirectUrl();
 		}
-		return redirectUrl;
+
+		return securityProperties.redirectUrl();
 	}
 
 	private void handleAlreadyExistUser(HttpServletResponse response) throws IOException {
