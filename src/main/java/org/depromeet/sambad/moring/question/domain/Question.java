@@ -13,6 +13,8 @@ import org.depromeet.sambad.moring.question.presentation.exception.AnswerCountOu
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,8 +32,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
-	private final static int MIN_ANSWER_COUNT = 2;
-	private final static int MAX_ANSWER_COUNT = 16;
+	private static final int MIN_ANSWER_COUNT = 2;
+	private static final int MAX_ANSWER_COUNT = 16;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,26 +46,19 @@ public class Question extends BaseTimeEntity {
 
 	private String title;
 
+	@Enumerated(EnumType.STRING)
+	private QuestionType questionType;
+
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
 	private List<MeetingQuestion> meetingQuestions = new ArrayList<>();
 
 	@OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Answer> answers = new ArrayList<>();
 
-	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
-		this.meetingQuestions.add(meetingQuestion);
-	}
-
-	public String getQuestionImageUrl() {
-		return Optional.ofNullable(questionImageFile)
-			.map(FileEntity::getPhysicalPath)
-			.orElse(null);
-	}
-
 	@Builder
 	public Question(String title, FileEntity questionImageFile, List<String> answerContents) {
-		checkAnswerContents(answerContents);
-
+		validateAnswerCount(answerContents);
+		this.questionType = QuestionType.getQuestionType(answerContents.size());
 		this.title = title;
 		this.questionImageFile = questionImageFile;
 
@@ -77,7 +72,24 @@ public class Question extends BaseTimeEntity {
 		answers.add(answer);
 	}
 
-	private void checkAnswerContents(List<String> answerContents) {
+	public void addMeetingQuestion(MeetingQuestion meetingQuestion) {
+		this.meetingQuestions.add(meetingQuestion);
+	}
+
+	public String getQuestionImageUrl() {
+		return Optional.ofNullable(questionImageFile)
+			.map(FileEntity::getPhysicalPath)
+			.orElse(null);
+	}
+
+	public QuestionType getQuestionType() {
+		if (questionType != null)
+			return questionType;
+
+		return QuestionType.getQuestionType(answers.size());
+	}
+
+	private void validateAnswerCount(List<String> answerContents) {
 		if (answerContents.size() < MIN_ANSWER_COUNT || answerContents.size() > MAX_ANSWER_COUNT) {
 			throw new AnswerCountOutOfRangeException();
 		}
