@@ -90,7 +90,7 @@ public class Meeting extends BaseTimeEntity {
 	public double calculateEngagementRate(MeetingQuestion meetingQuestion) {
 		if (getTotalMemberCount() == 0)
 			return 0;
-
-		return ((double)meetingQuestion.getResponseCount() / getTotalMemberCount()) * 100;
+		double engagementRate = ((double)meetingQuestion.getResponseCount() / getTotalMemberCount()) * 100;
+		return Math.round(engagementRate);
 	}
 }
