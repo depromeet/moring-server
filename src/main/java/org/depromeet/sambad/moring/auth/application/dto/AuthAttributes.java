@@ -16,6 +16,8 @@ public interface AuthAttributes {
 
 	LoginProvider getProvider();
 
+	boolean hasDefaultProfileImage();
+
 	static AuthAttributes of(String providerId, Map<String, Object> attributes) {
 		if (LoginProvider.kakao.isProviderOf(providerId)) {
 			return KakaoAuthAttributes.of(attributes);

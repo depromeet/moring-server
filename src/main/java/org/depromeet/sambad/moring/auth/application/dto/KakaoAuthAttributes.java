@@ -5,6 +5,7 @@ import static org.depromeet.sambad.moring.user.domain.LoginProvider.*;
 import java.util.Map;
 
 import org.depromeet.sambad.moring.user.domain.LoginProvider;
+import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class KakaoAuthAttributes implements AuthAttributes {
+
+	public static final String DEFAULT_PROFILE_IMAGE_PREFIX = "default_profile";
 
 	private final String id;
 	private final String email;
@@ -59,5 +62,11 @@ public class KakaoAuthAttributes implements AuthAttributes {
 	@Override
 	public LoginProvider getProvider() {
 		return this.provide;
+	}
+
+	@Override
+	public boolean hasDefaultProfileImage() {
+		return !StringUtils.hasText(this.profileImageUrl) ||
+			this.profileImageUrl.contains(DEFAULT_PROFILE_IMAGE_PREFIX);
 	}
 }
