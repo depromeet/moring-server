@@ -35,11 +35,12 @@ public class RefreshTokenService {
 	}
 
 	private LoginResult getReissuedTokenResult(HttpServletResponse response, RefreshToken savedRefreshToken) {
-		String reissuedAccessToken = tokenGenerator.generateAccessToken(savedRefreshToken.getUserId());
+		Long userId = savedRefreshToken.getUserId();
+
+		String reissuedAccessToken = tokenGenerator.generateAccessToken(userId);
 		String rotatedRefreshToken = this.rotate(savedRefreshToken);
 
-		LoginResult loginResult = new LoginResult(reissuedAccessToken, rotatedRefreshToken, false);
-
+		LoginResult loginResult = new LoginResult(reissuedAccessToken, rotatedRefreshToken, false, userId);
 		tokenInjector.injectTokensToCookie(loginResult, response);
 
 		return loginResult;

@@ -63,7 +63,7 @@ public class AuthService {
 		refreshTokenEntity.rotate(refreshToken);
 		refreshTokenRepository.save(refreshTokenEntity);
 
-		return new LoginResult(accessToken, refreshToken, firstLogin);
+		return new LoginResult(accessToken, refreshToken, firstLogin, user.getId());
 	}
 
 	private User saveNewUser(AuthAttributes attributes) {
