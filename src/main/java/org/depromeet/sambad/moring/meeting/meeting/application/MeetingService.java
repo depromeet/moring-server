@@ -3,9 +3,12 @@ package org.depromeet.sambad.moring.meeting.meeting.application;
 import java.util.List;
 
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
+import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
 import org.depromeet.sambad.moring.meeting.meeting.domain.TypesPerMeeting;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.MeetingNotFoundException;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingResponse;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingNameResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
@@ -45,6 +48,13 @@ public class MeetingService {
 			.toList();
 
 		return MeetingResponse.from(meetings);
+	}
+
+	public MeetingNameResponse getMeetingNameByCode(String code) {
+		Meeting meeting = meetingRepository.findByCode(MeetingCode.from(code))
+			.orElseThrow(MeetingNotFoundException::new);
+
+		return MeetingNameResponse.from(meeting);
 	}
 
 	private void addTypesToMeeting(MeetingPersistRequest request, Meeting meeting) {
