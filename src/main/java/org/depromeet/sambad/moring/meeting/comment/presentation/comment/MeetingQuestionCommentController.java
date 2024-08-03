@@ -31,7 +31,7 @@ public class MeetingQuestionCommentController {
 
 	private final MeetingQuestionCommentService meetingQuestionCommentService;
 
-	@Operation(summary = "릴레이 질문 코멘트 등록", description = "모임의 릴레의 질문에 대한 코멘트를 작성합니다.")
+	@Operation(summary = "릴레이 질문 코멘트 등록", description = "모임의 릴레이 질문에 대한 코멘트를 작성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
