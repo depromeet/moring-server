@@ -1,9 +1,10 @@
 package org.depromeet.sambad.moring.event.domain;
 
-import static jakarta.persistence.EnumType.*;
-import static jakarta.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
-import static org.depromeet.sambad.moring.event.domain.EventStatus.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+import static org.depromeet.sambad.moring.event.domain.EventStatus.ACTIVE;
+import static org.depromeet.sambad.moring.event.domain.EventStatus.INACTIVE;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 
@@ -31,7 +32,6 @@ public class Event extends BaseTimeEntity {
 
 	@Enumerated(STRING)
 	private EventType type;
-
 	@Enumerated(STRING)
 	private EventStatus status;
 
