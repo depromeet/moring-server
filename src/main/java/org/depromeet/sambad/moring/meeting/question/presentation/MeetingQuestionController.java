@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "모임의 릴레이 질문", description = "모임원이 선택한 릴레이 질문 관련 api / 담당자: 김나현")
@@ -174,8 +175,10 @@ public class MeetingQuestionController {
 	@GetMapping("/{meetingQuestionId}/members")
 	public ResponseEntity<MeetingMemberListResponse> getMeetingMembersByQuestionId(
 		@UserId Long userId,
-		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
-		@Parameter(description = "모임 내 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+		@Parameter(description = "모임 ID", example = "1", required = true)
+		@Positive @PathVariable Long meetingId,
+		@Parameter(description = "모임 내 질문 ID", example = "1", required = true)
+		@Positive @PathVariable Long meetingQuestionId
 	) {
 		MeetingMemberListResponse response = meetingQuestionService.getMeetingMembersByMeetingQuestionId(
 			userId, meetingId, meetingQuestionId);
