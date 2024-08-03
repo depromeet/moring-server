@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s # 얼마나 자주 스크랩할 지 설정
+  evaluation_interval: 15s # 알람 규칙을 얼마나 자주 평가할 지 설정
+  scrape_timeout: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - ['alertmanager:9093']
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    scrape_timeout: 10s
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+    static_configs:
+      - targets: [ 'prometheus:9090' ]
+
+  - job_name: 'api'
+    scrape_interval: 10s
+    scrape_timeout: 10s
+    metrics_path: '/actuator/prometheus'
+    scheme: 'http'
+
+    static_configs:
+      - targets: [ 'api:8080' ]
