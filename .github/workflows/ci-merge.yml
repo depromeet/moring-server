@@ -24,11 +24,11 @@ jobs:
         run: ./gradlew test
         continue-on-error: true
 
-#      - name: "테스트 결과 업로드"
-#        uses: EnricoMi/publish-unit-test-result-action@v1
-#        if: ${{ always() }}
-#        with:
-#          files: ./build/reports/jacoco/test/jacocoTestReport.xml
+      - name: "테스트 결과 업로드"
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ always() }}
+        with:
+          files: ./build/reports/jacoco/test/jacocoTestReport.xml
 #      - name: Test Coverage Report
 #        id: jacoco
 #        uses: madrapps/jacoco-report@v1.6
