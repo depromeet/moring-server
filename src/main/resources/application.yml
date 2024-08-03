@@ -101,3 +101,16 @@ meeting:
     meeting-max-count: ${MEETING_MAX_COUNT:1}
     meeting-member-max-count: ${MEETING_MEMBER_MAX_COUNT:50}
     host-max-count: ${HOST_MAX_COUNT:1}
+
+management:
+  server:
+    port: 9090
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus

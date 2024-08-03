@@ -63,5 +63,32 @@ services:
       TZ: "Asia/Seoul"
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - 9090:9090
+    command:
+      - '--storage.tsdb.path=/prometheus'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: always
+
+#  grafana:
+#    image: grafana/grafana
+#    container_name: grafana
+#    ports:
+#      - 3000:3000
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+#      - ./grafana/provisioning/:/etc/grafana/provisioning
+#    restart: always
+#    depends_on:
+#      - prometheus
+
 volumes:
-  mysql: {}
+  mysql: { }
+  prometheus-data:
+#  grafana-data:
