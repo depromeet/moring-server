@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.meeting.question.application;
 import java.util.List;
 import java.util.Optional;
 
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
@@ -29,4 +30,6 @@ public interface MeetingQuestionRepository {
 	Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId);
 
 	List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId);
+
+	List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId);
 }

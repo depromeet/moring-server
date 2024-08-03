@@ -9,6 +9,7 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
@@ -116,6 +117,27 @@ public class MeetingQuestionService {
 		return QuestionResponse.from(meetingQuestion.getQuestion());
 	}
 
+	public MeetingQuestionStatisticsResponse getStatistics(Long userId, Long meetingId, Long meetingQuestionId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		MeetingQuestion meetingQuestion = getById(meetingId, meetingQuestionId);
+		List<MeetingQuestionStatisticsDetail> statistics = meetingQuestionRepository.findStatistics(
+			meetingQuestion.getId());
+
+		return MeetingQuestionStatisticsResponse.of(statistics);
+	}
+
+	public MeetingMemberListResponse getMeetingMembersByMeetingQuestionId(
+		Long userId, Long meetingId, Long meetingQuestionId
+	) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		MeetingQuestion meetingQuestion = getById(meetingId, meetingQuestionId);
+
+		List<MeetingMember> members = meetingQuestionRepository.findMeetingMembersByMeetingQuestionId(
+			meetingQuestion.getId());
+
+		return MeetingMemberListResponse.from(members);
+	}
+
 	private Optional<MeetingQuestion> findActiveMeetingQuestion(Long meetingId) {
 		return meetingQuestionRepository.findActiveOneByMeeting(meetingId);
 	}
@@ -125,15 +147,6 @@ public class MeetingQuestionService {
 		if (isDuplicateQuestion) {
 			throw new DuplicateQuestionException();
 		}
-	}
-
-	public MeetingQuestionStatisticsResponse getStatistics(Long userId, Long meetingId, Long meetingQuestionId) {
-		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		MeetingQuestion meetingQuestion = getById(meetingId, meetingQuestionId);
-		List<MeetingQuestionStatisticsDetail> statistics = meetingQuestionRepository.findStatistics(
-			meetingQuestion.getId());
-
-		return MeetingQuestionStatisticsResponse.of(statistics);
 	}
 }
 

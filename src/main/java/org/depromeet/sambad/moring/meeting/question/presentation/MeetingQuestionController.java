@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.meeting.question.presentation;
 
 import static org.springframework.http.HttpStatus.*;
 
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
@@ -162,5 +163,22 @@ public class MeetingQuestionController {
 		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findMostInactiveList(userId,
 			meetingId);
 		return ResponseEntity.ok(inactiveList);
+	}
+
+	@Operation(summary = "모임 질문에 참여한 모임원 조회", description = "모임 질문에 참여한 모임원 목록을 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
+	})
+	@GetMapping("/{meetingQuestionId}/members")
+	public ResponseEntity<MeetingMemberListResponse> getMeetingMembersByQuestionId(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Parameter(description = "모임 내 질문 ID", example = "1", required = true) @PathVariable Long meetingQuestionId
+	) {
+		MeetingMemberListResponse response = meetingQuestionService.getMeetingMembersByMeetingQuestionId(
+			userId, meetingId, meetingQuestionId);
+		return ResponseEntity.ok().body(response);
 	}
 }

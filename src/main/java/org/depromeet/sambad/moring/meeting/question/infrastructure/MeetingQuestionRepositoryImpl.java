@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.meeting.question.infrastructure;
 import java.util.List;
 import java.util.Optional;
 
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
@@ -64,5 +65,10 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	@Override
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {
 		return meetingQuestionQueryRepository.findStatistics(meetingQuestionId);
+	}
+
+	@Override
+	public List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId) {
+		return meetingQuestionQueryRepository.findMeetingMembersByMeetingQuestionId(meetingQuestionId);
 	}
 }
