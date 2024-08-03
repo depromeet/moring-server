@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.EventType;
+import org.depromeet.sambad.moring.event.domain.EventType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

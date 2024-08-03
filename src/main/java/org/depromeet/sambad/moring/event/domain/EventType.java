@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.question.presentation;
+package org.depromeet.sambad.moring.event.domain;
 
 import java.util.HashSet;
 import java.util.Set;
