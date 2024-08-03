@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.depromeet.sambad.moring.common.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
