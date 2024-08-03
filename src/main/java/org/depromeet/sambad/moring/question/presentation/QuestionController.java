@@ -8,6 +8,7 @@ import org.depromeet.sambad.moring.question.presentation.request.QuestionRequest
 import org.depromeet.sambad.moring.question.presentation.response.QuestionListResponse;
 import org.depromeet.sambad.moring.question.presentation.response.QuestionResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,7 +61,7 @@ public class QuestionController {
 		@Parameter(description = "페이지 인덱스, 요청 값이 없으면 0으로 설정", example = "0") @RequestParam(value = "page", defaultValue = "0") int page,
 		@Parameter(description = "응답 개수, 요청 값이 없으면 10으로 설정", example = "10") @RequestParam(value = "size", defaultValue = "10") int size
 	) {
-		QuestionListResponse response = questionService.findQuestions(userId, meetingId, page, size);
+		QuestionListResponse response = questionService.findQuestions(userId, meetingId, PageRequest.of(page, size));
 		return ResponseEntity.ok(response);
 	}
 

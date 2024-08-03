@@ -36,10 +36,10 @@ public class QuestionService {
 			.orElseThrow(NotFoundQuestionException::new);
 	}
 
-	public QuestionListResponse findQuestions(Long userId, Long meetingId, int page, int size) {
+	public QuestionListResponse findQuestions(Long userId, Long meetingId, PageRequest pageRequest) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = loginMember.getMeeting();
-		return questionRepository.findQuestionsByMeeting(meeting.getId(), PageRequest.of(page, size));
+		return questionRepository.findQuestionsByMeeting(meeting.getId(), pageRequest);
 	}
 
 	public QuestionResponse getRandomOne(List<Long> excludeQuestionIds) {
