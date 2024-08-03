@@ -40,7 +40,7 @@ jobs:
 #          min-coverage-changed-files: 50
 
       - name: Report to CodeCov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./build/reports/jacoco/test/jacocoTestReport.xml
