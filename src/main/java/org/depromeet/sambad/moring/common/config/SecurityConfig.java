@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.auth.infrastructure.SecurityProperties;
 import org.depromeet.sambad.moring.auth.presentation.JwtTokenFilter;
+import org.depromeet.sambad.moring.auth.presentation.RedirectUrlFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -28,6 +30,7 @@ public class SecurityConfig {
 	private final DefaultOAuth2UserService defaultOAuth2UserService;
 	private final AuthenticationEntryPoint authenticationEntryPoint;
 	private final JwtTokenFilter jwtTokenFilter;
+	private final RedirectUrlFilter redirectUrlFilter;
 	private final SecurityProperties securityProperties;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final AuthenticationFailureHandler authenticationFailureHandler;
@@ -94,6 +97,7 @@ public class SecurityConfig {
 	}
 
 	private void configureOAuth2Login(HttpSecurity http) throws Exception {
+		http.addFilterBefore(redirectUrlFilter, OAuth2AuthorizationRequestRedirectFilter.class);
 		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		http.oauth2Login(oauth2 ->
 			oauth2.loginPage(securityProperties.loginUrl())
