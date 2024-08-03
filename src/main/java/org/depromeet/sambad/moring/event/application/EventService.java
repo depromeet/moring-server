@@ -20,16 +20,10 @@ public class EventService {
 	private final MeetingMemberValidator meetingMemberValidator;
 
 	@Transactional
-	public void save(Long userId, Long meetingId, EventType type) {
+	public void publish(Long userId, Long meetingId, EventType type) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		Event event = Event.publish(userId, meetingId, type);
 		eventRepository.save(event);
-	}
-
-	public PollingEventListResponse getActiveEvents(Long userId, Long meetingId) {
-		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		List<Event> events = eventRepository.findByUserIdAndMeetingIdAndStatus(userId, meetingId, EventStatus.ACTIVE);
-		return PollingEventListResponse.from(events);
 	}
 
 	@Transactional
@@ -37,6 +31,18 @@ public class EventService {
 		Event event = getEventById(eventId);
 		event.inactivate();
 		eventRepository.save(event);
+	}
+
+	@Transactional
+	public void inactivateLastEventByType(Long userId, Long meetingId, EventType type) {
+		eventRepository.findFirstByUserIdAndMeetingIdAndStatusAndType(userId, meetingId, EventStatus.ACTIVE, type)
+			.ifPresent(Event::inactivate);
+	}
+
+	public PollingEventListResponse getActiveEvents(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		List<Event> events = eventRepository.findByUserIdAndMeetingIdAndStatus(userId, meetingId, EventStatus.ACTIVE);
+		return PollingEventListResponse.from(events);
 	}
 
 	private Event getEventById(Long eventId) {
