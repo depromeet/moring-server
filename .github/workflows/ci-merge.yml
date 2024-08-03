@@ -20,27 +20,11 @@ jobs:
       - name: "Gradle 권한 부여"
         run: chmod +x gradlew
 
-      - name: "테스트 실행"
-        run: ./gradlew test
-        continue-on-error: true
-
-      - name: "테스트 결과 업로드"
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: ${{ always() }}
-        with:
-          files: ./build/reports/jacoco/test/jacocoTestReport.xml
-#      - name: Test Coverage Report
-#        id: jacoco
-#        uses: madrapps/jacoco-report@v1.6
-#        with:
-#          title: Test Coverage Report
-#          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          min-coverage-overall: 30
-#          min-coverage-changed-files: 50
+      - name: Test with Gradle
+        run: ./gradlew build jacocoTestReport
 
       - name: Report to CodeCov
-        uses: codecov/codecov-action@v4.0.1
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./build/reports/jacoco/test/jacocoTestReport.xml
