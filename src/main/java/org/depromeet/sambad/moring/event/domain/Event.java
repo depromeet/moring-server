@@ -25,7 +25,9 @@ public class Event extends BaseTimeEntity {
 	@Column(name = "event_id")
 	private Long id;
 
-	private Long meetingMemberId;
+	private Long userId;
+
+	private Long meetingId;
 
 	@Enumerated(STRING)
 	private EventType type;
@@ -33,14 +35,15 @@ public class Event extends BaseTimeEntity {
 	@Enumerated(STRING)
 	private EventStatus status;
 
-	private Event(Long meetingMemberId, EventType type, EventStatus status) {
-		this.meetingMemberId = meetingMemberId;
+	private Event(Long userId, Long meetingId, EventType type, EventStatus status) {
+		this.userId = userId;
+		this.meetingId = meetingId;
 		this.type = type;
 		this.status = status;
 	}
 
-	public static Event publish(Long meetingMemberId, EventType type) {
-		return new Event(meetingMemberId, type, ACTIVE);
+	public static Event publish(Long userId, Long meetingId, EventType type) {
+		return new Event(userId, meetingId, type, ACTIVE);
 	}
 
 	public void inactivate() {
