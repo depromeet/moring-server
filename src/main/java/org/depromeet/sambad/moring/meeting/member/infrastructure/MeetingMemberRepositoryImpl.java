@@ -67,4 +67,9 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 	public boolean isUserMemberOfMeeting(Long userId, Long meetingId) {
 		return meetingMemberQueryRepository.isUserMemberOfMeeting(userId, meetingId);
 	}
+
+	@Override
+	public boolean isCountOfMembersIsOne(Long meetingId) {
+		return meetingMemberQueryRepository.isCountOfMembersIsOne(meetingId);
+	}
 }

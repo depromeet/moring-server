@@ -67,7 +67,7 @@ public class MeetingQuestionService {
 
 		eventService.inactivateLastEventByType(userId, meetingId, TARGET_MEMBER);
 		meeting.getMeetingMembers().forEach(member ->
-			eventService.publish(member.getUserId(), meetingId, QUESTION_REGISTERED));
+			eventService.publish(member.getUser().getId(), meetingId, QUESTION_REGISTERED));
 
 		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNextMeetingQuestion(
 			meeting, nextTargetMember, nowMeetingQuestion.getNextStartTime());
