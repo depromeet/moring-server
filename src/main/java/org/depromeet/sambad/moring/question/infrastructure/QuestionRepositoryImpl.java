@@ -39,7 +39,10 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 		List<Long> usedQuestionIds = queryFactory
 			.select(meetingQuestion.question.id)
 			.from(meetingQuestion)
-			.where(meetingQuestion.meeting.id.eq(meetingId))
+			.where(
+				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.id.isNotNull()
+			)
 			.fetch();
 
 		List<QuestionSummaryResponse> questionSummaryResponses = queryFactory
