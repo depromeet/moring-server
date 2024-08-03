@@ -72,8 +72,6 @@ test {
 }
 
 jacocoTestReport {
-	executionData(fileTree(project.rootDir.absolutePath).include("**/build/reports/jacoco/test/*.exec"))
-
 	reports {
 		html.required.set(true)
 		xml.required.set(true)
