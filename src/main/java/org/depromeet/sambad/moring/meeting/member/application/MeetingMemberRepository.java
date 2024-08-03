@@ -26,4 +26,6 @@ public interface MeetingMemberRepository {
 	boolean isOwnerExceedingMaxMeetings(Long meetingId, int maxHostMeetings);
 
 	boolean isUserMemberOfMeeting(Long userId, Long meetingId);
+
+	boolean isCountOfMembersIsOne(Long meetingId);
 }

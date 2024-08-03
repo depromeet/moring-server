@@ -52,4 +52,10 @@ public class MeetingMemberQueryRepository {
 				meetingMember.id.notIn(excludeMemberIds))
 			.fetch();
 	}
+
+	public boolean isCountOfMembersIsOne(Long meetingId) {
+		return query.selectFrom(meetingMember)
+			.where(meetingMember.meeting.id.eq(meetingId))
+			.fetch().size() == 1;
+	}
 }

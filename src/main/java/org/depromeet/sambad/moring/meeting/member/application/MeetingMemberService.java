@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
@@ -16,6 +17,8 @@ import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingM
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
+import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.domain.UserRepository;
 import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
@@ -35,6 +38,7 @@ public class MeetingMemberService {
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final UserRepository userRepository;
 	private final HobbyRepository hobbyRepository;
+	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 
 	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
@@ -82,7 +86,18 @@ public class MeetingMemberService {
 		MeetingMember meetingMember = validateAndCreateMember(userId, request, meeting, user);
 		addHobbies(meetingMember, request);
 
+		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
+
 		return MeetingMemberPersistResponse.from(meetingMember);
+	}
+
+	private void createMeetingQuestionIfFirstMeetingMember(Meeting meeting, MeetingMember meetingMember) {
+		if (meetingMemberRepository.isCountOfMembersIsOne(meeting.getId())) {
+			MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(
+				meeting, meetingMember, null, LocalDateTime.now());
+
+			meetingQuestionRepository.save(activeMeetingQuestion);
+		}
 	}
 
 	public MeetingMemberListResponseDetail getRandomMeetingMember(Long userId, Long meetingId,
