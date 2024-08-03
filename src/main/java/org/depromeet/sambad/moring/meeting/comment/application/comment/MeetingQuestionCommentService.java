@@ -6,7 +6,6 @@ import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestio
 import org.depromeet.sambad.moring.meeting.comment.presentation.comment.exception.NotFoundMeetingQuestionCommentException;
 import org.depromeet.sambad.moring.meeting.comment.presentation.comment.request.MeetingQuestionCommentRequest;
 import org.depromeet.sambad.moring.meeting.comment.presentation.comment.response.MeetingCommentListResponse;
-import org.depromeet.sambad.moring.meeting.comment.presentation.reply.exception.ExceedMaxCommentSizeException;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
@@ -22,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MeetingQuestionCommentService {
 
-	private static final int MAX_COMMENT_LENGTH = 10;
-
 	private final MeetingQuestionCommentRepository meetingQuestionCommentRepository;
 
 	private final MeetingMemberValidator meetingMemberValidator;
@@ -35,7 +32,6 @@ public class MeetingQuestionCommentService {
 	public void save(Long userId, Long meetingId, MeetingQuestionCommentRequest request) {
 		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, request.meetingQuestionId());
-		validateCommentMaxSize(request.content());
 
 		MeetingQuestionComment meetingQuestionComment = MeetingQuestionComment.builder()
 			.meetingMember(meetingMember)
@@ -65,11 +61,5 @@ public class MeetingQuestionCommentService {
 	public MeetingQuestionComment getById(Long meetingQuestionId, Long meetingCommentId) {
 		return meetingQuestionCommentRepository.findByIdAndMeetingQuestionId(meetingCommentId, meetingQuestionId)
 			.orElseThrow(NotFoundMeetingQuestionCommentException::new);
-	}
-
-	private void validateCommentMaxSize(String content) {
-		if (content.length() > MAX_COMMENT_LENGTH) {
-			throw new ExceedMaxCommentSizeException();
-		}
 	}
 }

@@ -34,14 +34,13 @@ public class MeetingQuestionCommentController {
 	@Operation(summary = "릴레이 질문 코멘트 등록", description = "모임의 릴레의 질문에 대한 코멘트를 작성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
-		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_COMMENT_SIZE"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 	})
 	@PostMapping("/meetings/{meetingId}/questions/comments")
 	public ResponseEntity<Object> saveComment(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") @Positive Long meetingId,
-		@RequestBody MeetingQuestionCommentRequest request
+		@Valid @RequestBody MeetingQuestionCommentRequest request
 	) {
 		meetingQuestionCommentService.save(userId, meetingId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
