@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.QFileEntity;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
@@ -203,5 +204,14 @@ public class MeetingQuestionQueryRepository {
 		}
 
 		return details;
+	}
+
+	public List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId) {
+		return queryFactory.select(meetingMember)
+			.from(meetingQuestion)
+			.join(meetingQuestion.memberAnswers, meetingAnswer)
+			.join(meetingAnswer.meetingMember, meetingMember)
+			.where(meetingQuestion.id.eq(meetingQuestionId))
+			.fetch();
 	}
 }
