@@ -10,7 +10,7 @@ public record MeetingQuestionCommentRequest(
 	@NotNull
 	Long meetingQuestionId,
 
-	@Schema(description = "릴레이 질문 코멘트 내용", example = "코멘트 예시 입니다.")
+	@Schema(description = "릴레이 질문 코멘트 내용", example = "코멘트 예시")
 	@NotBlank
 	@Size(max = 10)
 	String content
