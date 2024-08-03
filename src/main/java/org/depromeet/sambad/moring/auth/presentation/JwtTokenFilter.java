@@ -5,6 +5,7 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 import java.io.IOException;
 
 import org.depromeet.sambad.moring.auth.application.RefreshTokenService;
+import org.depromeet.sambad.moring.auth.application.TokenInjector;
 import org.depromeet.sambad.moring.auth.domain.TokenResolver;
 import org.depromeet.sambad.moring.auth.presentation.exception.AuthenticationRequiredException;
 import org.depromeet.sambad.moring.auth.presentation.exception.RefreshTokenNotValidaException;
@@ -19,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private final TokenResolver tokenResolver;
+	private final TokenInjector tokenInjector;
 	private final UserDetailsService userDetailsService;
 	private final RefreshTokenService refreshTokenService;
 
@@ -87,10 +88,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	}
 
 	private void invalidateCookie(String cookieName, HttpServletResponse response) {
-		Cookie cookieForInvalidate = new Cookie(cookieName, null);
-		cookieForInvalidate.setMaxAge(0);
-		response.addCookie(cookieForInvalidate);
-
+		tokenInjector.invalidateCookie(cookieName, response);
 		SecurityContextHolder.clearContext();
 	}
 }
