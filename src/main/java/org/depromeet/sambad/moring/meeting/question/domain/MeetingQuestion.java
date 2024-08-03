@@ -1,9 +1,9 @@
 package org.depromeet.sambad.moring.meeting.question.domain;
 
-import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.NOT_STARTED;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,10 +127,6 @@ public class MeetingQuestion extends BaseTimeEntity {
 		return question.getTitle();
 	}
 
-	public LocalDate getStartDate() {
-		return startTime.toLocalDate();
-	}
-
 	public LocalDateTime getNextStartTime() {
 		return startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
 	}
@@ -142,9 +138,14 @@ public class MeetingQuestion extends BaseTimeEntity {
 		}
 	}
 
+	public Long getEpochMilliStartTime() {
+		return startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
 	private void validateTarget(MeetingMember targetMember) {
 		if (!this.targetMember.equals(targetMember)) {
 			throw new InvalidMeetingMemberTargetException();
 		}
 	}
+
 }

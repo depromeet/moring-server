@@ -1,15 +1,11 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
-
-import java.time.LocalDateTime;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -39,9 +35,8 @@ public record ActiveMeetingQuestionResponse(
 	@Schema(example = "70", description = "참여율, 소수점 첫째 자리에서 반올림하여 반환합니다.", requiredMode = REQUIRED)
 	double engagementRate,
 
-	@Schema(example = "yyyy-MM-dd HH:mm:ss", description = "릴레이 질문 시작 시간", requiredMode = REQUIRED)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	LocalDateTime startTime,
+	@Schema(example = "1722707775774", description = "릴레이 질문 시작 시간", requiredMode = REQUIRED)
+	Long startTime,
 
 	@Schema(example = "false", description = "로그인한 유저의 답변 유무", requiredMode = REQUIRED)
 	Boolean isAnswered,
@@ -55,13 +50,14 @@ public record ActiveMeetingQuestionResponse(
 
 	public static ActiveMeetingQuestionResponse questionNotRegisteredOf(MeetingQuestion meetingQuestion) {
 		Meeting meeting = meetingQuestion.getMeeting();
+
 		return ActiveMeetingQuestionResponse.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.questionNumber(meeting.getQuestionNumber(meetingQuestion))
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(0)
 			.engagementRate(0)
-			.startTime(meetingQuestion.getStartTime())
+			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.isAnswered(false)
 			.isQuestionRegistered(false)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
@@ -80,7 +76,7 @@ public record ActiveMeetingQuestionResponse(
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
-			.startTime(meetingQuestion.getStartTime())
+			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.isAnswered(isAnswered)
 			.isQuestionRegistered(true)
 			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
