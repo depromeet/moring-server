@@ -21,7 +21,10 @@ public record MostInactiveMeetingQuestionListResponseDetail(
 	String content,
 
 	@Schema(example = "70", description = "참여율, 소수점 첫째 자리에서 반올림하여 반환합니다.", requiredMode = REQUIRED)
-	double engagementRate
+	double engagementRate,
+
+	@Schema(example = "1722707775774", description = "릴레이 질문 시작 시간", requiredMode = REQUIRED)
+	Long startTime
 ) {
 
 	public static MostInactiveMeetingQuestionListResponseDetail of(MeetingQuestion meetingQuestion, Answer bestAnswer) {
@@ -32,6 +35,7 @@ public record MostInactiveMeetingQuestionListResponseDetail(
 			.title(meetingQuestion.getQuestion().getTitle())
 			.content(bestAnswer.getContent())
 			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
+			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.build();
 	}
 }

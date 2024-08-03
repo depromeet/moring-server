@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.user.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +23,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -78,5 +79,9 @@ public class User extends BaseTimeEntity {
 	 */
 	public boolean hasDifferentProviderWithEmail(String email, String externalId) {
 		return Objects.equals(this.email, email) && !Objects.equals(this.externalId, externalId);
+	}
+
+	public Long toEpochMilli(LocalDateTime localDateTime) {
+		return getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
 }

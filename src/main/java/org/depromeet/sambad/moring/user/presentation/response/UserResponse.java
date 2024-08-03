@@ -1,8 +1,6 @@
 package org.depromeet.sambad.moring.user.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
-
-import java.time.LocalDateTime;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -20,11 +18,11 @@ public record UserResponse(
 	@Schema(description = "프로필 이미지 경로", example = "https://example.com/profile.jpg", requiredMode = REQUIRED)
 	String profileImageFileUrl,
 
-	@Schema(description = "생성일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
-	LocalDateTime createdAt,
+	@Schema(example = "1722707775774", description = "생성일", requiredMode = REQUIRED)
+	Long createdAt,
 
-	@Schema(description = "수정일", example = "2021-07-01T00:00:00", requiredMode = REQUIRED)
-	LocalDateTime updatedAt
+	@Schema(example = "1722707775774", description = "수정일", requiredMode = REQUIRED)
+	Long updatedAt
 ) {
 
 	public static UserResponse from(User user) {
@@ -32,8 +30,8 @@ public record UserResponse(
 			user.getName(),
 			user.getEmail(),
 			user.getProfileImageFileUrl(),
-			user.getCreatedAt(),
-			user.getUpdatedAt()
+			user.toEpochMilli(user.getCreatedAt()),
+			user.toEpochMilli(user.getUpdatedAt())
 		);
 	}
 }
