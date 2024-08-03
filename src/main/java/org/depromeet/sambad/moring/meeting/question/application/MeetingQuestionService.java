@@ -1,10 +1,13 @@
 package org.depromeet.sambad.moring.meeting.question.application;
 
+import static org.depromeet.sambad.moring.event.domain.EventType.*;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -38,6 +41,7 @@ public class MeetingQuestionService {
 
 	private final MeetingMemberService meetingMemberService;
 	private final QuestionService questionService;
+	private final EventService eventService;
 	private final MeetingMemberValidator meetingMemberValidator;
 
 	private final Clock clock;
@@ -61,8 +65,12 @@ public class MeetingQuestionService {
 			nowMeetingQuestion = createActiveQuestion(meeting, loginMember, activeQuestion);
 		}
 
-		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNextMeetingQuestion(meeting, nextTargetMember,
-			nowMeetingQuestion.getNextStartTime());
+		eventService.inactivateLastEventByType(userId, meetingId, TARGET_MEMBER);
+		meeting.getMeetingMembers().forEach(member ->
+			eventService.publish(member.getUserId(), meetingId, QUESTION_REGISTERED));
+
+		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNextMeetingQuestion(
+			meeting, nextTargetMember, nowMeetingQuestion.getNextStartTime());
 		meetingQuestionRepository.save(nextMeetingQuestion);
 
 		return ActiveMeetingQuestionResponse.questionRegisteredOf(nowMeetingQuestion, false);

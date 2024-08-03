@@ -1,10 +1,13 @@
 package org.depromeet.sambad.moring.meeting.answer.application;
 
+import static org.depromeet.sambad.moring.event.domain.EventType.*;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 
 import org.depromeet.sambad.moring.answer.application.AnswerService;
 import org.depromeet.sambad.moring.answer.domain.Answer;
+import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
@@ -30,6 +33,7 @@ public class MeetingAnswerService {
 	private final MeetingMemberService meetingMemberService;
 	private final MeetingQuestionService meetingQuestionService;
 	private final AnswerService answerService;
+	private final EventService eventService;
 
 	private final Clock clock;
 
@@ -49,6 +53,7 @@ public class MeetingAnswerService {
 			.build();
 		meetingAnswerRepository.save(meetingAnswer);
 
+		eventService.inactivateLastEventByType(userId, meetingId, QUESTION_REGISTERED);
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
 	}
 
@@ -58,7 +63,12 @@ public class MeetingAnswerService {
 		if (isAllAnswered) {
 			currentQuestion.updateStatusToInactive();
 			meetingQuestionRepository.findNextQuestion(meetingId)
-				.ifPresent(nextQuestion -> nextQuestion.updateStatusToActive(LocalDateTime.now(clock)));
+				.ifPresent(nextQuestion -> {
+					nextQuestion.updateStatusToActive(LocalDateTime.now(clock));
+					MeetingMember targetMember = nextQuestion.getTargetMember();
+
+					eventService.publish(targetMember.getUserId(), meetingId, TARGET_MEMBER);
+				});
 		}
 	}
 
