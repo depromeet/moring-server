@@ -103,14 +103,12 @@ meeting:
     host-max-count: ${HOST_MAX_COUNT:1}
 
 management:
-  server:
-    port: 9090
-  endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
   endpoints:
     web:
       exposure:
         include: health, info, metrics, prometheus
+  info:
+    os:
+      enabled: true
+    java:
+      enabled: true
