@@ -67,7 +67,7 @@ public class MeetingAnswerService {
 					nextQuestion.updateStatusToActive(LocalDateTime.now(clock));
 					MeetingMember targetMember = nextQuestion.getTargetMember();
 
-					eventService.publish(targetMember.getUserId(), meetingId, TARGET_MEMBER);
+					eventService.publish(targetMember.getUser().getId(), meetingId, TARGET_MEMBER);
 				});
 		}
 	}
