@@ -31,7 +31,7 @@ public class MeetingQuestionCommentController {
 
 	private final MeetingQuestionCommentService meetingQuestionCommentService;
 
-	@Operation(summary = "릴레이 질문 코멘트 등록", description = "모임의 릴레의 질문에 대한 코멘트를 작성합니다.")
+	@Operation(summary = "릴레이 질문 코멘트 등록", description = "모임의 릴레이 질문에 대한 코멘트를 작성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
@@ -48,7 +48,8 @@ public class MeetingQuestionCommentController {
 
 	@Operation(summary = "릴레이 질문에 대한 모든 코멘트 조회", description = "모임의 릴레이 질문에 대한 모든 코멘트를 조회합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200"),
+		@ApiResponse(responseCode = "200", description = "릴레이 질문에 대한 코멘트 목록 조회 성공"),
+		@ApiResponse(responseCode = "204", description = "릴레이 질문에 대한 코멘트 없음"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION")
 	})
 	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/comments")
@@ -57,9 +58,9 @@ public class MeetingQuestionCommentController {
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") @Positive Long meetingId,
 		@Parameter(description = "모임 질문 ID", example = "1", required = true) @PathVariable("meetingQuestionId") @Positive Long meetingQuestionId
 	) {
-		MeetingCommentListResponse comments = meetingQuestionCommentService.getAllComments(userId, meetingId,
+		MeetingCommentListResponse response = meetingQuestionCommentService.getAllComments(userId, meetingId,
 			meetingQuestionId);
-		return ResponseEntity.ok(comments);
+		return response.toResponseEntity();
 	}
 
 	@Operation(summary = "릴레이 질문 코멘트 삭제", description = "모임의 릴레이 질문 코멘트를 삭제합니다.")
