@@ -77,6 +77,7 @@ public class MeetingQuestionQueryRepository {
 			.leftJoin(meetingQuestion.memberAnswers, meetingAnswer).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.isNotNull(),
 				inactiveCond()
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
@@ -103,6 +104,7 @@ public class MeetingQuestionQueryRepository {
 			.leftJoin(meetingQuestion.question.questionImageFile, questionImageFile).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.isNotNull(),
 				inactiveCond()
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
@@ -154,7 +156,8 @@ public class MeetingQuestionQueryRepository {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.loe(now)
 			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-			.and(isAnsweredByAllCond().not());
+			.and(isAnsweredByAllCond().not())
+			.and(meetingQuestion.question.isNotNull());
 	}
 
 	private BooleanExpression inactiveCond() {
