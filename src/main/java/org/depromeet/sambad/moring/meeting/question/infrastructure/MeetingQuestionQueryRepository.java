@@ -131,15 +131,15 @@ public class MeetingQuestionQueryRepository {
 		return new OrderSpecifier<>(Order.DESC, meetingQuestion.memberAnswers.size());
 	}
 
-	private Answer getBestAnswer(MeetingQuestion meetingQuestion) {
-		return queryFactory
+	private Optional<Answer> getBestAnswer(MeetingQuestion meetingQuestion) {
+		return Optional.ofNullable(queryFactory
 			.select(meetingAnswer.answer)
 			.from(meetingAnswer)
 			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
 			.groupBy(meetingAnswer.answer)
 			.orderBy(meetingAnswer.count().desc())
 			.limit(1)
-			.fetchOne();
+			.fetchOne());
 	}
 
 	private Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
