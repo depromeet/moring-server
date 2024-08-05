@@ -53,7 +53,7 @@ public class MeetingQuestionQueryRepository {
 	}
 
 	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		Optional<MeetingQuestion> activeMeetingQuestion = findActiveQuestion(meetingId);
+		Optional<MeetingQuestion> activeMeetingQuestion = findRegisteredMeetingQuestion(meetingId);
 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
@@ -66,7 +66,15 @@ public class MeetingQuestionQueryRepository {
 	}
 
 	public Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId) {
-		return findActiveQuestion(meetingId);
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(meetingQuestion)
+				.where(meetingQuestion.meeting.id.eq(meetingId),
+					activeCond())
+				.orderBy(meetingQuestion.startTime.asc())
+				.limit(1)
+				.fetchOne()
+		);
 	}
 
 	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
@@ -77,6 +85,7 @@ public class MeetingQuestionQueryRepository {
 			.leftJoin(meetingQuestion.memberAnswers, meetingAnswer).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.isNotNull(),
 				inactiveCond()
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
@@ -103,6 +112,7 @@ public class MeetingQuestionQueryRepository {
 			.leftJoin(meetingQuestion.question.questionImageFile, questionImageFile).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.isNotNull(),
 				inactiveCond()
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
@@ -113,12 +123,12 @@ public class MeetingQuestionQueryRepository {
 		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions, pageable);
 	}
 
-	private Optional<MeetingQuestion> findActiveQuestion(Long meetingId) {
+	private Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
 		return Optional.ofNullable(
 			queryFactory
 				.selectFrom(meetingQuestion)
 				.where(meetingQuestion.meeting.id.eq(meetingId),
-					activeCond())
+					registeredCond())
 				.orderBy(meetingQuestion.startTime.asc())
 				.limit(1)
 				.fetchOne()
@@ -129,15 +139,15 @@ public class MeetingQuestionQueryRepository {
 		return new OrderSpecifier<>(Order.DESC, meetingQuestion.memberAnswers.size());
 	}
 
-	private Answer getBestAnswer(MeetingQuestion meetingQuestion) {
-		return queryFactory
+	private Optional<Answer> getBestAnswer(MeetingQuestion meetingQuestion) {
+		return Optional.ofNullable(queryFactory
 			.select(meetingAnswer.answer)
 			.from(meetingAnswer)
 			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
 			.groupBy(meetingAnswer.answer)
 			.orderBy(meetingAnswer.count().desc())
 			.limit(1)
-			.fetchOne();
+			.fetchOne());
 	}
 
 	private Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
@@ -150,11 +160,16 @@ public class MeetingQuestionQueryRepository {
 		return fetchOne != null;
 	}
 
-	private BooleanExpression activeCond() {
+	private BooleanExpression registeredCond() {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.loe(now)
 			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
 			.and(isAnsweredByAllCond().not());
+	}
+
+	private BooleanExpression activeCond() {
+		return registeredCond()
+			.and(meetingQuestion.question.isNotNull());
 	}
 
 	private BooleanExpression inactiveCond() {
