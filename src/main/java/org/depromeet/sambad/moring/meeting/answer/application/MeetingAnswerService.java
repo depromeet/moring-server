@@ -4,9 +4,9 @@ import static org.depromeet.sambad.moring.event.domain.EventType.*;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.depromeet.sambad.moring.answer.application.AnswerService;
-import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
@@ -41,17 +41,18 @@ public class MeetingAnswerService {
 	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
+		Long questionId = meetingQuestion.getQuestion().getId();
+
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
+		meetingQuestion.validateMeetingAnswerCount(request.answerIds().size());
 
-		Answer selectedAnswer = answerService.getById(meetingQuestion.getQuestion().getId(), request.answerId());
-		MeetingAnswer meetingAnswer = MeetingAnswer
-			.builder()
-			.meetingMember(loginMember)
-			.meetingQuestion(meetingQuestion)
-			.answer(selectedAnswer)
-			.build();
-		meetingAnswerRepository.save(meetingAnswer);
+		List<Long> answerIds = request.answerIds();
+		List<MeetingAnswer> meetingAnswers = answerIds.stream()
+			.map(answerId -> answerService.getById(questionId, answerId))
+			.map(answer -> new MeetingAnswer(meetingQuestion, answer, loginMember))
+			.toList();
+		meetingAnswers.forEach(meetingAnswerRepository::save);
 
 		eventService.inactivateLastEventByType(userId, meetingId, QUESTION_REGISTERED);
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);

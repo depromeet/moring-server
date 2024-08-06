@@ -1,25 +1,24 @@
 package org.depromeet.sambad.moring.meeting.answer.infrastructure;
 
 import static com.querydsl.core.types.dsl.Expressions.*;
-import static com.querydsl.jpa.JPAExpressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.comment.domain.comment.QMeetingQuestionComment.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
+import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
-import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -86,23 +85,36 @@ public class MeetingAnswerQueryRepository {
 	}
 
 	public MyMeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
-		List<MyMeetingAnswerResponseCustom> responseCustoms = queryFactory.select(Projections.constructor(
-				MyMeetingAnswerResponseCustom.class,
-				meetingAnswer.meetingQuestion.as("meetingQuestion"),
-				meetingAnswer.as("meetingAnswer"),
-				as(getMyComment(meetingMemberId), "comment")
-			))
-			.from(meetingAnswer)
-			.where(meetingAnswer.meetingMember.id.eq(meetingMemberId))
+		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
+			.from(meetingQuestion)
+			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
+			.join(meetingMember).on(meetingMember.eq(meetingAnswer.meetingMember)).fetchJoin()
+			.where(meetingMember.id.eq(meetingMemberId))
+			.orderBy(meetingQuestion.createdAt.asc())
 			.fetch();
+
+		List<MyMeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
+			.map(question -> new MyMeetingAnswerResponseCustom(question.getTitle(),
+				getMyAnswers(meetingMemberId, question),
+				getMyComment(meetingMemberId, question)))
+			.toList();
 
 		return MyMeetingAnswerListResponse.from(responseCustoms);
 	}
 
-	private JPQLQuery<MeetingQuestionComment> getMyComment(Long memberId) {
-		return select(meetingQuestionComment)
+	private List<Answer> getMyAnswers(Long memberId, MeetingQuestion meetingQuestion) {
+		return queryFactory.select(meetingAnswer.answer)
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestion.getId()),
+				meetingAnswer.meetingMember.id.eq(memberId))
+			.fetch();
+	}
+
+	private String getMyComment(Long memberId, MeetingQuestion meetingQuestion) {
+		return queryFactory.select(meetingQuestionComment.content)
 			.from(meetingQuestionComment)
 			.where(meetingQuestionComment.meetingMember.id.eq(memberId),
-				meetingQuestionComment.meetingQuestion.eq(meetingAnswer.meetingQuestion));
+				meetingQuestionComment.meetingQuestion.eq(meetingQuestion))
+			.fetchFirst();
 	}
 }

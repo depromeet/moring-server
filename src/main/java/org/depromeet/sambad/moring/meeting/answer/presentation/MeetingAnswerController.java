@@ -35,7 +35,8 @@ public class MeetingAnswerController {
 
 	@Operation(summary = "모임원 답변 등록")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "meetingQuestion(모임원 답변) 등록 성공"),
+		@ApiResponse(responseCode = "201", description = "모임원 답변 등록 성공"),
+		@ApiResponse(responseCode = "400", description = "ANSWER_COUNT_OUT_OF_RANGE"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND / NOT_FOUND_MEETING_QUESTION / "
 			+ "NOT_FOUND_ANSWER"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_ANSWER / FINISHED_MEETING_QUESTION")

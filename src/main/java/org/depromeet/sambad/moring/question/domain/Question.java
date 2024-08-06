@@ -8,7 +8,6 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.question.presentation.exception.AnswerCountOutOfRangeException;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,7 +57,7 @@ public class Question extends BaseTimeEntity {
 	@Builder
 	public Question(String title, FileEntity questionImageFile, QuestionType questionType,
 		List<String> answerContents) {
-		validateAnswerCount(answerContents);
+		QuestionType.validateAnswerCount(questionType, answerContents.size());
 		this.questionType = questionType;
 		this.title = title;
 		this.questionImageFile = questionImageFile;
@@ -85,11 +84,5 @@ public class Question extends BaseTimeEntity {
 
 	public QuestionType getQuestionType() {
 		return questionType;
-	}
-
-	private void validateAnswerCount(List<String> answerContents) {
-		if (answerContents.size() < MIN_ANSWER_COUNT || answerContents.size() > MAX_ANSWER_COUNT) {
-			throw new AnswerCountOutOfRangeException();
-		}
 	}
 }

@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.domain;
 
-import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.NOT_STARTED;
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,6 +15,7 @@ import org.depromeet.sambad.moring.meeting.question.presentation.exception.Dupli
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.FinishedMeetingQuestionException;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.domain.QuestionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -138,6 +139,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 		}
 	}
 
+	public void validateMeetingAnswerCount(int answerSize) {
+		QuestionType.validateAnswerCount(question.getQuestionType(), answerSize);
+	}
+
 	public Long getEpochMilliStartTime() {
 		return startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
@@ -147,5 +152,4 @@ public class MeetingQuestion extends BaseTimeEntity {
 			throw new InvalidMeetingMemberTargetException();
 		}
 	}
-
 }
