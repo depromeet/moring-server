@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 public class Question extends BaseTimeEntity {
 
 	private static final int MIN_ANSWER_COUNT = 2;
-	private static final int MAX_ANSWER_COUNT = 16;
+	private static final int MAX_ANSWER_COUNT = 9;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,9 +56,10 @@ public class Question extends BaseTimeEntity {
 	private List<Answer> answers = new ArrayList<>();
 
 	@Builder
-	public Question(String title, FileEntity questionImageFile, List<String> answerContents) {
+	public Question(String title, FileEntity questionImageFile, QuestionType questionType,
+		List<String> answerContents) {
 		validateAnswerCount(answerContents);
-		this.questionType = QuestionType.getQuestionType(answerContents.size());
+		this.questionType = questionType;
 		this.title = title;
 		this.questionImageFile = questionImageFile;
 
@@ -83,10 +84,7 @@ public class Question extends BaseTimeEntity {
 	}
 
 	public QuestionType getQuestionType() {
-		if (questionType != null)
-			return questionType;
-
-		return QuestionType.getQuestionType(answers.size());
+		return questionType;
 	}
 
 	private void validateAnswerCount(List<String> answerContents) {
