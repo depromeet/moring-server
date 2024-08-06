@@ -59,6 +59,7 @@ public class QuestionService {
 		Question question = Question.builder()
 			.title(questionRequest.title())
 			.questionImageFile(image)
+			.questionType(questionRequest.questionType())
 			.answerContents(questionRequest.answerContents())
 			.build();
 		questionRepository.save(question);
