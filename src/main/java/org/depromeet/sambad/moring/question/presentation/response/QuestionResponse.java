@@ -1,12 +1,13 @@
 package org.depromeet.sambad.moring.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.util.List;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.AnswerResponse;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.domain.QuestionType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,7 +15,12 @@ public record QuestionResponse(
 	@Schema(description = "질문 ID", example = "1", requiredMode = REQUIRED)
 	Long questionId,
 
-  	@FullFileUrl
+	@Schema(description = "질문 유형",
+		examples = {"SINGLE_CHOICE", "MULTIPLE_SHORT_CHOICE", "MULTIPLE_DESCRIPTIVE_CHOICE"},
+		requiredMode = REQUIRED)
+	QuestionType questionType,
+
+	@FullFileUrl
 	@Schema(description = "질문 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
 	String questionImageFileUrl,
 
@@ -28,6 +34,7 @@ public record QuestionResponse(
 	public static QuestionResponse from(final Question question) {
 		return new QuestionResponse(
 			question.getId(),
+			question.getQuestionType(),
 			question.getQuestionImageUrl(),
 			question.getTitle(),
 			AnswerResponse.from(question.getAnswers())
