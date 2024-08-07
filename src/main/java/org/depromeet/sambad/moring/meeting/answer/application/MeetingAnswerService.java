@@ -41,21 +41,36 @@ public class MeetingAnswerService {
 	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
-		Long questionId = meetingQuestion.getQuestion().getId();
 
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
 		meetingQuestion.validateMeetingAnswerCount(request.answerIds().size());
 
-		List<Long> answerIds = request.answerIds();
+		saveMeetingAnswers(meetingQuestion, loginMember, request.answerIds());
+
+		eventService.inactivateLastEventByType(userId, meetingId, QUESTION_REGISTERED);
+		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
+	}
+
+	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
+	}
+
+	private void saveMeetingAnswers(MeetingQuestion meetingQuestion, MeetingMember loginMember, List<Long> answerIds) {
+		Long questionId = meetingQuestion.getQuestion().getId();
 		List<MeetingAnswer> meetingAnswers = answerIds.stream()
 			.map(answerId -> answerService.getById(questionId, answerId))
 			.map(answer -> new MeetingAnswer(meetingQuestion, answer, loginMember))
 			.toList();
 		meetingAnswers.forEach(meetingAnswerRepository::save);
+	}
 
-		eventService.inactivateLastEventByType(userId, meetingId, QUESTION_REGISTERED);
-		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
+	private void validateNonDuplicateMeetingAnswer(Long meetingQuestionId, Long meetingMemberId) {
+		boolean exists = meetingAnswerRepository.existsByMeetingMember(meetingQuestionId, meetingMemberId);
+		if (exists) {
+			throw new DuplicateMeetingAnswerException();
+		}
 	}
 
 	private void advanceToNextQuestionIfAllAnswered(Long meetingId, MeetingQuestion currentQuestion) {
@@ -70,18 +85,6 @@ public class MeetingAnswerService {
 
 					eventService.publish(targetMember.getUser().getId(), meetingId, TARGET_MEMBER);
 				});
-		}
-	}
-
-	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
-		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
-	}
-
-	private void validateNonDuplicateMeetingAnswer(Long meetingQuestionId, Long meetingMemberId) {
-		boolean exists = meetingAnswerRepository.existsByMeetingMember(meetingQuestionId, meetingMemberId);
-		if (exists) {
-			throw new DuplicateMeetingAnswerException();
 		}
 	}
 }
