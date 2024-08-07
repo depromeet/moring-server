@@ -16,8 +16,8 @@ public record MyMeetingAnswerListResponseDetail(
 	@Schema(title = "릴레이 질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
 
-	@Schema(title = "유저가 선택한 답변", example = "분신술", requiredMode = REQUIRED)
-	String content,
+	@Schema(description = "유저가 선택한 답변 리스트", example = "[\"토마토\"]", requiredMode = REQUIRED)
+	List<String> content,
 
 	@Schema(title = "유저가 단 댓글", example = "요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!",
 		description = "댓글이 없으면 null 응답합니다.", requiredMode = NOT_REQUIRED)
@@ -30,9 +30,9 @@ public record MyMeetingAnswerListResponseDetail(
 				MyMeetingAnswerResponseCustom response = responseCustoms.get(i);
 				return new MyMeetingAnswerListResponseDetail(
 					i + 1,
-					response.meetingQuestion().getTitle(),
-					response.meetingAnswer().getAnswer().getContent(),
-					response.comment() != null ? response.comment().getContent() : null
+					response.meetingQuestionTitle(),
+					response.getMeetingAnswers(),
+					response.comment()
 				);
 			})
 			.toList();

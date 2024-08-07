@@ -12,7 +12,9 @@ public record MeetingQuestionAndAnswerListResponse(
 	@Schema(description = "모임의 질문 ID", example = "!", requiredMode = REQUIRED)
 	Long meetingQuestionId,
 
-	@Schema(description = "질문 유형", examples = {"SINGLE_CHOICE", "MULTIPLE_CHOICE"}, requiredMode = REQUIRED)
+	@Schema(description = "질문 유형",
+		examples = {"SINGLE_CHOICE", "MULTIPLE_SHORT_CHOICE", "MULTIPLE_DESCRIPTIVE_CHOICE"},
+		requiredMode = REQUIRED)
 	QuestionType questionType,
 
 	@Schema(description = "질문과 답 관련 응답", requiredMode = REQUIRED)

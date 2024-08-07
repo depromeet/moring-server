@@ -4,9 +4,9 @@ import static org.depromeet.sambad.moring.event.domain.EventType.*;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.depromeet.sambad.moring.answer.application.AnswerService;
-import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
@@ -41,20 +41,36 @@ public class MeetingAnswerService {
 	public void save(Long userId, Long meetingId, Long meetingQuestionId, MeetingAnswerRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingQuestion meetingQuestion = meetingQuestionService.getById(meetingId, meetingQuestionId);
+
 		meetingQuestion.validateNotFinished(LocalDateTime.now(clock));
 		validateNonDuplicateMeetingAnswer(meetingQuestion.getId(), loginMember.getId());
+		meetingQuestion.validateMeetingAnswerCount(request.answerIds().size());
 
-		Answer selectedAnswer = answerService.getById(meetingQuestion.getQuestion().getId(), request.answerId());
-		MeetingAnswer meetingAnswer = MeetingAnswer
-			.builder()
-			.meetingMember(loginMember)
-			.meetingQuestion(meetingQuestion)
-			.answer(selectedAnswer)
-			.build();
-		meetingAnswerRepository.save(meetingAnswer);
+		saveMeetingAnswers(meetingQuestion, loginMember, request.answerIds());
 
 		eventService.inactivateLastEventByType(userId, meetingId, QUESTION_REGISTERED);
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
+	}
+
+	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
+		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
+	}
+
+	private void saveMeetingAnswers(MeetingQuestion meetingQuestion, MeetingMember loginMember, List<Long> answerIds) {
+		Long questionId = meetingQuestion.getQuestion().getId();
+		List<MeetingAnswer> meetingAnswers = answerIds.stream()
+			.map(answerId -> answerService.getById(questionId, answerId))
+			.map(answer -> new MeetingAnswer(meetingQuestion, answer, loginMember))
+			.toList();
+		meetingAnswers.forEach(meetingAnswerRepository::save);
+	}
+
+	private void validateNonDuplicateMeetingAnswer(Long meetingQuestionId, Long meetingMemberId) {
+		boolean exists = meetingAnswerRepository.existsByMeetingMember(meetingQuestionId, meetingMemberId);
+		if (exists) {
+			throw new DuplicateMeetingAnswerException();
+		}
 	}
 
 	private void advanceToNextQuestionIfAllAnswered(Long meetingId, MeetingQuestion currentQuestion) {
@@ -69,18 +85,6 @@ public class MeetingAnswerService {
 
 					eventService.publish(targetMember.getUser().getId(), meetingId, TARGET_MEMBER);
 				});
-		}
-	}
-
-	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
-		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
-	}
-
-	private void validateNonDuplicateMeetingAnswer(Long meetingQuestionId, Long meetingMemberId) {
-		boolean exists = meetingAnswerRepository.existsByMeetingMember(meetingQuestionId, meetingMemberId);
-		if (exists) {
-			throw new DuplicateMeetingAnswerException();
 		}
 	}
 }
