@@ -80,7 +80,8 @@ public class QuestionController {
 
 	@Operation(summary = "질문 추가", description = "새로운 질문을 등록하는 API 입니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "질문 추가 등록성공")
+		@ApiResponse(responseCode = "200", description = "질문 추가 등록성공"),
+		@ApiResponse(responseCode = "400", description = "ANSWER_COUNT_OUT_OF_RANGE"),
 	})
 	@PostMapping("/questions")
 	public ResponseEntity<Void> addQuestion(
@@ -92,7 +93,8 @@ public class QuestionController {
 
 	@Operation(summary = "CSV 질문 및 답변 init", description = "CSV 파일을 읽어 질문과 답변을 등록하는 운영자용 API 입니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "CSV 질문 및 답변 init 성공")
+		@ApiResponse(responseCode = "200", description = "CSV 질문 및 답변 init 성공"),
+		@ApiResponse(responseCode = "400", description = "ANSWER_COUNT_OUT_OF_RANGE"),
 	})
 	@PostMapping("/questions/csv")
 	public ResponseEntity<Void> csvInitQuestions() throws Exception {
