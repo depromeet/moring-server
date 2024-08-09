@@ -20,52 +20,27 @@ services:
     expose:
       - 8080
     environment:
-      SPRING_PROFILES_ACTIVE: local
-      REDIS_HOST: redis
-      DB_HOST: mysql
-      spring.jpa,hibernate.ddl-auto: update
+      SPRING_PROFILES_ACTIVE: dev
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
       KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET}
       KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
       LOGIN_URL: ${LOGIN_URL}
       REDIRECT_URL: ${REDIRECT_URL}
-    depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:8.4.0
-    container_name: moring-mysql
-    restart: always
-    ports:
-      - 3306:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      TZ: "Asia/Seoul"
-    volumes:
-      - mysql:/var/lib/mysql
-      - ./db/initdb.d:/docker-entrypoint-initdb.d
-
-  redis:
-    image: redis:7.2.5
-    container_name: moring-redis
-    ports:
-      - 6381:6379
-    command:
-      - bash
-      - -c
-      - redis-server --appendonly yes --maxmemory $$(( $$( cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null || cat /sys/fs/cgroup/memory.max ) - 100000000)) --maxmemory-policy volatile-lru
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    environment:
-      TZ: "Asia/Seoul"
-    restart: unless-stopped
+      NEW_USER_REDIRECT_URL: ${NEW_USER_REDIRECT_URL}
+      NCP_ACCESS_KEY: ${NCP_ACCESS_KEY}
+      NCP_SECRET_KEY: ${NCP_SECRET_KEY}
+      NCP_BUCKET_NAME: ${NCP_BUCKET_NAME}
+      SENTRY_DSN: ${SENTRY_DSN}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN}
+    labels:
+      logging: "promtail"
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: moring-prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
@@ -74,20 +49,49 @@ services:
     command:
       - '--storage.tsdb.path=/prometheus'
       - '--config.file=/etc/prometheus/prometheus.yml'
+    environment:
+      TZ: "Asia/Seoul"
     restart: always
 
+  loki:
+    image: grafana/loki:3.1.0
+    container_name: moring-loki
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    environment:
+      TZ: "Asia/Seoul"
+
+  promtail:
+    image: grafana/promtail:3.1.0
+    user: root
+    container_name: moring-promtail
+    volumes:
+      - loki-logs:/var/log
+      - ./promtail/promtail.yml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+    environment:
+      TZ: "Asia/Seoul"
+    depends_on:
+      - loki
+
   grafana:
-    image: grafana/grafana
-    container_name: grafana
+    image: grafana/grafana:11.1.1
+    container_name: moring-grafana
     volumes:
       - grafana-data:/var/lib/grafana
     ports:
       - 3000:3000
     restart: always
+    environment:
+      TZ: "Asia/Seoul"
     depends_on:
       - prometheus
 
 volumes:
   mysql: { }
-  prometheus-data:
-  grafana-data:
+  prometheus-data: { }
+  grafana-data: { }
+  loki-logs: { }
