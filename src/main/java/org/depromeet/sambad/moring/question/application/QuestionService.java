@@ -78,13 +78,12 @@ public class QuestionService {
 		List<List<String>> excelDatas = excelSheetHandler.getRows();
 
 		for (List<String> dataRow : excelDatas) {
-			List<String> answers = Arrays.asList(dataRow.get(3).split(","));
 			FileEntity image = fileService.getById(Long.parseLong(dataRow.get(1)));
 			Question question = Question.builder()
 				.title(dataRow.get(0))
 				.questionImageFile(image)
 				.questionType(QuestionType.valueOf(dataRow.get(2)))
-				.answerContents(answers)
+				.answerContents(Arrays.asList(dataRow.get(3).split(",")))
 				.build();
 			questionRepository.save(question);
 		}

@@ -95,6 +95,7 @@ public class QuestionController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "CSV 질문 및 답변 init 성공"),
 		@ApiResponse(responseCode = "400", description = "ANSWER_COUNT_OUT_OF_RANGE"),
+		@ApiResponse(responseCode = "404", description = "EXCEL_READ_ERROR")
 	})
 	@PostMapping("/questions/csv")
 	public ResponseEntity<Void> csvInitQuestions() throws Exception {

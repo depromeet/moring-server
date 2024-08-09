@@ -15,6 +15,7 @@ public enum QuestionExceptionCode implements ExceptionCode {
 	ANSWER_COUNT_OUT_OF_RANGE(BAD_REQUEST, "답변 개수가 범위를 벗어났습니다. 2개 이상 16개 이하로 입력해주세요."),
 
 	NOT_FOUND_QUESTION(NOT_FOUND, "릴레이 질문이 존재하지 않습니다."),
+	EXCEL_READ_ERROR(NOT_FOUND, "엑셀 파일을 찾을 수 없거나 읽는 중 오류가 발생했습니다."),
 	NOT_FOUND_AVAILABLE_QUESTION(NOT_FOUND, "사용 가능한 질문이 존재하지 않습니다."),
 
 	DUPLICATE_QUESTION(CONFLICT, "이미 등록한 질문입니다."),

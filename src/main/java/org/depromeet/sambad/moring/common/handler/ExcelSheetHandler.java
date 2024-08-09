@@ -17,6 +17,7 @@ import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
+import org.depromeet.sambad.moring.question.presentation.exception.ExcelReadErrorException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -52,8 +53,8 @@ public class ExcelSheetHandler implements XSSFSheetXMLHandler.SheetContentsHandl
 			xmlReader.parse(inputSource);
 			inputStream.close();
 			opc.close();
-		} catch (SAXException | OpenXML4JException | ParserConfigurationException | IOException e) {
-			throw new Exception();
+		} catch (ExcelReadErrorException e) {
+			throw new ExcelReadErrorException();
 		}
 
 		return sheetHandler;
