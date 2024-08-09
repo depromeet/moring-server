@@ -90,4 +90,14 @@ public class QuestionController {
 		return ResponseEntity.ok().build();
 	}
 
+	@Operation(summary = "CSV 질문 및 답변 init", description = "CSV 파일을 읽어 질문과 답변을 등록하는 운영자용 API 입니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "CSV 질문 및 답변 init 성공")
+	})
+	@PostMapping("/questions/csv")
+	public ResponseEntity<Void> csvInitQuestions() throws Exception {
+		questionService.csvInitQuestions();
+		return ResponseEntity.ok().build();
+	}
+
 }

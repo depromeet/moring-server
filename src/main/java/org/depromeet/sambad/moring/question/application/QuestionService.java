@@ -1,14 +1,19 @@
 package org.depromeet.sambad.moring.question.application;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.depromeet.sambad.moring.common.handler.ExcelSheetHandler;
 import org.depromeet.sambad.moring.file.application.FileService;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.question.domain.Question;
+import org.depromeet.sambad.moring.question.domain.QuestionType;
 import org.depromeet.sambad.moring.question.presentation.exception.NotFoundAvailableQuestionException;
 import org.depromeet.sambad.moring.question.presentation.exception.NotFoundQuestionException;
 import org.depromeet.sambad.moring.question.presentation.request.QuestionRequest;
@@ -63,5 +68,25 @@ public class QuestionService {
 			.answerContents(questionRequest.answerContents())
 			.build();
 		questionRepository.save(question);
+	}
+
+	@Transactional
+	public void csvInitQuestions() throws Exception {
+		String filePath = "src/main/resources/moring_question_answer_mock.xlsx";
+		File file = new File(filePath);
+		ExcelSheetHandler excelSheetHandler = ExcelSheetHandler.readExcel(file);
+		List<List<String>> excelDatas = excelSheetHandler.getRows();
+
+		for (List<String> dataRow : excelDatas) {
+			List<String> answers = Arrays.asList(dataRow.get(3).split(","));
+			FileEntity image = fileService.getById(Long.parseLong(dataRow.get(1)));
+			Question question = Question.builder()
+				.title(dataRow.get(0))
+				.questionImageFile(image)
+				.questionType(QuestionType.valueOf(dataRow.get(2)))
+				.answerContents(answers)
+				.build();
+			questionRepository.save(question);
+		}
 	}
 }

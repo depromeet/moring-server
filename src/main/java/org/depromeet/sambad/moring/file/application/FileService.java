@@ -60,6 +60,10 @@ public class FileService {
 		return defaultFiles.get((int) (Math.random() * defaultFiles.size()));
 	}
 
+	public FileEntity getById(Long fileId) {
+		return fileRepository.findById(fileId);
+	}
+
 	private boolean isNotExistFile(Long fileId) {
 		return !fileRepository.existsById(fileId);
 	}
