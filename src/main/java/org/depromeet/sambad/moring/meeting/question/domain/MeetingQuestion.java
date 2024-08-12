@@ -118,10 +118,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public int getResponseCount() {
 		return this.memberAnswers.stream()
-				.map(MeetingAnswer::getMeetingMember)
-				.map(MeetingMember::getId)
-				.distinct()
-				.toList().size();
+			.map(MeetingAnswer::getMeetingMember)
+			.map(MeetingMember::getId)
+			.distinct()
+			.toList().size();
 	}
 
 	public String getQuestionImageUrl() {
