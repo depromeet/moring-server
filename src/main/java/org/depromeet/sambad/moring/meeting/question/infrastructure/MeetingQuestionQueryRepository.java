@@ -86,7 +86,7 @@ public class MeetingQuestionQueryRepository {
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
 				meetingQuestion.question.isNotNull(),
-				inactiveCond()
+				meetingQuestion.meetingQuestionStatus.eq(INACTIVE)
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
 			.limit(2)
@@ -113,7 +113,7 @@ public class MeetingQuestionQueryRepository {
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
 				meetingQuestion.question.isNotNull(),
-				inactiveCond()
+				meetingQuestion.meetingQuestionStatus.eq(INACTIVE)
 			)
 			.orderBy(orderDescByMeetingAnswerCount(), meetingQuestion.startTime.desc())
 			.offset(pageable.getOffset())
@@ -164,22 +164,12 @@ public class MeetingQuestionQueryRepository {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.loe(now)
 			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-			.and(isAnsweredByAllCond().not());
+            .and(meetingQuestion.meetingQuestionStatus.eq(ACTIVE));
 	}
 
 	private BooleanExpression activeCond() {
 		return registeredCond()
 			.and(meetingQuestion.question.isNotNull());
-	}
-
-	private BooleanExpression inactiveCond() {
-		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS))
-			.or(isAnsweredByAllCond());
-	}
-
-	private BooleanExpression isAnsweredByAllCond() {
-		return meetingQuestion.memberAnswers.size().eq(meetingQuestion.meeting.meetingMembers.size());
 	}
 
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {

@@ -75,10 +75,9 @@ public class ObjectStorageFileUploader implements FileUploader {
 		try {
 			String filePath = generateUploadPath(fileUrl);
 			HttpURLConnection conn = getHttpURLConnection(fileUrl);
-			String contentType = conn.getHeaderField(CONTENT_TYPE);
 
 			try (InputStream in = conn.getInputStream()) {
-				amazonS3.putObject(bucketName, filePath, in, setObjectMetaData(in, contentType));
+				amazonS3.putObject(bucketName, filePath, in, setObjectMetaData(conn));
 			}
 
 			return filePath;
@@ -120,10 +119,13 @@ public class ObjectStorageFileUploader implements FileUploader {
 		return conn;
 	}
 
-	private ObjectMetadata setObjectMetaData(InputStream in, String contentType) throws IOException {
+	private ObjectMetadata setObjectMetaData(HttpURLConnection conn) throws IOException {
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 
-		objectMetadata.setContentLength(in.available());
+		String contentType = conn.getHeaderField(CONTENT_TYPE);
+		long contentLength = Long.parseLong(conn.getHeaderField(CONTENT_LENGTH));
+
+		objectMetadata.setContentLength(contentLength);
 		objectMetadata.setContentType(contentType);
 		return objectMetadata;
 	}
