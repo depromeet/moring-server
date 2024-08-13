@@ -53,7 +53,7 @@ public class MeetingQuestionQueryRepository {
 	}
 
 	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		Optional<MeetingQuestion> activeMeetingQuestion = findRegisteredMeetingQuestion(meetingId);
+		Optional<MeetingQuestion> activeMeetingQuestion = findMeetingQuestion(meetingId);
 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
@@ -111,6 +111,18 @@ public class MeetingQuestionQueryRepository {
 		);
 	}
 
+	public Optional<MeetingQuestion> findMeetingQuestion(Long meetingId) {
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(meetingQuestion)
+				.where(meetingQuestion.meeting.id.eq(meetingId),
+					registeredOrActiveCond())
+				.orderBy(meetingQuestion.startTime.asc())
+				.limit(1)
+				.fetchOne()
+		);
+	}
+
 	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
 		QFileEntity profileImageFile = new QFileEntity("profileImageFile");
 		QFileEntity questionImageFile = new QFileEntity("questionImageFile");
@@ -158,6 +170,12 @@ public class MeetingQuestionQueryRepository {
 				meetingAnswer.meetingMember.id.eq(meetingMemberId))
 			.fetchFirst();
 		return fetchOne != null;
+	}
+
+	private BooleanExpression registeredOrActiveCond() {
+		LocalDateTime now = LocalDateTime.now();
+		return meetingQuestion.startTime.loe(now)
+			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)));
 	}
 
 	private BooleanExpression registeredCond() {
