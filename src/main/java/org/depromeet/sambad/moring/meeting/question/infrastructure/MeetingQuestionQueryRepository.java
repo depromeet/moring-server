@@ -53,7 +53,7 @@ public class MeetingQuestionQueryRepository {
 	}
 
 	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		Optional<MeetingQuestion> activeMeetingQuestion = findRegisteredMeetingQuestion(meetingId);
+		Optional<MeetingQuestion> activeMeetingQuestion = findMeetingQuestion(meetingId);
 
 		if (activeMeetingQuestion.isEmpty()) {
 			return null;
@@ -105,6 +105,17 @@ public class MeetingQuestionQueryRepository {
 				.selectFrom(meetingQuestion)
 				.where(meetingQuestion.meeting.id.eq(meetingId),
 					registeredCond())
+				.orderBy(meetingQuestion.startTime.asc())
+				.limit(1)
+				.fetchOne()
+		);
+	}
+
+	public Optional<MeetingQuestion> findMeetingQuestion(Long meetingId) {
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(meetingQuestion)
+				.where(meetingQuestion.meeting.id.eq(meetingId))
 				.orderBy(meetingQuestion.startTime.asc())
 				.limit(1)
 				.fetchOne()
