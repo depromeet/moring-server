@@ -48,6 +48,11 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
+	public Optional<MeetingQuestion> findRegisteredOneByMeeting(Long meetingId) {
+		return meetingQuestionQueryRepository.findRegisteredMeetingQuestion(meetingId);
+	}
+
+	@Override
 	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
 		return meetingQuestionQueryRepository.findMostInactiveList(meetingId);
 	}

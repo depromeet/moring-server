@@ -99,6 +99,18 @@ public class MeetingQuestionQueryRepository {
 		return MostInactiveMeetingQuestionListResponse.from(responseDetails);
 	}
 
+	public Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(meetingQuestion)
+				.where(meetingQuestion.meeting.id.eq(meetingId),
+					registeredCond())
+				.orderBy(meetingQuestion.startTime.asc())
+				.limit(1)
+				.fetchOne()
+		);
+	}
+
 	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
 		QFileEntity profileImageFile = new QFileEntity("profileImageFile");
 		QFileEntity questionImageFile = new QFileEntity("questionImageFile");
@@ -121,18 +133,6 @@ public class MeetingQuestionQueryRepository {
 			.fetch();
 
 		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions, pageable);
-	}
-
-	private Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
-		return Optional.ofNullable(
-			queryFactory
-				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId),
-					registeredCond())
-				.orderBy(meetingQuestion.startTime.asc())
-				.limit(1)
-				.fetchOne()
-		);
 	}
 
 	private OrderSpecifier<Integer> orderDescByMeetingAnswerCount() {
@@ -164,11 +164,13 @@ public class MeetingQuestionQueryRepository {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.loe(now)
 			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-            .and(meetingQuestion.meetingQuestionStatus.eq(ACTIVE));
+			.and(meetingQuestion.question.isNull());
 	}
 
 	private BooleanExpression activeCond() {
-		return registeredCond()
+		LocalDateTime now = LocalDateTime.now();
+		return meetingQuestion.startTime.loe(now)
+			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
 			.and(meetingQuestion.question.isNotNull());
 	}
 

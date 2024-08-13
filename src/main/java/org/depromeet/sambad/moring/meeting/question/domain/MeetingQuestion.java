@@ -104,6 +104,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 			throw new DuplicateMeetingQuestionException();
 		}
 		this.question = question;
+		this.meetingQuestionStatus = ACTIVE;
 		this.question.addMeetingQuestion(this);
 	}
 
