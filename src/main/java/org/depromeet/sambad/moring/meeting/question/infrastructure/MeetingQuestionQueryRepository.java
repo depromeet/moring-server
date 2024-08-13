@@ -164,7 +164,7 @@ public class MeetingQuestionQueryRepository {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.loe(now)
 			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-			.and(isAnsweredByAllCond().not());
+            .and(meetingQuestion.meetingQuestionStatus.eq(ACTIVE));
 	}
 
 	private BooleanExpression activeCond() {
@@ -175,11 +175,7 @@ public class MeetingQuestionQueryRepository {
 	private BooleanExpression inactiveCond() {
 		LocalDateTime now = LocalDateTime.now();
 		return meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS))
-			.or(isAnsweredByAllCond());
-	}
-
-	private BooleanExpression isAnsweredByAllCond() {
-		return meetingQuestion.memberAnswers.size().eq(meetingQuestion.meeting.meetingMembers.size());
+			.or(meetingQuestion.meetingQuestionStatus.eq(INACTIVE));
 	}
 
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {

@@ -30,14 +30,18 @@ public class MeetingAnswerQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	public boolean isAllAnsweredByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId) {
-		return queryFactory.select(meetingAnswer.count())
+		Long answeredMeetingMemberCount = queryFactory.select(meetingAnswer.meetingMember.countDistinct())
 			.from(meetingAnswer)
 			.where(meetingAnswer.meetingQuestion.id.eq(meetingQuestionId))
-			.fetchOne()
-			.equals(queryFactory.select(meetingMember.count())
-				.from(meetingMember)
-				.where(meetingMember.meeting.id.eq(meetingId))
-				.fetchOne());
+			.groupBy(meetingAnswer.meetingQuestion.id)
+			.fetchOne();
+
+		Long allMemberCount = queryFactory.select(meetingMember.count())
+			.from(meetingMember)
+			.where(meetingMember.meeting.id.eq(meetingId))
+			.fetchOne();
+
+		return Objects.equals(answeredMeetingMemberCount, allMemberCount);
 	}
 
 	// TODO: 가장 많이 선택된 답변이 여러개일 수 있으나, 현재 로직은 하나만 반환. 추후 기획에 따라 수정 필요.

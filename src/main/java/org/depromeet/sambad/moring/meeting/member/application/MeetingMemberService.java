@@ -3,6 +3,7 @@ package org.depromeet.sambad.moring.meeting.member.application;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
@@ -27,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import static org.depromeet.sambad.moring.event.domain.EventType.QUESTION_REGISTERED;
+import static org.depromeet.sambad.moring.event.domain.EventType.TARGET_MEMBER;
+
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -40,6 +44,7 @@ public class MeetingMemberService {
 	private final HobbyRepository hobbyRepository;
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
+	private final EventService eventService;
 
 	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
@@ -92,11 +97,14 @@ public class MeetingMemberService {
 	}
 
 	private void createMeetingQuestionIfFirstMeetingMember(Meeting meeting, MeetingMember meetingMember) {
-		if (meetingMemberRepository.isCountOfMembersIsOne(meeting.getId())) {
+		Long meetingId = meeting.getId();
+
+		if (meetingMemberRepository.isCountOfMembersIsOne(meetingId)) {
 			MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(
 				meeting, meetingMember, null, LocalDateTime.now());
 
 			meetingQuestionRepository.save(activeMeetingQuestion);
+			eventService.publish(meetingMember.getUser().getId(), meetingId, TARGET_MEMBER);
 		}
 	}
 
