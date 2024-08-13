@@ -115,7 +115,8 @@ public class MeetingQuestionQueryRepository {
 		return Optional.ofNullable(
 			queryFactory
 				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId))
+				.where(meetingQuestion.meeting.id.eq(meetingId),
+					registeredOrActiveCond())
 				.orderBy(meetingQuestion.startTime.asc())
 				.limit(1)
 				.fetchOne()
@@ -169,6 +170,12 @@ public class MeetingQuestionQueryRepository {
 				meetingAnswer.meetingMember.id.eq(meetingMemberId))
 			.fetchFirst();
 		return fetchOne != null;
+	}
+
+	private BooleanExpression registeredOrActiveCond() {
+		LocalDateTime now = LocalDateTime.now();
+		return meetingQuestion.startTime.loe(now)
+			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)));
 	}
 
 	private BooleanExpression registeredCond() {
