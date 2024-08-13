@@ -5,7 +5,7 @@ import org.depromeet.sambad.moring.question.presentation.exception.AnswerCountOu
 public enum QuestionType {
 	SINGLE_CHOICE, MULTIPLE_SHORT_CHOICE, MULTIPLE_DESCRIPTIVE_CHOICE;
 
-	private static final int MIN_ANSWER_COUNT = 1;
+	private static final int MIN_ANSWER_COUNT = 2;
 	private static final int MULTI_CHOICE_MAX_ANSWER_COUNT = 9;
 
 	public static void validateAnswerCount(QuestionType questionType, int answerCount) {

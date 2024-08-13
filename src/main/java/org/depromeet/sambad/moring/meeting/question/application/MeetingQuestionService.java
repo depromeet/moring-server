@@ -52,14 +52,14 @@ public class MeetingQuestionService {
 		MeetingMember nextTargetMember = meetingMemberService.getById(request.meetingMemberId());
 		loginMember.validateNextTarget(nextTargetMember);
 
-		Optional<MeetingQuestion> activeMeetingQuestion = findActiveMeetingQuestion(meetingId);
+		Optional<MeetingQuestion> registeredMeetingQuestion = findRegisteredMeetingQuestion(meetingId);
 		Question activeQuestion = questionService.getById(request.questionId());
 		validateNonDuplicateQuestion(meetingId, activeQuestion.getId());
 
 		Meeting meeting = loginMember.getMeeting();
 		MeetingQuestion nowMeetingQuestion = null;
-		if (activeMeetingQuestion.isPresent()) {
-			nowMeetingQuestion = activeMeetingQuestion.get();
+		if (registeredMeetingQuestion.isPresent()) {
+			nowMeetingQuestion = registeredMeetingQuestion.get();
 			nowMeetingQuestion.setQuestion(loginMember, activeQuestion);
 		} else {
 			nowMeetingQuestion = createActiveQuestion(meeting, loginMember, activeQuestion);
@@ -148,6 +148,10 @@ public class MeetingQuestionService {
 
 	private Optional<MeetingQuestion> findActiveMeetingQuestion(Long meetingId) {
 		return meetingQuestionRepository.findActiveOneByMeeting(meetingId);
+	}
+
+	private Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
+		return meetingQuestionRepository.findRegisteredOneByMeeting(meetingId);
 	}
 
 	private void validateNonDuplicateQuestion(Long meetingId, Long questionId) {

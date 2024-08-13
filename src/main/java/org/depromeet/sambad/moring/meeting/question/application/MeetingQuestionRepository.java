@@ -23,6 +23,8 @@ public interface MeetingQuestionRepository {
 
 	Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId);
 
+	Optional<MeetingQuestion> findRegisteredOneByMeeting(Long meetingId);
+
 	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId);
 
 	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable);
