@@ -24,7 +24,7 @@ public record MeetingResponse(
 		@Schema(description = "모임 ID", example = "1", requiredMode = REQUIRED)
 		Long meetingId,
 
-		@Schema(description = "모임명", example = "1", requiredMode = REQUIRED)
+		@Schema(description = "모임명", example = "삼밧드의 모험", requiredMode = REQUIRED)
 		String name
 	) {
 	}

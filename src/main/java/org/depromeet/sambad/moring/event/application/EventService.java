@@ -39,6 +39,7 @@ public class EventService {
 			.ifPresent(Event::inactivate);
 	}
 
+	@Transactional
 	public PollingEventListResponse getActiveEvents(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		List<Event> events = eventRepository.findByUserIdAndMeetingIdAndStatus(userId, meetingId, EventStatus.ACTIVE);
