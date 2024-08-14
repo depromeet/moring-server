@@ -42,7 +42,13 @@ public class EventService {
 	public PollingEventListResponse getActiveEvents(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		List<Event> events = eventRepository.findByUserIdAndMeetingIdAndStatus(userId, meetingId, EventStatus.ACTIVE);
-		return PollingEventListResponse.from(events);
+		events.forEach(Event::inactivateIfExpired);
+
+		List<Event> notExpiredEvents = events.stream()
+			.filter(Event::isActive)
+			.toList();
+
+		return PollingEventListResponse.from(notExpiredEvents);
 	}
 
 	private Event getEventById(Long eventId) {
