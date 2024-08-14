@@ -55,12 +55,12 @@ public class MeetingAnswerService {
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
 	}
 
-	public MeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
+	public MeetingAnswerListResponse getListByMe(Long userId, Long meetingId) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
 	}
 
-	public MeetingAnswerListResponse getOtherMemberList(Long userId, Long meetingId, Long targetMemberId) {
+	public MeetingAnswerListResponse getListByMember(Long userId, Long meetingId, Long targetMemberId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		meetingMemberValidator.validateMemberIsMemberOfMeeting(targetMemberId, meetingId);
 		return meetingAnswerRepository.findAllByMeetingMemberId(targetMemberId);

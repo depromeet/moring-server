@@ -65,7 +65,7 @@ public class MeetingAnswerController {
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		MeetingAnswerListResponse response = meetingAnswerService.getMyList(userId, meetingId);
+		MeetingAnswerListResponse response = meetingAnswerService.getListByMe(userId, meetingId);
 		return ResponseEntity.ok(response);
 	}
 
@@ -84,7 +84,7 @@ public class MeetingAnswerController {
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "타겟 모임원 ID", example = "1", required = true) @PathVariable("memberId") Long memberId
 	) {
-		MeetingAnswerListResponse response = meetingAnswerService.getOtherMemberList(userId, meetingId, memberId);
+		MeetingAnswerListResponse response = meetingAnswerService.getListByMember(userId, meetingId, memberId);
 		return ResponseEntity.ok(response);
 	}
 
