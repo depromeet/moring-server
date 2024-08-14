@@ -6,6 +6,7 @@ import org.depromeet.sambad.moring.meeting.member.infrastructure.MeetingMemberPr
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.ExceedMaxMemberCountException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.ExceedMaxOwnerCountException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberAlreadyExistsException;
+import org.depromeet.sambad.moring.meeting.member.presentation.exception.MeetingMemberNotFoundException;
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.UserNotMemberOfMeetingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,12 @@ public class MeetingMemberValidator {
 	public void validateUserIsMemberOfMeeting(Long userId, Long meetingId) {
 		if (!meetingMemberRepository.isUserMemberOfMeeting(userId, meetingId)) {
 			throw new UserNotMemberOfMeetingException();
+		}
+	}
+
+	public void validateMemberIsMemberOfMeeting(Long memberId, Long meetingId) {
+		if (!meetingMemberRepository.isUserMemberOfMeeting(memberId, meetingId)) {
+			throw new MeetingMemberNotFoundException();
 		}
 	}
 }

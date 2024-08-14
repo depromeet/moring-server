@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.meeting.member.application;
 
+import static org.depromeet.sambad.moring.event.domain.EventType.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,9 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-
-import static org.depromeet.sambad.moring.event.domain.EventType.QUESTION_REGISTERED;
-import static org.depromeet.sambad.moring.event.domain.EventType.TARGET_MEMBER;
 
 @RequiredArgsConstructor
 @Service

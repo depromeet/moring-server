@@ -9,7 +9,7 @@ import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAn
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record MyMeetingAnswerListResponseDetail(
+public record MeetingAnswerListResponseDetail(
 	@Schema(title = "질문 인덱스", example = "1", requiredMode = REQUIRED)
 	int idx,
 
@@ -24,11 +24,11 @@ public record MyMeetingAnswerListResponseDetail(
 	String commentContent
 ) {
 
-	public static List<MyMeetingAnswerListResponseDetail> from(List<MyMeetingAnswerResponseCustom> responseCustoms) {
+	public static List<MeetingAnswerListResponseDetail> from(List<MyMeetingAnswerResponseCustom> responseCustoms) {
 		return IntStream.range(0, responseCustoms.size())
 			.mapToObj(i -> {
 				MyMeetingAnswerResponseCustom response = responseCustoms.get(i);
-				return new MyMeetingAnswerListResponseDetail(
+				return new MeetingAnswerListResponseDetail(
 					i + 1,
 					response.meetingQuestionTitle(),
 					response.getMeetingAnswers(),

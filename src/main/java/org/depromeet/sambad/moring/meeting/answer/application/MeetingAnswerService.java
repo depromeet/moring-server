@@ -11,9 +11,10 @@ import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
-import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
@@ -35,6 +36,8 @@ public class MeetingAnswerService {
 	private final AnswerService answerService;
 	private final EventService eventService;
 
+	private final MeetingMemberValidator meetingMemberValidator;
+
 	private final Clock clock;
 
 	@Transactional
@@ -52,9 +55,15 @@ public class MeetingAnswerService {
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
 	}
 
-	public MyMeetingAnswerListResponse getMyList(Long userId, Long meetingId) {
+	public MeetingAnswerListResponse getListByMe(Long userId, Long meetingId) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
+	}
+
+	public MeetingAnswerListResponse getListByMember(Long userId, Long meetingId, Long targetMemberId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		meetingMemberValidator.validateMemberIsMemberOfMeeting(targetMemberId, meetingId);
+		return meetingAnswerRepository.findAllByMeetingMemberId(targetMemberId);
 	}
 
 	private void saveMeetingAnswers(MeetingQuestion meetingQuestion, MeetingMember loginMember, List<Long> answerIds) {
