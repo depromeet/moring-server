@@ -12,7 +12,7 @@ import java.util.Objects;
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
-import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Repository;
@@ -88,7 +88,7 @@ public class MeetingAnswerQueryRepository {
 			.toList();
 	}
 
-	public MyMeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
+	public MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
 		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
 			.from(meetingQuestion)
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
@@ -103,7 +103,7 @@ public class MeetingAnswerQueryRepository {
 				getMyComment(meetingMemberId, question)))
 			.toList();
 
-		return MyMeetingAnswerListResponse.from(responseCustoms);
+		return MeetingAnswerListResponse.from(responseCustoms);
 	}
 
 	private List<Answer> getMyAnswers(Long memberId, MeetingQuestion meetingQuestion) {
