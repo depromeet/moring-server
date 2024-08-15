@@ -51,6 +51,9 @@ public class MeetingAnswerResultService {
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
 			meetingQuestionId, MeetingAnswer.getDistinctAnswerIds(meetingAnswers));
 
+		// 자기 자신은 제외
+		members.remove(meetingMember);
+
 		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
 }
