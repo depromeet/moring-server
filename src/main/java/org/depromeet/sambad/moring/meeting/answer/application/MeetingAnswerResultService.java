@@ -43,15 +43,15 @@ public class MeetingAnswerResultService {
 
 	public SelectedAnswerResponse getSelectedSameAnswer(Long userId, Long meetingId, Long meetingQuestionId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		MeetingMember meetingMemberOfRequestedUser = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
 		List<MeetingAnswer> meetingAnswers = meetingAnswerRepository.findByMeetingQuestionIdAndMeetingMemberId(
-			meetingQuestionId, meetingMember.getId());
+			meetingQuestionId, meetingMemberOfRequestedUser.getId());
 
 		List<Long> answerIds = MeetingAnswer.getDistinctAnswerIds(meetingAnswers);
 		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(meetingQuestionId, answerIds)
 			.stream()
-			.filter(member -> member.isNotEqualMember(meetingMember))
+			.filter(meetingMemberOfRequestedUser::isNotEqualMemberWith)
 			.toList();
 
 		return SelectedAnswerResponse.from(members, meetingAnswers);
