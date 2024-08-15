@@ -17,4 +17,6 @@ public interface EventRepository {
 	Optional<Event> findFirstByUserIdAndMeetingIdAndStatusAndType(
 		Long userId, Long meetingId, EventStatus eventStatus, EventType type
 	);
+
+	List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType);
 }

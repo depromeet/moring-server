@@ -35,6 +35,11 @@ public class EventRepositoryImpl implements EventRepository {
 	}
 
 	@Override
+	public List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType) {
+		return eventJpaRepository.findByMeetingIdAndStatusAndType(meetingId, eventStatus, eventType);
+	}
+
+	@Override
 	public void save(Event event) {
 		eventJpaRepository.save(event);
 	}

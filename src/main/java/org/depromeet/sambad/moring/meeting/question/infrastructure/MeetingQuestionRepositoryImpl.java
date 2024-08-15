@@ -1,12 +1,15 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
@@ -38,18 +41,8 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		return meetingQuestionQueryRepository.findActiveOneByMeeting(meetingId, loginMeetingMemberId);
-	}
-
-	@Override
 	public Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId) {
-		return meetingQuestionQueryRepository.findActiveOneByMeeting(meetingId);
-	}
-
-	@Override
-	public Optional<MeetingQuestion> findRegisteredOneByMeeting(Long meetingId) {
-		return meetingQuestionQueryRepository.findRegisteredMeetingQuestion(meetingId);
+		return meetingQuestionJpaRepository.findFirstByMeetingIdAndStatusOrderByStartTime(meetingId, ACTIVE);
 	}
 
 	@Override
@@ -75,5 +68,20 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	@Override
 	public List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId) {
 		return meetingQuestionQueryRepository.findMeetingMembersByMeetingQuestionId(meetingQuestionId);
+	}
+
+	@Override
+	public List<MeetingQuestion> findAllByStatusAndExpiredAtBefore(MeetingQuestionStatus status, LocalDateTime now) {
+		return meetingQuestionJpaRepository.findAllByStatusAndExpiredAtBefore(status, now);
+	}
+
+	@Override
+	public Optional<MeetingQuestion> findFirstByMeetingIdAndStatus(Long meetingId, MeetingQuestionStatus status) {
+		return meetingQuestionJpaRepository.findFirstByMeetingIdAndStatusOrderByStartTime(meetingId, status);
+	}
+
+	@Override
+	public boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
+		return meetingQuestionQueryRepository.isAnswered(meetingQuestionId, meetingMemberId);
 	}
 }
