@@ -48,11 +48,11 @@ public class MeetingAnswerResultService {
 		List<MeetingAnswer> meetingAnswers = meetingAnswerRepository.findByMeetingQuestionIdAndMeetingMemberId(
 			meetingQuestionId, meetingMember.getId());
 
-		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(
-			meetingQuestionId, MeetingAnswer.getDistinctAnswerIds(meetingAnswers));
-
-		// 자기 자신은 제외
-		members.remove(meetingMember);
+		List<Long> answerIds = MeetingAnswer.getDistinctAnswerIds(meetingAnswers);
+		List<MeetingMember> members = meetingAnswerRepository.findMeetingMembersSelectWith(meetingQuestionId, answerIds)
+			.stream()
+			.filter(member -> member.isNotEqualMember(meetingMember))
+			.toList();
 
 		return SelectedAnswerResponse.from(members, meetingAnswers);
 	}
