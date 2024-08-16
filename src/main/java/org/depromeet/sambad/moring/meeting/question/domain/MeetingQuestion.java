@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingQuestion extends BaseTimeEntity {
 
-	public static final int RESPONSE_TIME_LIMIT_HOURS = 4;
+	public static final int RESPONSE_TIME_LIMIT_SECONDS = 4 * 60 * 60;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,25 +57,31 @@ public class MeetingQuestion extends BaseTimeEntity {
 	@JoinColumn(name = "question_id")
 	private Question question;
 
-	@OneToMany(mappedBy = "meetingQuestion", fetch = FetchType.LAZY)
-	private List<MeetingAnswer> memberAnswers = new ArrayList<>();
+	@Enumerated(EnumType.STRING)
+	private MeetingQuestionStatus status;
 
 	private LocalDateTime startTime;
 
-	@Enumerated(EnumType.STRING)
-	private MeetingQuestionStatus meetingQuestionStatus;
+	private LocalDateTime expiredAt;
+
+	@OneToMany(mappedBy = "meetingQuestion", fetch = FetchType.LAZY)
+	private List<MeetingAnswer> memberAnswers = new ArrayList<>();
 
 	@Builder
-	private MeetingQuestion(Meeting meeting,
+	private MeetingQuestion(
+		Meeting meeting,
 		MeetingMember targetMember,
 		Question question,
 		LocalDateTime now,
-		MeetingQuestionStatus status) {
+		MeetingQuestionStatus status,
+		LocalDateTime expiredAt
+	) {
 		this.meeting = meeting;
 		this.targetMember = targetMember;
 		this.question = question;
 		this.startTime = now;
-		this.meetingQuestionStatus = status;
+		this.status = status;
+		this.expiredAt = expiredAt;
 
 		meeting.addMeetingQuestion(this);
 		targetMember.addMeetingQuestion(this);
@@ -84,37 +90,46 @@ public class MeetingQuestion extends BaseTimeEntity {
 		}
 	}
 
-	public static MeetingQuestion createActiveMeetingQuestion(Meeting meeting, MeetingMember targetMember,
-		Question activeQuestion, LocalDateTime now) {
-		return new MeetingQuestion(meeting, targetMember, activeQuestion, now, MeetingQuestionStatus.ACTIVE);
+	public static MeetingQuestion createActiveMeetingQuestion(
+		Meeting meeting, MeetingMember targetMember, Question activeQuestion, LocalDateTime now
+	) {
+		LocalDateTime expiredAt = now.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
+		return new MeetingQuestion(meeting, targetMember, activeQuestion, now, ACTIVE, expiredAt);
 	}
 
-	public static MeetingQuestion createNextMeetingQuestion(Meeting meeting, MeetingMember targetMember,
-		LocalDateTime startTime) {
-		return new MeetingQuestion(meeting, targetMember, null, startTime, NOT_STARTED);
+	public static MeetingQuestion createNextMeetingQuestion(
+		Meeting meeting, MeetingMember targetMember, LocalDateTime startTime
+	) {
+		LocalDateTime expiredAt = startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
+		return new MeetingQuestion(meeting, targetMember, null, startTime, NOT_STARTED, expiredAt);
 	}
 
 	public void addMeetingAnswer(MeetingAnswer meetingAnswer) {
 		this.memberAnswers.add(meetingAnswer);
 	}
 
-	public void setQuestion(MeetingMember targetMember, Question question) {
+	public void registerQuestion(MeetingMember targetMember, Question question) {
 		validateTarget(targetMember);
 		if (this.question != null) {
 			throw new DuplicateMeetingQuestionException();
 		}
 		this.question = question;
-		this.meetingQuestionStatus = ACTIVE;
+		this.status = ACTIVE;
 		this.question.addMeetingQuestion(this);
 	}
 
 	public void updateStatusToInactive() {
-		this.meetingQuestionStatus = MeetingQuestionStatus.INACTIVE;
+		this.status = MeetingQuestionStatus.INACTIVE;
 	}
 
-	public void updateStatusToActive(LocalDateTime now) {
-		this.startTime = now;
-		this.meetingQuestionStatus = MeetingQuestionStatus.ACTIVE;
+	public void updateStatusToActive(LocalDateTime startTime) {
+		if (this.status != NOT_STARTED) {
+			throw new IllegalStateException("이미 시작되거나 종료된 질문입니다.");
+		}
+
+		this.startTime = startTime;
+		this.expiredAt = startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
+		this.status = ACTIVE;
 	}
 
 	public int getResponseCount() {
@@ -134,11 +149,11 @@ public class MeetingQuestion extends BaseTimeEntity {
 	}
 
 	public LocalDateTime getNextStartTime() {
-		return startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		return startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
 	}
 
 	public void validateNotFinished(LocalDateTime now) {
-		LocalDateTime endTime = startTime.plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		LocalDateTime endTime = startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
 		if (now.isAfter(endTime)) {
 			throw new FinishedMeetingQuestionException();
 		}

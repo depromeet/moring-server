@@ -2,7 +2,6 @@ package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
-import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
 import static org.depromeet.sambad.moring.question.domain.QQuestion.*;
@@ -15,7 +14,6 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.QFileEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
@@ -44,37 +42,12 @@ public class MeetingQuestionQueryRepository {
 			.from(meetingQuestion)
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
-				meetingQuestion.meetingQuestionStatus.eq(NOT_STARTED)
+				meetingQuestion.status.eq(NOT_STARTED)
 			)
 			.orderBy(meetingQuestion.startTime.asc())
 			.limit(1)
 			.fetchFirst();
 		return Optional.of(nextQuestion);
-	}
-
-	public ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId) {
-		Optional<MeetingQuestion> activeMeetingQuestion = findMeetingQuestion(meetingId);
-
-		if (activeMeetingQuestion.isEmpty()) {
-			return null;
-		}
-		if (activeMeetingQuestion.get().getQuestion() == null) {
-			return ActiveMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion.get());
-		}
-		return ActiveMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion.get(),
-			isAnswered(activeMeetingQuestion.get().getId(), loginMeetingMemberId));
-	}
-
-	public Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId) {
-		return Optional.ofNullable(
-			queryFactory
-				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId),
-					activeCond())
-				.orderBy(meetingQuestion.startTime.asc())
-				.limit(1)
-				.fetchOne()
-		);
 	}
 
 	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
@@ -97,30 +70,6 @@ public class MeetingQuestionQueryRepository {
 				getBestAnswer(meetingQuestion)))
 			.toList();
 		return MostInactiveMeetingQuestionListResponse.from(responseDetails);
-	}
-
-	public Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
-		return Optional.ofNullable(
-			queryFactory
-				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId),
-					registeredCond())
-				.orderBy(meetingQuestion.startTime.asc())
-				.limit(1)
-				.fetchOne()
-		);
-	}
-
-	public Optional<MeetingQuestion> findMeetingQuestion(Long meetingId) {
-		return Optional.ofNullable(
-			queryFactory
-				.selectFrom(meetingQuestion)
-				.where(meetingQuestion.meeting.id.eq(meetingId),
-					registeredOrActiveCond())
-				.orderBy(meetingQuestion.startTime.asc())
-				.limit(1)
-				.fetchOne()
-		);
 	}
 
 	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
@@ -162,7 +111,7 @@ public class MeetingQuestionQueryRepository {
 			.fetchOne());
 	}
 
-	private Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
+	public Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
 		Integer fetchOne = queryFactory
 			.selectOne()
 			.from(meetingAnswer)
@@ -172,30 +121,9 @@ public class MeetingQuestionQueryRepository {
 		return fetchOne != null;
 	}
 
-	private BooleanExpression registeredOrActiveCond() {
-		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.loe(now)
-			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)));
-	}
-
-	private BooleanExpression registeredCond() {
-		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.loe(now)
-			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-			.and(meetingQuestion.question.isNull());
-	}
-
-	private BooleanExpression activeCond() {
-		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.loe(now)
-			.and(meetingQuestion.startTime.goe(now.minusHours(RESPONSE_TIME_LIMIT_HOURS)))
-			.and(meetingQuestion.question.isNotNull());
-	}
-
 	private BooleanExpression inactiveCond() {
-		LocalDateTime now = LocalDateTime.now();
-		return meetingQuestion.startTime.lt(now.minusHours(RESPONSE_TIME_LIMIT_HOURS))
-			.or(meetingQuestion.meetingQuestionStatus.eq(INACTIVE));
+		return meetingQuestion.expiredAt.lt(LocalDateTime.now())
+			.or(meetingQuestion.status.eq(INACTIVE));
 	}
 
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {

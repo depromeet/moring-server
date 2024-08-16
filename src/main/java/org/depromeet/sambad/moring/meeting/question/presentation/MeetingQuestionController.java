@@ -108,11 +108,9 @@ public class MeetingQuestionController {
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		ActiveMeetingQuestionResponse activeOne = meetingQuestionService.findActiveOne(userId, meetingId);
-		if (activeOne == null) {
-			return ResponseEntity.noContent().build();
-		}
-		return ResponseEntity.ok(activeOne);
+		return meetingQuestionService.findActiveOne(userId, meetingId)
+			.map(ResponseEntity::ok)
+			.orElse(ResponseEntity.noContent().build());
 	}
 
 	@Operation(summary = "진행 중인 모임의 릴레이 질문과 답안 옵션 조회", description = "- 질문과 질문의 답변 목록을 함께 반환합니다.\n"

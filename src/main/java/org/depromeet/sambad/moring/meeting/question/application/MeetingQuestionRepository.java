@@ -1,11 +1,12 @@
 package org.depromeet.sambad.moring.meeting.question.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
@@ -19,11 +20,7 @@ public interface MeetingQuestionRepository {
 
 	boolean existsByQuestion(Long meetingId, Long questionId);
 
-	ActiveMeetingQuestionResponse findActiveOneByMeeting(Long meetingId, Long loginMeetingMemberId);
-
 	Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId);
-
-	Optional<MeetingQuestion> findRegisteredOneByMeeting(Long meetingId);
 
 	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId);
 
@@ -34,4 +31,10 @@ public interface MeetingQuestionRepository {
 	List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId);
 
 	List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId);
+
+	List<MeetingQuestion> findAllByStatusAndExpiredAtBefore(MeetingQuestionStatus status, LocalDateTime now);
+
+	Optional<MeetingQuestion> findFirstByMeetingIdAndStatus(Long meetingId, MeetingQuestionStatus status);
+
+	boolean isAnswered(Long meetingQuestionId, Long meetingMemberId);
 }

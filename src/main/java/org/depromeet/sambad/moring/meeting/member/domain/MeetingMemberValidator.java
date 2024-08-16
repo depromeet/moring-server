@@ -53,14 +53,18 @@ public class MeetingMemberValidator {
 	}
 
 	public void validateUserIsMemberOfMeeting(Long userId, Long meetingId) {
-		if (!meetingMemberRepository.isUserMemberOfMeeting(userId, meetingId)) {
+		if (isNotMemberOfMeeting(userId, meetingId)) {
 			throw new UserNotMemberOfMeetingException();
 		}
 	}
 
 	public void validateMemberIsMemberOfMeeting(Long memberId, Long meetingId) {
-		if (!meetingMemberRepository.isUserMemberOfMeeting(memberId, meetingId)) {
+		if (isNotMemberOfMeeting(memberId, meetingId)) {
 			throw new MeetingMemberNotFoundException();
 		}
+	}
+
+	public boolean isNotMemberOfMeeting(Long userId, Long meetingId) {
+		return !meetingMemberRepository.isUserMemberOfMeeting(userId, meetingId);
 	}
 }

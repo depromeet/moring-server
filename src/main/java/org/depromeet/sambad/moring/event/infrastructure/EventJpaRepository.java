@@ -14,4 +14,6 @@ public interface EventJpaRepository extends JpaRepository<Event, Long> {
 	Optional<Event> findFirstByUserIdAndMeetingIdAndStatusAndTypeOrderByIdDesc(
 		Long userId, Long meetingId, EventStatus eventStatus, EventType type
 	);
+
+	List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType);
 }

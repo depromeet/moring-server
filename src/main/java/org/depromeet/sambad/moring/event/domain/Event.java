@@ -1,10 +1,9 @@
 package org.depromeet.sambad.moring.event.domain;
 
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
-import static org.depromeet.sambad.moring.event.domain.EventStatus.ACTIVE;
-import static org.depromeet.sambad.moring.event.domain.EventStatus.INACTIVE;
+import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+import static org.depromeet.sambad.moring.event.domain.EventStatus.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 
 import java.time.LocalDateTime;
@@ -50,7 +49,7 @@ public class Event extends BaseTimeEntity {
 	}
 
 	public static Event publish(Long userId, Long meetingId, EventType type) {
-		LocalDateTime expiredAt = LocalDateTime.now().plusHours(RESPONSE_TIME_LIMIT_HOURS);
+		LocalDateTime expiredAt = LocalDateTime.now().plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
 		return new Event(userId, meetingId, type, ACTIVE, expiredAt);
 	}
 

@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.meeting.question.application;
 
 import static org.depromeet.sambad.moring.event.domain.EventType.*;
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -52,15 +53,17 @@ public class MeetingQuestionService {
 		MeetingMember nextTargetMember = meetingMemberService.getById(request.meetingMemberId());
 		loginMember.validateNextTarget(nextTargetMember);
 
-		Optional<MeetingQuestion> registeredMeetingQuestion = findRegisteredMeetingQuestion(meetingId);
+		Optional<MeetingQuestion> registeredMeetingQuestion = meetingQuestionRepository.findFirstByMeetingIdAndStatus(
+			meetingId, ACTIVE);
 		Question activeQuestion = questionService.getById(request.questionId());
 		validateNonDuplicateQuestion(meetingId, activeQuestion.getId());
 
 		Meeting meeting = loginMember.getMeeting();
-		MeetingQuestion nowMeetingQuestion = null;
+		MeetingQuestion nowMeetingQuestion;
+
 		if (registeredMeetingQuestion.isPresent()) {
 			nowMeetingQuestion = registeredMeetingQuestion.get();
-			nowMeetingQuestion.setQuestion(loginMember, activeQuestion);
+			nowMeetingQuestion.registerQuestion(loginMember, activeQuestion);
 		} else {
 			nowMeetingQuestion = createActiveQuestion(meeting, loginMember, activeQuestion);
 		}
@@ -95,10 +98,23 @@ public class MeetingQuestionService {
 		return MeetingQuestionAndAnswerListResponse.of(activeMeetingQuestion.get());
 	}
 
-	public ActiveMeetingQuestionResponse findActiveOne(Long userId, Long meetingId) {
+	public Optional<ActiveMeetingQuestionResponse> findActiveOne(Long userId, Long meetingId) {
 		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = meetingMember.getMeeting();
-		return meetingQuestionRepository.findActiveOneByMeeting(meeting.getId(), meetingMember.getId());
+		Optional<MeetingQuestion> activeMeetingQuestionOpt = meetingQuestionRepository.findActiveOneByMeeting(
+			meeting.getId());
+
+		if (activeMeetingQuestionOpt.isPresent()) {
+			MeetingQuestion activeMeetingQuestion = activeMeetingQuestionOpt.get();
+			boolean isAnswered = meetingQuestionRepository.isAnswered(
+				activeMeetingQuestion.getId(), meetingMember.getId());
+
+			return activeMeetingQuestion.getQuestion() == null
+				? Optional.of(ActiveMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion))
+				: Optional.of(ActiveMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion, isAnswered));
+		}
+
+		return Optional.empty();
 	}
 
 	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long userId, Long meetingId) {
@@ -148,10 +164,6 @@ public class MeetingQuestionService {
 
 	private Optional<MeetingQuestion> findActiveMeetingQuestion(Long meetingId) {
 		return meetingQuestionRepository.findActiveOneByMeeting(meetingId);
-	}
-
-	private Optional<MeetingQuestion> findRegisteredMeetingQuestion(Long meetingId) {
-		return meetingQuestionRepository.findRegisteredOneByMeeting(meetingId);
 	}
 
 	private void validateNonDuplicateQuestion(Long meetingId, Long questionId) {
