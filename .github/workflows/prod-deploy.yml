@@ -28,8 +28,8 @@ jobs:
       - name: "도커 빌드 및 푸시"
         run: |
           docker login ${{ secrets.DOCKER_REPO }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/moring-api:develop .
-          docker push ${{ secrets.DOCKER_REPO }}/moring-api:develop
+          docker build -t ${{ secrets.DOCKER_REPO }}/moring-api:${{ github.ref_name }} .
+          docker push ${{ secrets.DOCKER_REPO }}/moring-api:${{ github.ref_name }}
 
   deploy:
     needs: build
@@ -44,5 +44,6 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script: |
+            sed -i 's|moring-api:[^ ]*|moring-api:${{ github.ref_name }}|' docker-compose.yml
             sudo docker compose -f /root/docker-compose.yml pull
-            sudo docker compose -f /root/docker-compose.yml up -d
+            sudo docker compose -f /root/docker-compose.yml up api -d
