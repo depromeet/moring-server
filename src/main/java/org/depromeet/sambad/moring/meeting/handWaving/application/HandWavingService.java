@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.poking.application;
+package org.depromeet.sambad.moring.meeting.handWaving.application;
 
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PokingService {
-	private final PokingRepository pokingRepository;
+public class HandWavingService {
+	private final HandWavingRepository handWavingRepository;
 	private final MeetingMemberService meetingMemberService;
 }

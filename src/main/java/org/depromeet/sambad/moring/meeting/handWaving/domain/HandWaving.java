@@ -1,4 +1,4 @@
-package org.depromeet.sambad.moring.meeting.poking.domain;
+package org.depromeet.sambad.moring.meeting.handWaving.domain;
 
 import static jakarta.persistence.EnumType.STRING;
 
@@ -21,11 +21,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Poking extends BaseTimeEntity {
+public class HandWaving extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "poking_id")
+	@Column(name = "hand_waving_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -37,5 +37,5 @@ public class Poking extends BaseTimeEntity {
 	private MeetingMember receiver;
 
 	@Enumerated(STRING)
-	private PokingStatus status;
+	private HandWavingStatus status;
 }
