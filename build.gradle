@@ -60,6 +60,9 @@ dependencies {
 
 	implementation 'org.apache.poi:poi:4.1.2'
 	implementation 'org.apache.poi:poi-ooxml:4.1.2'
+
+	implementation 'net.javacrumbs.shedlock:shedlock-spring:5.14.0'
+	implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.14.0'
 }
 
 test {
