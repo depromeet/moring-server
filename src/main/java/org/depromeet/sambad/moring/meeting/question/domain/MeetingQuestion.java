@@ -123,6 +123,10 @@ public class MeetingQuestion extends BaseTimeEntity {
 	}
 
 	public void updateStatusToInactive() {
+		if (this.status == INACTIVE) {
+			LoggingUtils.error("다음 MeetingQuestion 의 비활성화를 시도하였으나, 이미 비활성화된 질문입니다. meetingQuestionId : " + id);
+			return;
+		}
 		this.status = MeetingQuestionStatus.INACTIVE;
 		this.totalMemberCount = meeting.getTotalMemberCount();
 	}
