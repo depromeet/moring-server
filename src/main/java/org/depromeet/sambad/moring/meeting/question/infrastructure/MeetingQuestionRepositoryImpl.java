@@ -82,6 +82,11 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
+	public List<MeetingQuestion> findAllInactiveAndQuestionNotRegistered() {
+		return meetingQuestionQueryRepository.findAllInactiveAndQuestionNotRegistered();
+	}
+
+	@Override
 	public Optional<MeetingQuestion> findFirstByMeetingIdAndStatus(Long meetingId, MeetingQuestionStatus status) {
 		return meetingQuestionJpaRepository.findFirstByMeetingIdAndStatusOrderByStartTime(meetingId, status);
 	}

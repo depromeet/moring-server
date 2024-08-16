@@ -38,6 +38,8 @@ public interface MeetingQuestionRepository {
 
 	List<MeetingQuestion> findAllByStatusAndExpiredAtBefore(MeetingQuestionStatus status, LocalDateTime now);
 
+	List<MeetingQuestion> findAllInactiveAndQuestionNotRegistered();
+
 	Optional<MeetingQuestion> findFirstByMeetingIdAndStatus(Long meetingId, MeetingQuestionStatus status);
 
 	boolean isAnswered(Long meetingQuestionId, Long meetingMemberId);

@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
+import static com.querydsl.jpa.JPAExpressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
@@ -14,6 +15,7 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.QFileEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
@@ -26,6 +28,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -151,6 +154,36 @@ public class MeetingQuestionQueryRepository {
 			.join(meetingQuestion.memberAnswers, meetingAnswer)
 			.join(meetingAnswer.meetingMember, meetingMember)
 			.where(meetingQuestion.id.eq(meetingQuestionId))
+			.fetch();
+	}
+
+	/*
+	 * 각 모임 별로, 가장 최근 만료된 질문이 비활성화 상태인 경우만 조회
+	 *
+	 * SELECT *
+	 * FROM meeting_question mq
+	 * WHERE mq.question_id IS NULL
+	 * 		AND mq.status = 'INACTIVE'
+	 * 		AND mq.expired_at= (
+	 * 			SELECT MAX(mq2.expired_at)
+	 * 			FROM meeting_question mq2
+	 * 			WHERE mq2.meeting_id = mq.meeting_id
+	 * 		);
+	 */
+	public List<MeetingQuestion> findAllInactiveAndQuestionNotRegistered() {
+		QMeetingQuestion mq1 = new QMeetingQuestion("mq1");
+		QMeetingQuestion mq2 = new QMeetingQuestion("mq2");
+
+		JPQLQuery<LocalDateTime> maxExpiredAtSubQuery = select(mq2.expiredAt.max())
+			.from(mq2)
+			.where(mq2.meeting.id.eq(mq1.meeting.id));
+
+		return queryFactory.selectFrom(mq1)
+			.where(
+				mq1.question.isNull(),
+				mq1.status.eq(INACTIVE),
+				mq1.expiredAt.eq(maxExpiredAtSubQuery)
+			)
 			.fetch();
 	}
 
