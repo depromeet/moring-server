@@ -59,7 +59,10 @@ public class MeetingAnswerQueryRepository {
 		}
 
 		return queryFactory.selectFrom(meetingAnswer)
-			.where(meetingAnswer.answer.id.eq(mostSelectedAnswerId))
+			.where(
+				meetingAnswer.answer.id.eq(mostSelectedAnswerId),
+				meetingAnswer.meetingQuestion.id.eq(meetingQuestionId)
+			)
 			.fetch();
 	}
 

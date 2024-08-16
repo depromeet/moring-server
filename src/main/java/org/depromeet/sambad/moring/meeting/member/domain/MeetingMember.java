@@ -156,4 +156,8 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			throw new InvalidMeetingMemberTargetException();
 		}
 	}
+
+	public boolean isNotEqualMemberWith(MeetingMember meetingMember) {
+		return !Objects.equals(this.getId(), meetingMember.getId());
+	}
 }

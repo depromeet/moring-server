@@ -15,10 +15,10 @@ public record SelectedAnswerResponse(
 	@Schema(description = "답변 내용", example = "[\"토마토\"]", requiredMode = REQUIRED)
 	List<String> content,
 
-	@Schema(description = "답변 수", example = "3", requiredMode = REQUIRED)
+	@Schema(description = "해당 모임을 선택한 모임원 수", example = "3", requiredMode = REQUIRED)
 	int count,
 
-	@Schema(description = "선택한 멤버들", requiredMode = REQUIRED)
+	@Schema(description = "선택한 모임원 목록", requiredMode = REQUIRED)
 	List<MeetingMemberListResponseDetail> selectedMembers
 ) {
 	public static SelectedAnswerResponse from(List<MeetingMember> members, List<MeetingAnswer> meetingAnswers) {
@@ -27,7 +27,7 @@ public record SelectedAnswerResponse(
 				.map(MeetingAnswer::getAnswerContent)
 				.distinct()
 				.toList(),
-			meetingAnswers.size(),
+			members.size(),
 			MeetingMemberListResponse.from(members).contents()
 		);
 	}
