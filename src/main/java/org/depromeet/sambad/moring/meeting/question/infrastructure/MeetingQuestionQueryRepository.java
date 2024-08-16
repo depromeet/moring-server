@@ -96,21 +96,6 @@ public class MeetingQuestionQueryRepository {
 		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions, pageable);
 	}
 
-	private OrderSpecifier<Integer> orderDescByMeetingAnswerCount() {
-		return new OrderSpecifier<>(Order.DESC, meetingQuestion.memberAnswers.size());
-	}
-
-	private Optional<Answer> getBestAnswer(MeetingQuestion meetingQuestion) {
-		return Optional.ofNullable(queryFactory
-			.select(meetingAnswer.answer)
-			.from(meetingAnswer)
-			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
-			.groupBy(meetingAnswer.answer)
-			.orderBy(meetingAnswer.count().desc())
-			.limit(1)
-			.fetchOne());
-	}
-
 	public Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
 		Integer fetchOne = queryFactory
 			.selectOne()
@@ -119,11 +104,6 @@ public class MeetingQuestionQueryRepository {
 				meetingAnswer.meetingMember.id.eq(meetingMemberId))
 			.fetchFirst();
 		return fetchOne != null;
-	}
-
-	private BooleanExpression inactiveCond() {
-		return meetingQuestion.expiredAt.lt(LocalDateTime.now())
-			.or(meetingQuestion.status.eq(INACTIVE));
 	}
 
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {
@@ -172,5 +152,25 @@ public class MeetingQuestionQueryRepository {
 			.join(meetingAnswer.meetingMember, meetingMember)
 			.where(meetingQuestion.id.eq(meetingQuestionId))
 			.fetch();
+	}
+
+	private OrderSpecifier<Integer> orderDescByMeetingAnswerCount() {
+		return new OrderSpecifier<>(Order.DESC, meetingQuestion.memberAnswers.size());
+	}
+
+	private Optional<Answer> getBestAnswer(MeetingQuestion meetingQuestion) {
+		return Optional.ofNullable(queryFactory
+			.select(meetingAnswer.answer)
+			.from(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion))
+			.groupBy(meetingAnswer.answer)
+			.orderBy(meetingAnswer.count().desc())
+			.limit(1)
+			.fetchOne());
+	}
+
+	private BooleanExpression inactiveCond() {
+		return meetingQuestion.expiredAt.lt(LocalDateTime.now())
+			.or(meetingQuestion.status.eq(INACTIVE));
 	}
 }

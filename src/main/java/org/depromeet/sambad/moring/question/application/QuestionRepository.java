@@ -11,7 +11,7 @@ public interface QuestionRepository {
 
 	Optional<Question> findById(Long id);
 
-	QuestionListResponse findQuestionsByMeeting(Long meetingId, Pageable pageable);
+	QuestionListResponse findQuestionsByMeetingId(Long meetingId, Pageable pageable);
 
 	List<Question> findAllByNotInQuestionIds(List<Long> excludeQuestionIds);
 

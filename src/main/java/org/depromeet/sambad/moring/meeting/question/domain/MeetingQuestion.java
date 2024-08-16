@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+import org.depromeet.sambad.moring.common.logging.LoggingUtils;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -114,7 +115,6 @@ public class MeetingQuestion extends BaseTimeEntity {
 			throw new DuplicateMeetingQuestionException();
 		}
 		this.question = question;
-		this.status = ACTIVE;
 		this.question.addMeetingQuestion(this);
 	}
 
@@ -124,9 +124,9 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public void updateStatusToActive(LocalDateTime startTime) {
 		if (this.status != NOT_STARTED) {
-			throw new IllegalStateException("이미 시작되거나 종료된 질문입니다.");
+			LoggingUtils.error("다음 MeetingQuestion 의 활성화를 시도하였으나, 이미 시작되거나 종료된 질문입니다. meetingQuestionId : "
+				+ id + " status : " + status.name());
 		}
-
 		this.startTime = startTime;
 		this.expiredAt = startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
 		this.status = ACTIVE;
