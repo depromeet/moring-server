@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +26,8 @@ public class MeetingQuestionStatusCheckScheduler {
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final EventService eventService;
 
-	@Scheduled(fixedDelay = 1000 * 5)
+	@Scheduled(fixedDelay = 10 * 1000)
+	@SchedulerLock(name = "meetingQuestionStatus", lockAtLeastFor = "PT10S", lockAtMostFor = "PT30S")
 	@Transactional
 	public void inactivate() {
 		// 활성 상태이지만 만료 시간이 지나 INACTIVE 상태가 되어야 하는 질문 목록 조회
