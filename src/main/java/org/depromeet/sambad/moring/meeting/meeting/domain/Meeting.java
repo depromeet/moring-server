@@ -79,18 +79,11 @@ public class Meeting extends BaseTimeEntity {
 			});
 	}
 
-	public int getTotalMemberCount() {
+	public Integer getTotalMemberCount() {
 		return meetingMembers.size();
 	}
 
 	public int getQuestionNumber(MeetingQuestion meetingQuestion) {
 		return meetingQuestions.indexOf(meetingQuestion) + 1;
-	}
-
-	public double calculateEngagementRate(MeetingQuestion meetingQuestion) {
-		if (getTotalMemberCount() == 0)
-			return 0;
-		double engagementRate = ((double)meetingQuestion.getResponseCount() / getTotalMemberCount()) * 100;
-		return Math.round(engagementRate);
 	}
 }

@@ -75,7 +75,7 @@ public record CurrentMeetingQuestionResponse(
 			.questionNumber(meeting.getQuestionNumber(meetingQuestion))
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())
-			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
+			.engagementRate(meetingQuestion.calculateEngagementRate())
 			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.isAnswered(isAnswered)
 			.isQuestionRegistered(true)

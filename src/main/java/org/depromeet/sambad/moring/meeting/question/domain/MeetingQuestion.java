@@ -66,6 +66,8 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	private LocalDateTime expiredAt;
 
+	private Integer totalMemberCount; // 모임 질문 종료 시점의 모임원 수
+
 	@OneToMany(mappedBy = "meetingQuestion", fetch = FetchType.LAZY)
 	private List<MeetingAnswer> memberAnswers = new ArrayList<>();
 
@@ -84,6 +86,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 		this.startTime = now;
 		this.status = status;
 		this.expiredAt = expiredAt;
+		this.totalMemberCount = null;
 
 		meeting.addMeetingQuestion(this);
 		targetMember.addMeetingQuestion(this);
@@ -121,6 +124,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public void updateStatusToInactive() {
 		this.status = MeetingQuestionStatus.INACTIVE;
+		this.totalMemberCount = meeting.getTotalMemberCount();
 	}
 
 	public void updateStatusToActive(LocalDateTime startTime) {
@@ -151,6 +155,14 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public LocalDateTime getNextStartTime() {
 		return startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
+	}
+
+	public double calculateEngagementRate() {
+		if (getTotalMemberCount() == 0)
+			return 0;
+		Integer totalMemberCount = (status == INACTIVE) ? this.totalMemberCount : this.meeting.getTotalMemberCount();
+		double engagementRate = ((double)getResponseCount() / totalMemberCount) * 100;
+		return Math.round(engagementRate);
 	}
 
 	public void validateNotFinished(LocalDateTime now) {
