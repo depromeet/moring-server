@@ -13,6 +13,7 @@ import org.depromeet.sambad.moring.common.domain.Gender;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
+import org.depromeet.sambad.moring.meeting.handWaving.domain.HandWaving;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -80,6 +81,12 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 	@OneToMany(mappedBy = "meetingMember", fetch = FetchType.LAZY)
 	private List<MeetingMemberHobby> meetingMemberHobbies = new ArrayList<>();
+
+	@OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+	private List<HandWaving> sentHandWavings = new ArrayList<>();
+
+	@OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+	private List<HandWaving> receivedHandWavings = new ArrayList<>();
 
 	private MeetingMember(Meeting meeting, User user, FileEntity profileImageFile, MeetingMemberRole role, String name,
 		Gender gender, LocalDate birth, String job, String location, MBTI mbti, String introduction) {
