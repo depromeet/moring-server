@@ -5,9 +5,7 @@ import java.util.Random;
 
 import org.depromeet.sambad.moring.file.application.FileService;
 import org.depromeet.sambad.moring.file.domain.FileEntity;
-import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
-import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
-import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.depromeet.sambad.moring.question.domain.Question;
 import org.depromeet.sambad.moring.question.presentation.exception.NotFoundAvailableQuestionException;
 import org.depromeet.sambad.moring.question.presentation.exception.NotFoundQuestionException;
@@ -27,31 +25,9 @@ public class QuestionService {
 
 	private final QuestionRepository questionRepository;
 
-	private final MeetingMemberService meetingMemberService;
-
 	private final FileService fileService;
 
-	public Question getById(Long id) {
-		return questionRepository.findById(id)
-			.orElseThrow(NotFoundQuestionException::new);
-	}
-
-	public QuestionListResponse findQuestions(Long userId, Long meetingId, PageRequest pageRequest) {
-		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		Meeting meeting = loginMember.getMeeting();
-		return questionRepository.findQuestionsByMeeting(meeting.getId(), pageRequest);
-	}
-
-	public QuestionResponse getRandomOne(List<Long> excludeQuestionIds) {
-		List<Question> questions = questionRepository.findAllByNotInQuestionIds(excludeQuestionIds);
-
-		if (questions.isEmpty()) {
-			throw new NotFoundAvailableQuestionException();
-		}
-
-		Question randomQuestion = questions.get(new Random().nextInt(questions.size()));
-		return QuestionResponse.from(randomQuestion);
-	}
+	private final MeetingMemberValidator meetingMemberValidator;
 
 	@Transactional
 	public void saveQuestion(QuestionRequest questionRequest) {
@@ -63,5 +39,26 @@ public class QuestionService {
 			.answerContents(questionRequest.answerContents())
 			.build();
 		questionRepository.save(question);
+	}
+
+	public QuestionListResponse findQuestions(Long userId, Long meetingId, PageRequest pageRequest) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		return questionRepository.findQuestionsByMeetingId(meetingId, pageRequest);
+	}
+
+	public Question getById(Long id) {
+		return questionRepository.findById(id)
+			.orElseThrow(NotFoundQuestionException::new);
+	}
+
+	public QuestionResponse getRandomOne(List<Long> excludeQuestionIds) {
+		List<Question> questions = questionRepository.findAllByNotInQuestionIds(excludeQuestionIds);
+
+		if (questions.isEmpty()) {
+			throw new NotFoundAvailableQuestionException();
+		}
+
+		Question randomQuestion = questions.get(new Random().nextInt(questions.size()));
+		return QuestionResponse.from(randomQuestion);
 	}
 }

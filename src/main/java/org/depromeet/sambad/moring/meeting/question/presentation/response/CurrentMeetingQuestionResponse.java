@@ -1,6 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.presentation.response;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
-public record ActiveMeetingQuestionResponse(
+public record CurrentMeetingQuestionResponse(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
 
@@ -48,10 +48,10 @@ public record ActiveMeetingQuestionResponse(
 	MeetingMemberListResponseDetail targetMember
 ) {
 
-	public static ActiveMeetingQuestionResponse questionNotRegisteredOf(MeetingQuestion meetingQuestion) {
+	public static CurrentMeetingQuestionResponse questionNotRegisteredOf(MeetingQuestion meetingQuestion) {
 		Meeting meeting = meetingQuestion.getMeeting();
 
-		return ActiveMeetingQuestionResponse.builder()
+		return CurrentMeetingQuestionResponse.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.questionNumber(meeting.getQuestionNumber(meetingQuestion))
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
@@ -64,11 +64,11 @@ public record ActiveMeetingQuestionResponse(
 			.build();
 	}
 
-	public static ActiveMeetingQuestionResponse questionRegisteredOf(MeetingQuestion meetingQuestion,
+	public static CurrentMeetingQuestionResponse questionRegisteredOf(MeetingQuestion meetingQuestion,
 		Boolean isAnswered) {
 		Meeting meeting = meetingQuestion.getMeeting();
 
-		return ActiveMeetingQuestionResponse.builder()
+		return CurrentMeetingQuestionResponse.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.questionImageFileUrl(meetingQuestion.getQuestion().getQuestionImageUrl())
 			.title(meetingQuestion.getQuestion().getTitle())

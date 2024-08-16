@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.*;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionService;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.CurrentMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionAndAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsResponse;
@@ -49,12 +49,12 @@ public class MeetingQuestionController {
 			+ "INVALID_MEETING_MEMBER_TARGET")
 	})
 	@PostMapping
-	public ResponseEntity<ActiveMeetingQuestionResponse> save(
+	public ResponseEntity<CurrentMeetingQuestionResponse> save(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Valid @RequestBody MeetingQuestionRequest request
 	) {
-		ActiveMeetingQuestionResponse response = meetingQuestionService.save(userId, meetingId, request);
+		CurrentMeetingQuestionResponse response = meetingQuestionService.save(userId, meetingId, request);
 		return ResponseEntity.status(CREATED).body(response);
 	}
 
@@ -104,11 +104,11 @@ public class MeetingQuestionController {
 		)
 	})
 	@GetMapping("/active")
-	public ResponseEntity<ActiveMeetingQuestionResponse> findActiveOne(
+	public ResponseEntity<CurrentMeetingQuestionResponse> findActiveOne(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		return meetingQuestionService.findActiveOne(userId, meetingId)
+		return meetingQuestionService.findCurrentOne(userId, meetingId)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.noContent().build());
 	}
@@ -159,7 +159,7 @@ public class MeetingQuestionController {
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findMostInactiveList(userId,
+		MostInactiveMeetingQuestionListResponse inactiveList = meetingQuestionService.findTopInactiveList(userId,
 			meetingId);
 		return ResponseEntity.ok(inactiveList);
 	}

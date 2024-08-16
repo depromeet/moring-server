@@ -41,12 +41,18 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
-	public Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId) {
+	public Optional<MeetingQuestion> findCurrentOne(Long meetingId) {
 		return meetingQuestionJpaRepository.findFirstByMeetingIdAndStatusOrderByStartTime(meetingId, ACTIVE);
 	}
 
 	@Override
-	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId) {
+	public Optional<MeetingQuestion> findCurrentActiveOne(Long meetingId) {
+		return meetingQuestionJpaRepository.findFirstByMeetingIdAndStatusAndQuestionIsNotNullOrderByStartTime(meetingId,
+			ACTIVE);
+	}
+
+	@Override
+	public MostInactiveMeetingQuestionListResponse findTopInactiveList(Long meetingId) {
 		return meetingQuestionQueryRepository.findMostInactiveList(meetingId);
 	}
 

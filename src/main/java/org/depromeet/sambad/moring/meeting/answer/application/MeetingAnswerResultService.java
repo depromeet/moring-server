@@ -20,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MeetingAnswerResultService {
 
-	private final MeetingMemberService meetingMemberService;
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingAnswerRepository meetingAnswerRepository;
+
+	private final MeetingMemberService meetingMemberService;
+
 	private final MeetingMemberValidator meetingMemberValidator;
 
 	public SelectedAnswerResponse getMostSelectedAnswer(Long userId, Long meetingId, Long meetingQuestionId) {
