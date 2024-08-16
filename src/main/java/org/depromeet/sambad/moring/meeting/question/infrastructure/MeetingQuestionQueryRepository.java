@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.infrastructure;
 
+import static com.querydsl.jpa.JPAExpressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
@@ -14,6 +15,7 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.file.domain.QFileEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MostInactiveMeetingQuestionListResponse;
@@ -151,6 +153,23 @@ public class MeetingQuestionQueryRepository {
 			.join(meetingQuestion.memberAnswers, meetingAnswer)
 			.join(meetingAnswer.meetingMember, meetingMember)
 			.where(meetingQuestion.id.eq(meetingQuestionId))
+			.fetch();
+	}
+
+	public List<MeetingQuestion> findAllInactiveAndQuestionNotRegistered() {
+		QMeetingQuestion mq1 = new QMeetingQuestion("mq1");
+		QMeetingQuestion mq2 = new QMeetingQuestion("mq2");
+
+		return queryFactory.selectFrom(mq1)
+			.where(
+				mq1.question.isNull(),
+				mq1.status.eq(INACTIVE),
+				mq1.expiredAt.eq(
+					select(mq2.expiredAt.max())
+						.from(mq2)
+						.where(mq2.meeting.id.eq(mq1.meeting.id))
+				)
+			)
 			.fetch();
 	}
 

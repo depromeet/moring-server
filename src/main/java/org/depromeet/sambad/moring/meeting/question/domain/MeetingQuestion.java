@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.question.domain;
 
+import static java.time.LocalDateTime.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 
 import java.time.LocalDateTime;
@@ -165,6 +166,16 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	public Long getEpochMilliStartTime() {
 		return startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	public void replaceTargetMember(MeetingMember targetMember) {
+		this.targetMember = targetMember;
+		this.status = ACTIVE;
+		this.question = null;
+
+		LocalDateTime now = now();
+		this.startTime = now;
+		this.expiredAt = now.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
 	}
 
 	private void validateTarget(MeetingMember targetMember) {
