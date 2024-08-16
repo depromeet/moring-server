@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +29,7 @@ public class MeetingQuestionTargetReplaceScheduler {
 	private final EventService eventService;
 
 	@Transactional
+	@SchedulerLock(name = "meetingQuestionTargetReplace", lockAtLeastFor = "PT5M", lockAtMostFor = "PT10M")
 	@Scheduled(fixedDelay = 5 * 60 * 1000)
 	public void replace() {
 		// 각 모임 별로, 가장 최근 만료된 질문이 비활성화 상태인 경우만 조회
