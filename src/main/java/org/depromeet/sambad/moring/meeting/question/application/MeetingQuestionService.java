@@ -17,7 +17,7 @@ import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingM
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.exception.NotFoundMeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.presentation.request.MeetingQuestionRequest;
-import org.depromeet.sambad.moring.meeting.question.presentation.response.ActiveMeetingQuestionResponse;
+import org.depromeet.sambad.moring.meeting.question.presentation.response.CurrentMeetingQuestionResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.FullInactiveMeetingQuestionListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionAndAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.question.presentation.response.MeetingQuestionStatisticsDetail;
@@ -43,12 +43,13 @@ public class MeetingQuestionService {
 	private final MeetingMemberService meetingMemberService;
 	private final QuestionService questionService;
 	private final EventService eventService;
+
 	private final MeetingMemberValidator meetingMemberValidator;
 
 	private final Clock clock;
 
 	@Transactional
-	public ActiveMeetingQuestionResponse save(Long userId, Long meetingId, MeetingQuestionRequest request) {
+	public CurrentMeetingQuestionResponse save(Long userId, Long meetingId, MeetingQuestionRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		MeetingMember nextTargetMember = meetingMemberService.getById(request.meetingMemberId());
 		loginMember.validateNextTarget(nextTargetMember);
@@ -59,13 +60,13 @@ public class MeetingQuestionService {
 		validateNonDuplicateQuestion(meetingId, activeQuestion.getId());
 
 		Meeting meeting = loginMember.getMeeting();
-		MeetingQuestion nowMeetingQuestion;
+		MeetingQuestion currentMeetingQuestion;
 
 		if (registeredMeetingQuestion.isPresent()) {
-			nowMeetingQuestion = registeredMeetingQuestion.get();
-			nowMeetingQuestion.registerQuestion(loginMember, activeQuestion);
+			currentMeetingQuestion = registeredMeetingQuestion.get();
+			currentMeetingQuestion.registerQuestion(loginMember, activeQuestion);
 		} else {
-			nowMeetingQuestion = createActiveQuestion(meeting, loginMember, activeQuestion);
+			currentMeetingQuestion = createActiveQuestion(meeting, loginMember, activeQuestion);
 		}
 
 		eventService.inactivateLastEventByType(userId, meetingId, TARGET_MEMBER);
@@ -73,10 +74,10 @@ public class MeetingQuestionService {
 			eventService.publish(member.getUser().getId(), meetingId, QUESTION_REGISTERED));
 
 		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNextMeetingQuestion(
-			meeting, nextTargetMember, nowMeetingQuestion.getNextStartTime());
+			meeting, nextTargetMember, currentMeetingQuestion.getNextStartTime());
 		meetingQuestionRepository.save(nextMeetingQuestion);
 
-		return ActiveMeetingQuestionResponse.questionRegisteredOf(nowMeetingQuestion, false);
+		return CurrentMeetingQuestionResponse.questionRegisteredOf(currentMeetingQuestion, false);
 	}
 
 	@Transactional
@@ -87,39 +88,34 @@ public class MeetingQuestionService {
 	}
 
 	public MeetingQuestionAndAnswerListResponse getActiveMeetingQuestionAndAnswerList(Long userId, Long meetingId) {
-		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		Optional<MeetingQuestion> activeMeetingQuestion = findActiveMeetingQuestion(loginMember.getMeeting().getId());
-		if (activeMeetingQuestion.isEmpty()) {
-			throw new NotFoundMeetingQuestion();
-		}
-		if (activeMeetingQuestion.get().getQuestion() == null) {
-			throw new NotFoundMeetingQuestion();
-		}
-		return MeetingQuestionAndAnswerListResponse.of(activeMeetingQuestion.get());
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+
+		MeetingQuestion activeMeetingQuestion = meetingQuestionRepository.findCurrentActiveOne(meetingId)
+			.orElseThrow(NotFoundMeetingQuestion::new);
+		return MeetingQuestionAndAnswerListResponse.of(activeMeetingQuestion);
 	}
 
-	public Optional<ActiveMeetingQuestionResponse> findActiveOne(Long userId, Long meetingId) {
+	public Optional<CurrentMeetingQuestionResponse> findCurrentOne(Long userId, Long meetingId) {
 		MeetingMember meetingMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 		Meeting meeting = meetingMember.getMeeting();
-		Optional<MeetingQuestion> activeMeetingQuestionOpt = meetingQuestionRepository.findActiveOneByMeeting(
+		Optional<MeetingQuestion> activeMeetingQuestionOpt = meetingQuestionRepository.findCurrentOne(
 			meeting.getId());
 
 		if (activeMeetingQuestionOpt.isPresent()) {
 			MeetingQuestion activeMeetingQuestion = activeMeetingQuestionOpt.get();
-			boolean isAnswered = meetingQuestionRepository.isAnswered(
-				activeMeetingQuestion.getId(), meetingMember.getId());
 
 			return activeMeetingQuestion.getQuestion() == null
-				? Optional.of(ActiveMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion))
-				: Optional.of(ActiveMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion, isAnswered));
+				? Optional.of(CurrentMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion))
+				: Optional.of(CurrentMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion,
+				meetingQuestionRepository.isAnswered(activeMeetingQuestion.getId(), meetingMember.getId())));
 		}
 
 		return Optional.empty();
 	}
 
-	public MostInactiveMeetingQuestionListResponse findMostInactiveList(Long userId, Long meetingId) {
+	public MostInactiveMeetingQuestionListResponse findTopInactiveList(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		return meetingQuestionRepository.findMostInactiveList(meetingId);
+		return meetingQuestionRepository.findTopInactiveList(meetingId);
 	}
 
 	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long userId, Long meetingId,
@@ -160,10 +156,6 @@ public class MeetingQuestionService {
 			meetingQuestion.getId());
 
 		return MeetingMemberListResponse.from(members);
-	}
-
-	private Optional<MeetingQuestion> findActiveMeetingQuestion(Long meetingId) {
-		return meetingQuestionRepository.findActiveOneByMeeting(meetingId);
 	}
 
 	private void validateNonDuplicateQuestion(Long meetingId, Long questionId) {

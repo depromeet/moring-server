@@ -16,6 +16,9 @@ public interface MeetingQuestionJpaRepository extends JpaRepository<MeetingQuest
 
 	List<MeetingQuestion> findAllByStatusAndExpiredAtBefore(MeetingQuestionStatus status, LocalDateTime now);
 
-	Optional<MeetingQuestion> findFirstByMeetingIdAndStatusOrderByStartTime(
-		Long meetingId, MeetingQuestionStatus status);
+	Optional<MeetingQuestion> findFirstByMeetingIdAndStatusOrderByStartTime(Long meetingId,
+		MeetingQuestionStatus status);
+
+	Optional<MeetingQuestion> findFirstByMeetingIdAndStatusAndQuestionIsNotNullOrderByStartTime(Long meetingId,
+		MeetingQuestionStatus status);
 }

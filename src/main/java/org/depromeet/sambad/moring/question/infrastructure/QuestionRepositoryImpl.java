@@ -35,7 +35,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 	}
 
 	@Override
-	public QuestionListResponse findQuestionsByMeeting(Long meetingId, Pageable pageable) {
+	public QuestionListResponse findQuestionsByMeetingId(Long meetingId, Pageable pageable) {
 		List<Long> usedQuestionIds = queryFactory
 			.select(meetingQuestion.question.id)
 			.from(meetingQuestion)
@@ -85,9 +85,5 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
 	private static BooleanExpression questionEq() {
 		return meetingQuestion.question.id.eq(question.id);
-	}
-
-	private BooleanExpression meetingIdEq(Long meetingId) {
-		return meetingQuestion.meeting.id.eq(meetingId);
 	}
 }

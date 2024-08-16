@@ -20,9 +20,13 @@ public interface MeetingQuestionRepository {
 
 	boolean existsByQuestion(Long meetingId, Long questionId);
 
-	Optional<MeetingQuestion> findActiveOneByMeeting(Long meetingId);
+	// 현재 진행 중인 모임 질문을 조회한다.
+	Optional<MeetingQuestion> findCurrentOne(Long meetingId);
 
-	MostInactiveMeetingQuestionListResponse findMostInactiveList(Long meetingId);
+	// 질문이 등록된 현재 진행 중인 모임 질문을 조회한다.
+	Optional<MeetingQuestion> findCurrentActiveOne(Long meetingId);
+
+	MostInactiveMeetingQuestionListResponse findTopInactiveList(Long meetingId);
 
 	FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable);
 

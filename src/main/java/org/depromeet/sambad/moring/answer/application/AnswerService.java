@@ -16,12 +16,8 @@ import lombok.RequiredArgsConstructor;
 public class AnswerService {
 
 	private final AnswerRepository answerRepository;
-	private final QuestionService questionService;
 
-	public Answer getById(Long questionId, Long answerId) {
-		return answerRepository.findByQuestionIdAndAnswerId(questionId, answerId)
-			.orElseThrow(NotFoundAnswerException::new);
-	}
+	private final QuestionService questionService;
 
 	@Transactional
 	public void saveAnswer(AnswerRequest answerRequest) {
@@ -31,5 +27,10 @@ public class AnswerService {
 			.content(answerRequest.content())
 			.build();
 		answerRepository.save(answer);
+	}
+
+	public Answer getById(Long questionId, Long answerId) {
+		return answerRepository.findByQuestionIdAndAnswerId(questionId, answerId)
+			.orElseThrow(NotFoundAnswerException::new);
 	}
 }
