@@ -158,9 +158,9 @@ public class MeetingQuestion extends BaseTimeEntity {
 	}
 
 	public double calculateEngagementRate() {
-		if (getTotalMemberCount() == 0)
-			return 0;
 		Integer totalMemberCount = (status == INACTIVE) ? this.totalMemberCount : this.meeting.getTotalMemberCount();
+		if (totalMemberCount == 0)
+			return 0;
 		double engagementRate = ((double)getResponseCount() / totalMemberCount) * 100;
 		return Math.round(engagementRate);
 	}
