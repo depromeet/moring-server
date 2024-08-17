@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MeetingQuestionStatusCheckScheduler {
 
 	private final MeetingQuestionRepository meetingQuestionRepository;
+
 	private final EventService eventService;
 
 	@Scheduled(fixedDelay = 10 * 1000)

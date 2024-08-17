@@ -5,7 +5,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
-import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,13 +30,11 @@ public record MostInactiveMeetingQuestionListResponseDetail(
 
 	public static MostInactiveMeetingQuestionListResponseDetail of(MeetingQuestion meetingQuestion,
 		Optional<Answer> bestAnswer) {
-		Meeting meeting = meetingQuestion.getMeeting();
-
 		return MostInactiveMeetingQuestionListResponseDetail.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.title(meetingQuestion.getQuestion().getTitle())
 			.content(bestAnswer.isPresent() ? bestAnswer.get().getContent() : null)
-			.engagementRate(meeting.calculateEngagementRate(meetingQuestion))
+			.engagementRate(meetingQuestion.calculateEngagementRate())
 			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.build();
 	}

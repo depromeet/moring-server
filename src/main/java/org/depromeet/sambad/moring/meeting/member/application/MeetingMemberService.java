@@ -45,6 +45,24 @@ public class MeetingMemberService {
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 	private final EventService eventService;
 
+	@Transactional
+	public MeetingMemberPersistResponse registerMeetingMember(
+		Long userId, String code, MeetingMemberPersistRequest request
+	) {
+		Meeting meeting = meetingRepository.findByCode(MeetingCode.from(code))
+			.orElseThrow(MeetingNotFoundException::new);
+
+		User user = userRepository.findById(userId)
+			.orElseThrow(NotFoundUserException::new);
+
+		MeetingMember meetingMember = validateAndCreateMember(userId, request, meeting, user);
+		addHobbies(meetingMember, request);
+
+		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
+
+		return MeetingMemberPersistResponse.from(meetingMember);
+	}
+
 	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 
@@ -54,10 +72,6 @@ public class MeetingMemberService {
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
 		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
 			.orElseThrow(MeetingMemberNotFoundException::new);
-	}
-
-	public boolean isNotEnterAnyMeeting(Long userId) {
-		return meetingMemberRepository.findByUserId(userId).isEmpty();
 	}
 
 	public MeetingMember getById(Long meetingMemberId) {
@@ -77,36 +91,6 @@ public class MeetingMemberService {
 		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
 	}
 
-	@Transactional
-	public MeetingMemberPersistResponse registerMeetingMember(
-		Long userId, String code, MeetingMemberPersistRequest request
-	) {
-		Meeting meeting = meetingRepository.findByCode(MeetingCode.from(code))
-			.orElseThrow(MeetingNotFoundException::new);
-
-		User user = userRepository.findById(userId)
-			.orElseThrow(NotFoundUserException::new);
-
-		MeetingMember meetingMember = validateAndCreateMember(userId, request, meeting, user);
-		addHobbies(meetingMember, request);
-
-		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
-
-		return MeetingMemberPersistResponse.from(meetingMember);
-	}
-
-	private void createMeetingQuestionIfFirstMeetingMember(Meeting meeting, MeetingMember meetingMember) {
-		Long meetingId = meeting.getId();
-
-		if (meetingMemberRepository.isCountOfMembersIsOne(meetingId)) {
-			MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(
-				meeting, meetingMember, null, LocalDateTime.now());
-
-			meetingQuestionRepository.save(activeMeetingQuestion);
-			eventService.publish(meetingMember.getUser().getId(), meetingId, TARGET_MEMBER);
-		}
-	}
-
 	public MeetingMemberListResponseDetail getRandomMeetingMember(Long userId, Long meetingId,
 		List<Long> excludeMemberIds) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
@@ -120,6 +104,22 @@ public class MeetingMemberService {
 
 		MeetingMember randomMember = meetingMemberRandomGenerator.generate(nextTargetMembers);
 		return MeetingMemberListResponseDetail.from(randomMember);
+	}
+
+	public boolean isNotEnterAnyMeeting(Long userId) {
+		return meetingMemberRepository.findByUserId(userId).isEmpty();
+	}
+
+	private void createMeetingQuestionIfFirstMeetingMember(Meeting meeting, MeetingMember meetingMember) {
+		Long meetingId = meeting.getId();
+
+		if (meetingMemberRepository.isCountOfMembersIsOne(meetingId)) {
+			MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(
+				meeting, meetingMember, null, LocalDateTime.now(), meeting.getTotalMemberCount());
+
+			meetingQuestionRepository.save(activeMeetingQuestion);
+			eventService.publish(meetingMember.getUser().getId(), meetingId, TARGET_MEMBER);
+		}
 	}
 
 	private MeetingMember validateAndCreateMember(

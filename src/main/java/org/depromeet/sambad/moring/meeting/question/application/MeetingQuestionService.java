@@ -74,7 +74,7 @@ public class MeetingQuestionService {
 			eventService.publish(member.getUser().getId(), meetingId, QUESTION_REGISTERED));
 
 		MeetingQuestion nextMeetingQuestion = MeetingQuestion.createNextMeetingQuestion(
-			meeting, nextTargetMember, currentMeetingQuestion.getNextStartTime());
+			meeting, nextTargetMember, currentMeetingQuestion.getNextStartTime(), meeting.getTotalMemberCount());
 		meetingQuestionRepository.save(nextMeetingQuestion);
 
 		return CurrentMeetingQuestionResponse.questionRegisteredOf(currentMeetingQuestion, false);
@@ -83,7 +83,7 @@ public class MeetingQuestionService {
 	@Transactional
 	public MeetingQuestion createActiveQuestion(Meeting meeting, MeetingMember targetMember, Question activeQuestion) {
 		MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(meeting, targetMember,
-			activeQuestion, LocalDateTime.now(clock));
+			activeQuestion, LocalDateTime.now(clock), meeting.getTotalMemberCount());
 		return meetingQuestionRepository.save(activeMeetingQuestion);
 	}
 
