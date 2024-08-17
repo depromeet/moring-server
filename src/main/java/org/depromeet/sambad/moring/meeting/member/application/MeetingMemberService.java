@@ -115,7 +115,7 @@ public class MeetingMemberService {
 
 		if (meetingMemberRepository.isCountOfMembersIsOne(meetingId)) {
 			MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(
-				meeting, meetingMember, null, LocalDateTime.now());
+				meeting, meetingMember, null, LocalDateTime.now(), meeting.getTotalMemberCount());
 
 			meetingQuestionRepository.save(activeMeetingQuestion);
 			eventService.publish(meetingMember.getUser().getId(), meetingId, TARGET_MEMBER);

@@ -66,7 +66,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 
 	private LocalDateTime expiredAt;
 
-	private Integer totalMemberCount; // 모임 질문 종료 시점의 모임원 수
+	private int totalMemberCount; // 모임 질문 종료 시점의 모임원 수
 
 	@OneToMany(mappedBy = "meetingQuestion", fetch = FetchType.LAZY)
 	private List<MeetingAnswer> memberAnswers = new ArrayList<>();
@@ -78,7 +78,8 @@ public class MeetingQuestion extends BaseTimeEntity {
 		Question question,
 		LocalDateTime now,
 		MeetingQuestionStatus status,
-		LocalDateTime expiredAt
+		LocalDateTime expiredAt,
+		int totalMemberCount
 	) {
 		this.meeting = meeting;
 		this.targetMember = targetMember;
@@ -86,7 +87,7 @@ public class MeetingQuestion extends BaseTimeEntity {
 		this.startTime = now;
 		this.status = status;
 		this.expiredAt = expiredAt;
-		this.totalMemberCount = null;
+		this.totalMemberCount = totalMemberCount;
 
 		meeting.addMeetingQuestion(this);
 		targetMember.addMeetingQuestion(this);
@@ -96,17 +97,18 @@ public class MeetingQuestion extends BaseTimeEntity {
 	}
 
 	public static MeetingQuestion createActiveMeetingQuestion(
-		Meeting meeting, MeetingMember targetMember, Question activeQuestion, LocalDateTime now
+		Meeting meeting, MeetingMember targetMember, Question activeQuestion, LocalDateTime now, int totalMemberCount
 	) {
 		LocalDateTime expiredAt = now.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
-		return new MeetingQuestion(meeting, targetMember, activeQuestion, now, ACTIVE, expiredAt);
+		return new MeetingQuestion(meeting, targetMember, activeQuestion, now, ACTIVE, expiredAt, totalMemberCount);
 	}
 
 	public static MeetingQuestion createNextMeetingQuestion(
-		Meeting meeting, MeetingMember targetMember, LocalDateTime startTime
+		Meeting meeting, MeetingMember targetMember, LocalDateTime startTime, int totalMemberCount
 	) {
 		LocalDateTime expiredAt = startTime.plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
-		return new MeetingQuestion(meeting, targetMember, null, startTime, NOT_STARTED, expiredAt);
+		return new MeetingQuestion(meeting, targetMember, null, startTime, NOT_STARTED, expiredAt,
+			totalMemberCount);
 	}
 
 	public void addMeetingAnswer(MeetingAnswer meetingAnswer) {
