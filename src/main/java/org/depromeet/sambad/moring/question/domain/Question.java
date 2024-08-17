@@ -31,9 +31,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
-	private static final int MIN_ANSWER_COUNT = 2;
-	private static final int MAX_ANSWER_COUNT = 9;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "question_id")
