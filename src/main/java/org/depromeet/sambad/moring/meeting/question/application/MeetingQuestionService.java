@@ -77,7 +77,7 @@ public class MeetingQuestionService {
 			meeting, nextTargetMember, currentMeetingQuestion.getNextStartTime(), meeting.getTotalMemberCount());
 		meetingQuestionRepository.save(nextMeetingQuestion);
 
-		return CurrentMeetingQuestionResponse.questionRegisteredOf(currentMeetingQuestion, false);
+		return CurrentMeetingQuestionResponse.questionRegisteredOf(currentMeetingQuestion, nextTargetMember, false);
 	}
 
 	@Transactional
@@ -103,13 +103,8 @@ public class MeetingQuestionService {
 
 		if (activeMeetingQuestionOpt.isPresent()) {
 			MeetingQuestion activeMeetingQuestion = activeMeetingQuestionOpt.get();
-
-			return activeMeetingQuestion.getQuestion() == null
-				? Optional.of(CurrentMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion))
-				: Optional.of(CurrentMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion,
-				meetingQuestionRepository.isAnswered(activeMeetingQuestion.getId(), meetingMember.getId())));
+			return Optional.of(getCurrentMeetingQuestionResponse(activeMeetingQuestion, meetingMember));
 		}
-
 		return Optional.empty();
 	}
 
@@ -156,6 +151,23 @@ public class MeetingQuestionService {
 			meetingQuestion.getId());
 
 		return MeetingMemberListResponse.from(members);
+	}
+
+	private CurrentMeetingQuestionResponse getCurrentMeetingQuestionResponse(
+		MeetingQuestion activeMeetingQuestion, MeetingMember meetingMember) {
+		if (activeMeetingQuestion.getQuestion() == null) {
+			return CurrentMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion);
+		} else {
+			MeetingMember nextTargetMember = meetingQuestionRepository.findFirstByStatusAndStartTimeAfterOrderByStartTime(
+					NOT_STARTED,
+					LocalDateTime.now())
+				.map(MeetingQuestion::getTargetMember)
+				.orElse(null);
+
+			return CurrentMeetingQuestionResponse.questionRegisteredOf(activeMeetingQuestion,
+				nextTargetMember,
+				meetingQuestionRepository.isAnswered(activeMeetingQuestion.getId(), meetingMember.getId()));
+		}
 	}
 
 	private void validateNonDuplicateQuestion(Long meetingId, Long questionId) {

@@ -14,13 +14,13 @@ public record MeetingMemberListResponse(
 		example = "[{\"meetingMemberId\":1,\"name\":\"이한음\",\"profileImageFileUrl\":\"https://example.com\",\"role\":\"OWNER\"}]",
 		requiredMode = REQUIRED
 	)
-	List<MeetingMemberListResponseDetail> contents
+	List<MeetingMemberSummaryResponse> contents
 ) {
 
 	public static MeetingMemberListResponse from(List<MeetingMember> members) {
-		List<MeetingMemberListResponseDetail> memberResponses = members.stream()
+		List<MeetingMemberSummaryResponse> memberResponses = members.stream()
 			.sorted()
-			.map(MeetingMemberListResponseDetail::from)
+			.map(MeetingMemberSummaryResponse::from)
 			.toList();
 
 		return new MeetingMemberListResponse(memberResponses);

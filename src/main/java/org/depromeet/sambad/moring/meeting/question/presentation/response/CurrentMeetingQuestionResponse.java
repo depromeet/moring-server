@@ -4,7 +4,8 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
+import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -45,7 +46,10 @@ public record CurrentMeetingQuestionResponse(
 	Boolean isQuestionRegistered,
 
 	@Schema(description = "질문인에 대한 정보", requiredMode = REQUIRED)
-	MeetingMemberListResponseDetail targetMember
+	MeetingMemberSummaryResponse targetMember,
+
+	@Schema(description = "다음 질문인에 대한 정보", requiredMode = NOT_REQUIRED)
+	MeetingMemberSummaryResponse nextTargetMember
 ) {
 
 	public static CurrentMeetingQuestionResponse questionNotRegisteredOf(MeetingQuestion meetingQuestion) {
@@ -60,12 +64,12 @@ public record CurrentMeetingQuestionResponse(
 			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.isAnswered(false)
 			.isQuestionRegistered(false)
-			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberSummaryResponse.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
 
 	public static CurrentMeetingQuestionResponse questionRegisteredOf(MeetingQuestion meetingQuestion,
-		Boolean isAnswered) {
+		MeetingMember nextTargetMember, Boolean isAnswered) {
 		Meeting meeting = meetingQuestion.getMeeting();
 
 		return CurrentMeetingQuestionResponse.builder()
@@ -79,7 +83,8 @@ public record CurrentMeetingQuestionResponse(
 			.startTime(meetingQuestion.getEpochMilliStartTime())
 			.isAnswered(isAnswered)
 			.isQuestionRegistered(true)
-			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberSummaryResponse.from(meetingQuestion.getTargetMember()))
+			.nextTargetMember(MeetingMemberSummaryResponse.from(nextTargetMember))
 			.build();
 	}
 }

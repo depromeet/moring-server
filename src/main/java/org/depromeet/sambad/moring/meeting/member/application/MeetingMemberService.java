@@ -17,9 +17,9 @@ import org.depromeet.sambad.moring.meeting.member.presentation.exception.Meeting
 import org.depromeet.sambad.moring.meeting.member.presentation.exception.NoMeetingMemberInConditionException;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberPersistResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 import org.depromeet.sambad.moring.meeting.question.application.MeetingQuestionRepository;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.user.domain.User;
@@ -91,7 +91,7 @@ public class MeetingMemberService {
 		return MeetingMemberResponse.from(getByUserIdAndMeetingId(userId, meetingId));
 	}
 
-	public MeetingMemberListResponseDetail getRandomMeetingMember(Long userId, Long meetingId,
+	public MeetingMemberSummaryResponse getRandomMeetingMember(Long userId, Long meetingId,
 		List<Long> excludeMemberIds) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 
@@ -103,7 +103,7 @@ public class MeetingMemberService {
 		}
 
 		MeetingMember randomMember = meetingMemberRandomGenerator.generate(nextTargetMembers);
-		return MeetingMemberListResponseDetail.from(randomMember);
+		return MeetingMemberSummaryResponse.from(randomMember);
 	}
 
 	public boolean isNotEnterAnyMeeting(Long userId) {

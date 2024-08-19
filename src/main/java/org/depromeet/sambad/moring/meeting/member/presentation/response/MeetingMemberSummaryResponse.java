@@ -8,7 +8,7 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberRole;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record MeetingMemberListResponseDetail(
+public record MeetingMemberSummaryResponse(
 	@Schema(description = "모임원 ID", example = "1", requiredMode = REQUIRED)
 	Long meetingMemberId,
 
@@ -22,8 +22,8 @@ public record MeetingMemberListResponseDetail(
 	@Schema(description = "모임원 역할", example = "OWNER", requiredMode = REQUIRED)
 	MeetingMemberRole role
 ) {
-	public static MeetingMemberListResponseDetail from(MeetingMember member) {
-		return new MeetingMemberListResponseDetail(
+	public static MeetingMemberSummaryResponse from(MeetingMember member) {
+		return new MeetingMemberSummaryResponse(
 			member.getId(),
 			member.getName(),
 			member.getProfileImageUrl(),

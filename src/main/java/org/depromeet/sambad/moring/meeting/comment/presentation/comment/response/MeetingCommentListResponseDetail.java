@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.meeting.comment.domain.comment.MeetingQuestionComment;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -20,7 +20,7 @@ public record MeetingCommentListResponseDetail(
 	String content,
 
 	@Schema(description = "코멘트 작성자", requiredMode = REQUIRED)
-	MeetingMemberListResponseDetail writer
+	MeetingMemberSummaryResponse writer
 ) {
 	public static MeetingCommentListResponseDetail from(MeetingQuestionComment meetingQuestionComment) {
 		MeetingMember writer = meetingQuestionComment.getMeetingMember();
@@ -28,7 +28,7 @@ public record MeetingCommentListResponseDetail(
 		return MeetingCommentListResponseDetail.builder()
 			.meetingQuestionCommentId(meetingQuestionComment.getId())
 			.content(meetingQuestionComment.getContent())
-			.writer(MeetingMemberListResponseDetail.from(writer))
+			.writer(MeetingMemberSummaryResponse.from(writer))
 			.build();
 	}
 

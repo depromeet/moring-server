@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.file.presentation.annotation.FullFileUrl;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +32,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 	Long startTime,
 
 	@Schema(description = "질문 대상자에 대한 정보", requiredMode = REQUIRED)
-	MeetingMemberListResponseDetail targetMember
+	MeetingMemberSummaryResponse targetMember
 ) {
 
 	public static FullInactiveMeetingQuestionListResponseDetail from(MeetingQuestion meetingQuestion) {
@@ -45,7 +45,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 			.title(meetingQuestion.getTitle())
 			.questionNumber(questionNumber)
 			.startTime(meetingQuestion.getEpochMilliStartTime())
-			.targetMember(MeetingMemberListResponseDetail.from(meetingQuestion.getTargetMember()))
+			.targetMember(MeetingMemberSummaryResponse.from(meetingQuestion.getTargetMember()))
 			.build();
 	}
 
