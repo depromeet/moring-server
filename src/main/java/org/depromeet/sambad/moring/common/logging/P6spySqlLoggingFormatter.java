@@ -13,8 +13,6 @@ public class P6spySqlLoggingFormatter implements MessageFormattingStrategy {
 	public String formatMessage(int connectionId, String now, long elapsed, String category, String prepared,
 		String sql, String url) {
 		sql = formatSql(category, sql);
-		if (sql.contains("shedlock") || sql.contains("expired_at<"))
-			return "";
 		return String.format(
 			"[SQL] %s | %d ms | connectionId = %d %s", category, elapsed, connectionId, formatSql(category, sql));
 	}
