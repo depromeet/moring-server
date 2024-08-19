@@ -1,7 +1,5 @@
 package org.depromeet.sambad.moring.common.logging;
 
-import static org.springframework.http.HttpStatus.*;
-
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import org.depromeet.sambad.moring.common.exception.BusinessException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 
 @Profile({"dev", "prod"})
@@ -30,17 +27,15 @@ public class ServerErrorAlertAdvice {
 	}
 
 	@AfterThrowing(value = "allPointcut()", throwing = "exception")
-	public void logAndAlertAfterThrowing(JoinPoint joinPoint, Throwable exception) {
+	public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
 		if (!(exception instanceof BusinessException)) {
 			return;
 		}
 
 		BusinessException businessException = (BusinessException)exception;
-		if (isNotServerError(businessException)) {
+		if (!businessException.isServerError()) {
 			return;
 		}
-
-		Sentry.captureException(exception);
 
 		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
 		String className = signature.getDeclaringType().getSimpleName();
@@ -55,9 +50,5 @@ public class ServerErrorAlertAdvice {
 		log.error("[SERVER ERROR DESCRIPTION] code : {} | message : {}", businessException.getCode(),
 			businessException.getMessage());
 		log.error(exception.getCause().toString());
-	}
-
-	private boolean isNotServerError(BusinessException exception) {
-		return !exception.getCode().getStatus().equals(INTERNAL_SERVER_ERROR);
 	}
 }

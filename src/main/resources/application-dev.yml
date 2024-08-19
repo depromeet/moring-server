@@ -6,3 +6,8 @@ sentry:
 file:
   upload-path: uploaded
   base-url: https://file.moring.one
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false

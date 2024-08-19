@@ -67,9 +67,9 @@ springdoc:
     tags-sorter: alpha
 
 sentry:
-  exception-resolver-order: -2147483647
   max-request-body-size: always
   tracesSampleRate: 1.0
+  send-default-pii: true
 
 decorator:
   datasource:

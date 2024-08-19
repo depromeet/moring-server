@@ -6,7 +6,7 @@ import static org.depromeet.sambad.moring.file.presentation.exception.FileExcept
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.depromeet.sambad.moring.common.logging.LoggingUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -20,24 +20,27 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import io.sentry.Sentry;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+	private final ApplicationEventPublisher eventPublisher;
 
 	@ExceptionHandler(BusinessException.class)
 	protected ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
+		if (exception.isServerError())
+			eventPublisher.publishEvent(exception);
 		ExceptionResponse response = ExceptionResponse.from(exception);
 		return ResponseEntity.status(response.status()).body(response);
 	}
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-		Sentry.captureException(exception);
-		LoggingUtils.error(exception);
-
+		eventPublisher.publishEvent(exception);
 		return ResponseEntity.internalServerError().body(ExceptionResponse.from(SERVER_ERROR));
 	}
 
@@ -52,7 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.collect(Collectors.joining(", "));
 		ExceptionResponse response = ExceptionResponse.of(INVALID_INPUT.getStatus(), INVALID_INPUT.getCode(), message);
 
-			return ResponseEntity.status(response.status()).body(response);
+		return ResponseEntity.status(response.status()).body(response);
 	}
 
 	@Override
