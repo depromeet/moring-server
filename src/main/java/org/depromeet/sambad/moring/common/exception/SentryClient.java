@@ -10,7 +10,7 @@ import io.sentry.Sentry;
 @Component
 public class SentryClient {
 
-	@Async("asyncExecutor")
+	@Async
 	@EventListener
 	public void notify(Exception exception) {
 		Sentry.captureException(exception);
