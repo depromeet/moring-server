@@ -5,6 +5,7 @@ import java.util.List;
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerRepository;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.springframework.stereotype.Repository;
 
@@ -50,7 +51,12 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 
 	@Override
 	public MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
-		return meetingAnswerQueryRepository.findAllByMeetingMemberId(meetingMemberId);
+		return meetingAnswerQueryRepository.findAllByOtherMeetingMemberId(meetingMemberId);
+	}
+
+	@Override
+	public MyMeetingAnswerListResponse findAllByMyMeetingMemberId(Long loginMemberId) {
+		return meetingAnswerQueryRepository.findAllByMyMeetingMemberId(loginMemberId);
 	}
 
 	@Override

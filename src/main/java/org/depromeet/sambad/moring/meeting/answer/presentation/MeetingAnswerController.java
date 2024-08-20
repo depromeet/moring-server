@@ -6,6 +6,7 @@ import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerResul
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerService;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.SelectedAnswerResponse;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -63,21 +64,23 @@ public class MeetingAnswerController {
 			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
 	@GetMapping("/questions/answers/me")
-	public ResponseEntity<MeetingAnswerListResponse> findMyList(
+	public ResponseEntity<MyMeetingAnswerListResponse> findMyList(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		MeetingAnswerListResponse response = meetingAnswerService.getListByMe(userId, meetingId);
+		MyMeetingAnswerListResponse response = meetingAnswerService.getListByMe(userId, meetingId);
 		return ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "모임원이 작성한 모든 질문의 답변 리스트 조회", description =
+	@Operation(summary = "다른 모임원이 작성한 모든 질문의 답변 리스트 조회", description =
 		"- 프로필 페이지 내 릴레이 질문 영역 조회 시 사용합니다.\n"
 			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.\n"
-			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.")
+			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.\n"
+			+ "- 숨김 처리 되어 있는 답변을 필터링 후 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),

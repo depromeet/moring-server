@@ -5,11 +5,11 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MeetingAnswerResponseCustom;
+import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public record MeetingAnswerListResponseDetail(
+public record MyMeetingAnswerListResponseDetail(
 	@Schema(title = "모임 내 질문 식별자", example = "1", requiredMode = REQUIRED)
 	Long meetingQuestionId,
 
@@ -24,19 +24,23 @@ public record MeetingAnswerListResponseDetail(
 
 	@Schema(title = "유저가 단 댓글", example = "요새 할 일이 너무 많아요ㅠ 분신술로 시간 단축!!",
 		description = "댓글이 없으면 null 응답합니다.", requiredMode = NOT_REQUIRED)
-	String commentContent
+	String commentContent,
+
+	@Schema(title = "답변 숨김 여부", example = "false", requiredMode = REQUIRED)
+	Boolean isHidden
 ) {
 
-	public static List<MeetingAnswerListResponseDetail> from(List<MeetingAnswerResponseCustom> responseCustoms) {
+	public static List<MyMeetingAnswerListResponseDetail> from(List<MyMeetingAnswerResponseCustom> responseCustoms) {
 		return IntStream.range(0, responseCustoms.size())
 			.mapToObj(i -> {
-				MeetingAnswerResponseCustom response = responseCustoms.get(i);
-				return new MeetingAnswerListResponseDetail(
+				MyMeetingAnswerResponseCustom response = responseCustoms.get(i);
+				return new MyMeetingAnswerListResponseDetail(
 					response.meetingQuestionId(),
 					i + 1,
 					response.meetingQuestionTitle(),
 					response.getMeetingAnswers(),
-					response.comment()
+					response.comment(),
+					response.isHidden()
 				);
 			})
 			.toList();
