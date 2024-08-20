@@ -4,7 +4,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.util.List;
 
-import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
+import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MeetingAnswerResponseCustom;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -13,7 +13,7 @@ public record MeetingAnswerListResponse(
 	List<MeetingAnswerListResponseDetail> contents
 ) {
 
-	public static MeetingAnswerListResponse from(List<MyMeetingAnswerResponseCustom> content) {
+	public static MeetingAnswerListResponse from(List<MeetingAnswerResponseCustom> content) {
 		return new MeetingAnswerListResponse(MeetingAnswerListResponseDetail.from(content));
 	}
 }
