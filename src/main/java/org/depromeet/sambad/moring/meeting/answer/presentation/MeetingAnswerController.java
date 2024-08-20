@@ -112,6 +112,7 @@ public class MeetingAnswerController {
 	@Operation(summary = "같은 답변을 선택한 모임원 리스트 조회", description = "같은 답변을 선택한 모임원 리스트를 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "조회 성공"),
+		@ApiResponse(responseCode = "204", description = "같은 답변을 선택한 모임원이 없는 경우"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
