@@ -124,6 +124,8 @@ public class MeetingAnswerController {
 		SelectedAnswerResponse response = meetingAnswerResultService.getSelectedSameAnswer(
 			userId, meetingId, meetingQuestionId);
 
-		return ResponseEntity.ok(response);
+		return response.selectedMembers().isEmpty()
+			? ResponseEntity.noContent().build()
+			: ResponseEntity.ok(response);
 	}
 }
