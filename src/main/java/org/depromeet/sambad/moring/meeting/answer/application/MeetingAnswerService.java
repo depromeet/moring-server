@@ -12,6 +12,7 @@ import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.exception.DuplicateMeetingAnswerException;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
@@ -55,9 +56,9 @@ public class MeetingAnswerService {
 		advanceToNextQuestionIfAllAnswered(meetingId, meetingQuestion);
 	}
 
-	public MeetingAnswerListResponse getListByMe(Long userId, Long meetingId) {
+	public MyMeetingAnswerListResponse getListByMe(Long userId, Long meetingId) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		return meetingAnswerRepository.findAllByMeetingMemberId(loginMember.getId());
+		return meetingAnswerRepository.findAllByMyMeetingMemberId(loginMember.getId());
 	}
 
 	public MeetingAnswerListResponse getListByMember(Long userId, Long meetingId, Long targetMemberId) {
@@ -95,5 +96,13 @@ public class MeetingAnswerService {
 					eventService.publish(targetMember.getUser().getId(), meetingId, TARGET_MEMBER);
 				});
 		}
+	}
+
+	@Transactional
+	public void updateHidden(Long userId, Long meetingId, List<Long> hiddenMeetingQuestionIds) {
+		MeetingMember member = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		List<MeetingAnswer> hiddenAnswers = meetingAnswerRepository.findAllByMeetingQuestionIdIn(
+			hiddenMeetingQuestionIds);
+		hiddenAnswers.forEach(meetingAnswer -> meetingAnswer.updateHidden(member));
 	}
 }
