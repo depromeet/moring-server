@@ -72,6 +72,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 			return redirectCookie;
 		}
 
+		if (result.isNotCompletedOnboarding()) {
+			return securityProperties.onboardingRedirectUrl();
+		}
+
 		if (meetingMemberService.isNotEnterAnyMeeting(result.userId())) {
 			return result.isNewUser()
 				? securityProperties.newUserRedirectUrl() + "?newUser=true"
