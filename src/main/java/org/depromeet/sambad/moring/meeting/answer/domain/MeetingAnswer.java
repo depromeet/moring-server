@@ -7,6 +7,7 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.meeting.answer.presentation.exception.CannotUpdateMeetingAnswer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,17 +44,16 @@ public class MeetingAnswer extends BaseTimeEntity {
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember meetingMember;
 
+	private Boolean isHidden;
+
 	@Builder
 	public MeetingAnswer(MeetingQuestion meetingQuestion, Answer answer, MeetingMember meetingMember) {
 		this.meetingQuestion = meetingQuestion;
 		this.answer = answer;
 		this.meetingMember = meetingMember;
+		this.isHidden = false;
 
 		meetingQuestion.addMeetingAnswer(this);
-	}
-
-	public String getAnswerContent() {
-		return answer.getContent();
 	}
 
 	public static List<Long> getDistinctAnswerIds(List<MeetingAnswer> answers) {
@@ -62,5 +62,16 @@ public class MeetingAnswer extends BaseTimeEntity {
 			.filter(Objects::nonNull)
 			.distinct()
 			.toList();
+	}
+
+	public String getAnswerContent() {
+		return answer.getContent();
+	}
+
+	public void updateHidden(MeetingMember updateMember) {
+		if (this.meetingMember.isNotEqualMemberWith(updateMember)) {
+			throw new CannotUpdateMeetingAnswer();
+		}
+		this.isHidden = true;
 	}
 }
