@@ -52,4 +52,9 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 	public MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
 		return meetingAnswerQueryRepository.findAllByMeetingMemberId(meetingMemberId);
 	}
+
+	@Override
+	public List<MeetingAnswer> findAllByMeetingQuestionIdIn(List<Long> meetingQuestionIds) {
+		return meetingAnswerJpaRepository.findAllByMeetingQuestionIdIn(meetingQuestionIds);
+	}
 }

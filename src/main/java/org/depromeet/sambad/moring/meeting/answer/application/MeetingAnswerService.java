@@ -96,4 +96,11 @@ public class MeetingAnswerService {
 				});
 		}
 	}
+
+	public void updateHidden(Long userId, Long meetingId, List<Long> hiddenMeetingQuestionIds) {
+		MeetingMember member = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		List<MeetingAnswer> hiddenAnswers = meetingAnswerRepository.findAllByMeetingQuestionIdIn(
+			hiddenMeetingQuestionIds);
+		hiddenAnswers.forEach(meetingAnswer -> meetingAnswer.updateHidden(member));
+	}
 }

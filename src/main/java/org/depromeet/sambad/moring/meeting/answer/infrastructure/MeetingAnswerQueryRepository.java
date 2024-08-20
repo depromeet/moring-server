@@ -92,6 +92,9 @@ public class MeetingAnswerQueryRepository {
 	}
 
 	public MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
+
+		//TODO: 다른 멤버 프로필 조회 시, filtering hidden answers
+		//TODO: 내 프로필 조회 시, hidden 여부 응답 추가
 		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
 			.from(meetingQuestion)
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
@@ -101,9 +104,10 @@ public class MeetingAnswerQueryRepository {
 			.fetch();
 
 		List<MyMeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
-			.map(question -> new MyMeetingAnswerResponseCustom(question.getTitle(),
-				getMyAnswers(meetingMemberId, question),
-				getMyComment(meetingMemberId, question)))
+			.map(meetingQuestion -> new MyMeetingAnswerResponseCustom(meetingQuestion.getId(),
+				meetingQuestion.getTitle(),
+				getMyAnswers(meetingMemberId, meetingQuestion),
+				getMyComment(meetingMemberId, meetingQuestion)))
 			.toList();
 
 		return MeetingAnswerListResponse.from(responseCustoms);
