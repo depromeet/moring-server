@@ -32,6 +32,8 @@ public interface MeetingQuestionRepository {
 
 	Optional<MeetingQuestion> findByMeetingIdAndMeetingQuestionId(Long meetingId, Long meetingQuestionId);
 
+	Optional<MeetingQuestion> findFirstByStatusAndStartTimeAfterOrderByStartTime(MeetingQuestionStatus status, LocalDateTime now);
+
 	List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId);
 
 	List<MeetingMember> findMeetingMembersByMeetingQuestionId(Long meetingQuestionId);

@@ -67,6 +67,12 @@ public class MeetingQuestionRepositoryImpl implements MeetingQuestionRepository 
 	}
 
 	@Override
+	public Optional<MeetingQuestion> findFirstByStatusAndStartTimeAfterOrderByStartTime(MeetingQuestionStatus status,
+		LocalDateTime now) {
+		return meetingQuestionJpaRepository.findFirstByStatusAndStartTimeAfterOrderByStartTime(status, now);
+	}
+
+	@Override
 	public List<MeetingQuestionStatisticsDetail> findStatistics(Long meetingQuestionId) {
 		return meetingQuestionQueryRepository.findStatistics(meetingQuestionId);
 	}

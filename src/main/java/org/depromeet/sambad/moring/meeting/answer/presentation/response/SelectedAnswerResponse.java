@@ -7,7 +7,7 @@ import java.util.List;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
-import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponseDetail;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,7 +19,7 @@ public record SelectedAnswerResponse(
 	int count,
 
 	@Schema(description = "선택한 모임원 목록", requiredMode = REQUIRED)
-	List<MeetingMemberListResponseDetail> selectedMembers
+	List<MeetingMemberSummaryResponse> selectedMembers
 ) {
 	public static SelectedAnswerResponse from(List<MeetingMember> members, List<MeetingAnswer> meetingAnswers) {
 		return new SelectedAnswerResponse(
