@@ -4,6 +4,7 @@ public record LoginResult(
 	String accessToken,
 	String refreshToken,
 	boolean isNewUser,
+	boolean isNotCompletedOnboarding,
 	Long userId
 ) {
 }

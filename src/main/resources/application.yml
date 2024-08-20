@@ -34,6 +34,7 @@ spring:
     login-url: ${LOGIN_URL:/login}
     redirect-url: ${REDIRECT_URL:/}
     new-user-redirect-url: ${NEW_USER_REDIRECT_URL:/}
+    onboarding-redirect-url: ${ONBOARDING_REDIRECT_URL:/onboarding}
     cookie:
       domain: ${COOKIE_DOMAIN:moring.one}
       secure: ${COOKIE_SECURE:true}
