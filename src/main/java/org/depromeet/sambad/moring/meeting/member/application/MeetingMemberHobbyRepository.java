@@ -7,4 +7,6 @@ import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberHobby;
 public interface MeetingMemberHobbyRepository {
 
 	void saveAll(List<MeetingMemberHobby> hobbies);
+
+	void deleteAllInBatch(List<MeetingMemberHobby> oldHobbies);
 }
