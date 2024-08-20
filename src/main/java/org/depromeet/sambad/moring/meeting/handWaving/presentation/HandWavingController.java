@@ -45,6 +45,7 @@ public class HandWavingController {
 	@Operation(summary = "나도 인사 건네기", description = "손을 흔들어 인사한 모임원에게 나도 인사를 건넵니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "나도 인사 건네기 성공"),
+		@ApiResponse(responseCode = "400", description = "INVALID_STATUS_CHANGE"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "HAND_WAVING_NOT_FOUND"),
 	})
@@ -61,6 +62,7 @@ public class HandWavingController {
 	@Operation(summary = "모른척하기", description = "손을 흔들어 인사한 모임원에게 모른척 합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모른척하기 성공"),
+		@ApiResponse(responseCode = "400", description = "INVALID_STATUS_CHANGE"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "HAND_WAVING_NOT_FOUND"),
 	})
