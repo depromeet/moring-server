@@ -1,10 +1,13 @@
 package org.depromeet.sambad.moring.user.presentation;
 
 import org.depromeet.sambad.moring.user.application.UserService;
+import org.depromeet.sambad.moring.user.domain.User;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
+import org.depromeet.sambad.moring.user.presentation.response.OnboardingResponse;
 import org.depromeet.sambad.moring.user.presentation.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +32,17 @@ public class UserController {
 	@GetMapping("/me")
 	public ResponseEntity<UserResponse> getUser(@UserId Long userId) {
 		UserResponse response = userService.findByUserId(userId);
+		return ResponseEntity.ok(response);
+	}
+
+	@Operation(
+		summary = "온보딩 완료",
+		description = "온보딩을 완료함으로써, 더 이상 온보딩 페이지로 이동하지 않도록 수정합니다."
+	)
+	@ApiResponse(responseCode = "200", description = "성공")
+	@PatchMapping("/onboarding/complete")
+	public ResponseEntity<OnboardingResponse> completeOnboarding(@UserId Long userId) {
+		OnboardingResponse response = userService.completeOnboarding(userId);
 		return ResponseEntity.ok(response);
 	}
 }
