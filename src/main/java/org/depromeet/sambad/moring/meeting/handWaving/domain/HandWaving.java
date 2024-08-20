@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.meeting.handWaving.domain;
 
 import static jakarta.persistence.EnumType.STRING;
+import static org.depromeet.sambad.moring.meeting.handWaving.domain.HandWavingStatus.REQUESTED;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -38,4 +39,22 @@ public class HandWaving extends BaseTimeEntity {
 
 	@Enumerated(STRING)
 	private HandWavingStatus status;
+
+	public static HandWaving send(MeetingMember sender, MeetingMember receiver) {
+		return new HandWaving(sender, receiver);
+	}
+
+	public HandWaving(MeetingMember sender, MeetingMember receiver) {
+		this.sender = sender;
+		this.receiver = receiver;
+		this.status = REQUESTED;
+	}
+
+	public void resend() {
+		this.status = HandWavingStatus.ACCEPTED;
+	}
+
+	public void reject() {
+		this.status = HandWavingStatus.REJECTED;
+	}
 }
