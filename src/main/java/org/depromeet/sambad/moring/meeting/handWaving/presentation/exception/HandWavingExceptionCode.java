@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.meeting.handWaving.presentation.exception;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.depromeet.sambad.moring.common.exception.ExceptionCode;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum HandWavingExceptionCode implements ExceptionCode {
 
+	INVALID_STATUS_CHANGE(BAD_REQUEST, "이미 인사를 건냈거나 모른척 한 상태입니다."),
 	NOT_FOUND_HAND_WAVING(NOT_FOUND, "손 흔들기 내역을 찾을 수 없습니다."),
 	;
 

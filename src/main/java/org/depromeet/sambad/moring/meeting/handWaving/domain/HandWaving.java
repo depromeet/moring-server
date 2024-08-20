@@ -4,6 +4,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static org.depromeet.sambad.moring.meeting.handWaving.domain.HandWavingStatus.REQUESTED;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
+import org.depromeet.sambad.moring.meeting.handWaving.presentation.exception.InvalidStatusChangeException;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 import jakarta.persistence.Column;
@@ -51,10 +52,18 @@ public class HandWaving extends BaseTimeEntity {
 	}
 
 	public void resend() {
+		isRequested();
 		this.status = HandWavingStatus.ACCEPTED;
 	}
 
 	public void reject() {
+		isRequested();
 		this.status = HandWavingStatus.REJECTED;
+	}
+
+	private void isRequested() {
+		if (this.status != REQUESTED) {
+			throw new InvalidStatusChangeException();
+		}
 	}
 }
