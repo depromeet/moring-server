@@ -40,7 +40,8 @@ public class RefreshTokenService {
 		String reissuedAccessToken = tokenGenerator.generateAccessToken(userId);
 		String rotatedRefreshToken = this.rotate(savedRefreshToken);
 
-		LoginResult loginResult = new LoginResult(reissuedAccessToken, rotatedRefreshToken, false, userId);
+		LoginResult loginResult = new LoginResult(
+			reissuedAccessToken, rotatedRefreshToken, false, false, userId);
 		tokenInjector.injectTokensToCookie(loginResult, response);
 
 		return loginResult;

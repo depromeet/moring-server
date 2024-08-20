@@ -30,8 +30,8 @@ public record UserResponse(
 			user.getName(),
 			user.getEmail(),
 			user.getProfileImageFileUrl(),
-			user.toEpochMilli(user.getCreatedAt()),
-			user.toEpochMilli(user.getUpdatedAt())
+			user.getCreatedAtWithEpochMilli(),
+			user.getUpdatedAtWithEpochMilli()
 		);
 	}
 }
