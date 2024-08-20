@@ -56,9 +56,28 @@ public class MeetingMemberService {
 			.orElseThrow(NotFoundUserException::new);
 
 		MeetingMember meetingMember = validateAndCreateMember(userId, request, meeting, user);
-		addHobbies(meetingMember, request);
+		updateHobbies(meetingMember, request);
 
 		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
+
+		return MeetingMemberPersistResponse.from(meetingMember);
+	}
+
+	@Transactional
+	public MeetingMemberPersistResponse updateMeetingMember(
+		Long userId, Long meetingId, MeetingMemberPersistRequest request
+	) {
+		Meeting meeting = meetingRepository.findById(meetingId)
+			.orElseThrow(MeetingNotFoundException::new);
+
+		User user = userRepository.findById(userId)
+			.orElseThrow(NotFoundUserException::new);
+
+		MeetingMember meetingMember = meetingMemberRepository.findByUserIdAndMeetingId(user.getId(), meeting.getId())
+			.orElseThrow(MeetingMemberNotFoundException::new);
+
+		meetingMember.update(request);
+		updateHobbies(meetingMember, request);
 
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
@@ -143,11 +162,15 @@ public class MeetingMemberService {
 		meetingMemberValidator.validateMeetingMemberMaxCount(meeting.getId());
 	}
 
-	private void addHobbies(MeetingMember meetingMember, MeetingMemberPersistRequest request) {
+	private void updateHobbies(MeetingMember meetingMember, MeetingMemberPersistRequest request) {
+		List<MeetingMemberHobby> oldHobbies = meetingMember.getMeetingMemberHobbies();
+		if (!oldHobbies.isEmpty()) {
+			meetingMemberHobbyRepository.deleteAllInBatch(oldHobbies);
+		}
+
 		List<MeetingMemberHobby> hobbies = hobbyRepository.findByIdIn(request.hobbyIds()).stream()
 			.map(hobby -> MeetingMemberHobby.of(meetingMember, hobby))
 			.toList();
-
 		meetingMemberHobbyRepository.saveAll(hobbies);
 	}
 }

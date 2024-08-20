@@ -13,6 +13,7 @@ import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingM
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,38 @@ import lombok.RequiredArgsConstructor;
 public class MeetingMemberController {
 
 	private final MeetingMemberService meetingMemberService;
+
+	@Operation(summary = "모임 가입", description = "특정 모임에 신규 모임원을 등록합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "201", description = "모임원 등록 성공"),
+		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT / EXCEED_MAX_OWNER_COUNT / EXCEED_MAX_MEMBER_COUNT"),
+		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND / NOT_FOUND_USER"),
+		@ApiResponse(responseCode = "409", description = "MEETING_MEMBER_ALREADY_EXISTS")
+	})
+	@PostMapping("/members")
+	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(
+		@UserId Long userId,
+		@Parameter(description = "모임의 고유 초대 코드", example = "0AF781", required = true) @RequestParam("code") String code,
+		@Valid @RequestBody MeetingMemberPersistRequest request
+	) {
+		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);
+		return ResponseEntity.status(CREATED).body(response);
+	}
+
+	@Operation(summary = "모임원 정보 수정", description = "모임원의 기본 정보를 수정합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "정보 수정 성공"),
+		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND / NOT_FOUND_USER / MEETING_MEMBER_NOT_FOUND"),
+	})
+	@PatchMapping("/{meetingId}/members/me")
+	public ResponseEntity<MeetingMemberPersistResponse> updateMeetingMember(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId,
+		@Valid @RequestBody MeetingMemberPersistRequest request
+	) {
+		MeetingMemberPersistResponse response = meetingMemberService.updateMeetingMember(userId, meetingId, request);
+		return ResponseEntity.ok(response);
+	}
 
 	@Operation(summary = "모임원 정보 조회", description = "특정 모임의 특정 모임원을 조회합니다.")
 	@ApiResponses({
@@ -80,23 +113,6 @@ public class MeetingMemberController {
 	) {
 		MeetingMemberListResponse response = meetingMemberService.getMeetingMembers(userId, meetingId);
 		return ResponseEntity.ok(response);
-	}
-
-	@Operation(summary = "모임 가입", description = "특정 모임에 신규 모임 멤버를 등록합니다.")
-	@ApiResponses({
-		@ApiResponse(responseCode = "201", description = "모임 멤버 등록 성공"),
-		@ApiResponse(responseCode = "400", description = "EXCEED_MAX_MEETING_COUNT / EXCEED_MAX_OWNER_COUNT / EXCEED_MAX_MEMBER_COUNT"),
-		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND / USER_NOT_FOUND"),
-		@ApiResponse(responseCode = "409", description = "MEETING_MEMBER_ALREADY_EXISTS")
-	})
-	@PostMapping("/members")
-	public ResponseEntity<MeetingMemberPersistResponse> createMeetingMember(
-		@UserId Long userId,
-		@Parameter(description = "모임의 고유 초대 코드", example = "0AF781", required = true) @RequestParam("code") String code,
-		@Valid @RequestBody MeetingMemberPersistRequest request
-	) {
-		MeetingMemberPersistResponse response = meetingMemberService.registerMeetingMember(userId, code, request);
-		return ResponseEntity.status(CREATED).body(response);
 	}
 
 	@Operation(summary = "다음 랜덤 질문 대상자 조회", description = "다음 릴레이 질문 랜덤 대상자를 조회합니다.")

@@ -18,4 +18,9 @@ public class MeetingMemberHobbyRepositoryImpl implements MeetingMemberHobbyRepos
 	public void saveAll(List<MeetingMemberHobby> hobbies) {
 		meetingMemberHobbyJpaRepository.saveAll(hobbies);
 	}
+
+	@Override
+	public void deleteAllInBatch(List<MeetingMemberHobby> oldHobbies) {
+		meetingMemberHobbyJpaRepository.deleteAllInBatch(oldHobbies);
+	}
 }
