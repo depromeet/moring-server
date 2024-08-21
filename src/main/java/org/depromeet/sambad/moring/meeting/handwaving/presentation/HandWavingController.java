@@ -2,8 +2,10 @@ package org.depromeet.sambad.moring.meeting.handwaving.presentation;
 
 import org.depromeet.sambad.moring.meeting.handwaving.application.HandWavingService;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandWavingRequest;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.response.HandWavingStatusResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +42,22 @@ public class HandWavingController {
 	) {
 		handWavingService.sendHandWaving(userId, meetingId, request);
 		return ResponseEntity.ok().build();
+	}
+
+	@Operation(summary = "손 흔들어 인사하기 상태 조회", description = "손을 흔들어 인사한 상태를 조회합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "손 흔들어 인사하기 상태 조회 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "HAND_WAVING_NOT_FOUND"),
+	})
+	@GetMapping("/{receiverMemberId}")
+	public ResponseEntity<HandWavingStatusResponse> getHandWavingStatus(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
+		@Parameter(description = "손 흔들어 인사한 모임원 ID", example = "1", required = true) @PathVariable("receiverMemberId") Long receiverMemberId
+	) {
+		HandWavingStatusResponse response = handWavingService.getHandWavingStatus(userId, meetingId, receiverMemberId);
+		return ResponseEntity.ok(response);
 	}
 
 	@Operation(summary = "나도 인사 건네기", description = "손을 흔들어 인사한 모임원에게 나도 인사를 건넵니다.")
