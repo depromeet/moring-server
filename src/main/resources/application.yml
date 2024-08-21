@@ -125,3 +125,10 @@ management:
       enabled: true
     java:
       enabled: true
+
+caching:
+  spring:
+    event-templates-ttl: ${EVENT_TEMPLATES_TTL:1800}
+
+event:
+  keep-days: ${EVENT_KEEP_DAYS:7}
