@@ -1,5 +1,7 @@
 package org.depromeet.sambad.moring.meeting.member.domain;
 
+import java.util.Objects;
+
 import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.ExceedMaxMeetingCountException;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
 import org.depromeet.sambad.moring.meeting.member.infrastructure.MeetingMemberProperties;
@@ -53,7 +55,7 @@ public class MeetingMemberValidator {
 	}
 
 	public void validateUserIsMemberOfMeeting(Long userId, Long meetingId) {
-		if (isNotMemberOfMeeting(userId, meetingId)) {
+		if (isNotUserOfMeeting(userId, meetingId)) {
 			throw new UserNotMemberOfMeetingException();
 		}
 	}
@@ -64,7 +66,14 @@ public class MeetingMemberValidator {
 		}
 	}
 
-	public boolean isNotMemberOfMeeting(Long userId, Long meetingId) {
+	public boolean isNotUserOfMeeting(Long userId, Long meetingId) {
 		return !meetingMemberRepository.isUserMemberOfMeeting(userId, meetingId);
+	}
+
+	public boolean isNotMemberOfMeeting(Long memberId, Long meetingId) {
+		return meetingMemberRepository.findById(memberId)
+			.map(MeetingMember::getMeeting)
+			.map(meeting -> !Objects.equals(meeting.getId(), meetingId))
+			.orElse(true);
 	}
 }

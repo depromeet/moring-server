@@ -24,7 +24,7 @@ public class EventService {
 
 	@Transactional
 	public void publish(Long userId, Long meetingId, EventType type) {
-		if (meetingMemberValidator.isNotMemberOfMeeting(userId, meetingId)) {
+		if (meetingMemberValidator.isNotUserOfMeeting(userId, meetingId)) {
 			log.warn("User is not member of meeting. userId: {}, meetingId: {}", userId, meetingId);
 			return;
 		}
