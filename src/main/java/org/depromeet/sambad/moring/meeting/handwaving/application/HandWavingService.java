@@ -58,7 +58,7 @@ public class HandWavingService {
 	}
 
 	private HandWaving getHandWavingBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
-		return handWavingRepository.findBySenderIdAndReceiverId(senderMemberId, receiverMemberId)
+		return handWavingRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId)
 			.orElseThrow(NotFoundHandWavingException::new);
 	}
 
