@@ -24,7 +24,7 @@ public class HandWavingRepositoryImpl implements HandWavingRepository {
 	}
 
 	@Override
-	public Optional<HandWaving> findBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
-		return handWavingJpaRepository.findBySenderIdAndReceiverId(senderMemberId, receiverMemberId);
+	public Optional<HandWaving> findFirstBySenderIdAndReceiverIdDesc(Long senderMemberId, Long receiverMemberId) {
+		return handWavingJpaRepository.findFirstBySenderIdAndReceiverIdDesc(senderMemberId, receiverMemberId);
 	}
 }

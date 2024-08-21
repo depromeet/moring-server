@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HandWavingJpaRepository extends JpaRepository<HandWaving, Long> {
 
-	Optional<HandWaving> findBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId);
+	Optional<HandWaving> findFirstBySenderIdAndReceiverIdDesc(Long senderMemberId, Long receiverMemberId);
 }

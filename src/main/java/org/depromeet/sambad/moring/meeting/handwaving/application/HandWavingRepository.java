@@ -10,5 +10,5 @@ public interface HandWavingRepository {
 
 	Optional<HandWaving> findById(Long handWavingId);
 
-	Optional<HandWaving> findBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId);
+	Optional<HandWaving> findFirstBySenderIdAndReceiverIdDesc(Long senderMemberId, Long receiverMemberId);
 }

@@ -50,11 +50,11 @@ public class HandWavingController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "HAND_WAVING_NOT_FOUND"),
 	})
-	@GetMapping("/{receiverMemberId}")
+	@GetMapping("/receiver/{receiverMemberId}/status")
 	public ResponseEntity<HandWavingStatusResponse> getHandWavingStatus(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
-		@Parameter(description = "손 흔들어 인사한 모임원 ID", example = "1", required = true) @PathVariable("receiverMemberId") Long receiverMemberId
+		@Parameter(description = "손 흔들어 인사할 모임원 ID", example = "1", required = true) @PathVariable("receiverMemberId") Long receiverMemberId
 	) {
 		HandWavingStatusResponse response = handWavingService.getHandWavingStatus(userId, meetingId, receiverMemberId);
 		return ResponseEntity.ok(response);
