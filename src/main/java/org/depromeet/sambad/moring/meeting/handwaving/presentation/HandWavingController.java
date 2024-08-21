@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "손 흔들어 인사하기", description = "손 흔들어 인사하기 관련 api / 담당자 : 이한음")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/meetings/{meetingId}/hand-waving")
+@RequestMapping("/v1/meetings/{meetingId}/hand-wavings")
 public class HandWavingController {
 	private final HandWavingService handWavingService;
 
