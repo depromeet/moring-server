@@ -1,5 +1,5 @@
 package org.depromeet.sambad.moring.meeting.handwaving.domain;
 
-public enum HandwavingStatus {
+public enum HandWavingStatus {
 	REQUESTED, ACCEPTED, REJECTED
 }

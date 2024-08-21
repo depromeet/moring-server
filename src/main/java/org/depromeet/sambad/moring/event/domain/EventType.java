@@ -10,7 +10,6 @@ public enum EventType {
 	QUESTION_REGISTERED,
 	TARGET_MEMBER,
 	HAND_WAVING_REQUESTED,
-	HAND_WAVING_RESENT,
 	;
 
 	public static Set<EventType> of(MeetingQuestion meetingQuestion, MeetingMember loginMember) {

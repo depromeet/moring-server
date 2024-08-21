@@ -1,36 +1,35 @@
 package org.depromeet.sambad.moring.meeting.handwaving.application;
 
 import static org.depromeet.sambad.moring.event.domain.EventType.HAND_WAVING_REQUESTED;
-import static org.depromeet.sambad.moring.event.domain.EventType.HAND_WAVING_RESENT;
 
 import org.depromeet.sambad.moring.event.application.EventService;
-import org.depromeet.sambad.moring.meeting.handwaving.domain.Handwaving;
-import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandwavingRequest;
+import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWaving;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.exception.NotFoundHandWavingException;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandWavingRequest;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class HandwavingService {
-	private final HandwavingRepository handWavingRepository;
+public class HandWavingService {
+	private final HandWavingRepository handWavingRepository;
 	private final MeetingMemberService meetingMemberService;
 	private final MeetingMemberValidator meetingMemberValidator;
 	private final EventService eventService;
 
 	@Transactional
-	public void sendHandWaving(Long userId, Long meetingId, HandwavingRequest request) {
+	public void sendHandWaving(Long userId, Long meetingId, HandWavingRequest request) {
 		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
 		meetingMemberValidator.validateMemberIsMemberOfMeeting(request.receiverMemberId(), meetingId);
 		MeetingMember receiver = meetingMemberService.getById(request.receiverMemberId());
 
-		Handwaving handWaving = Handwaving.send(sender, receiver);
+		HandWaving handWaving = HandWaving.send(sender, receiver);
 		handWavingRepository.save(handWaving);
 		eventService.publish(userId, meetingId, HAND_WAVING_REQUESTED);
 	}
@@ -38,15 +37,21 @@ public class HandwavingService {
 	@Transactional
 	public void acceptHandWaving(Long userId, Long meetingId, Long handWavingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		Handwaving handWaving = handWavingRepository.getById(handWavingId);
+		HandWaving handWaving = getHandWavingById(handWavingId);
+		handWaving.validateIsReceiver(userId);
 		handWaving.accept();
-		eventService.publish(userId, meetingId, HAND_WAVING_RESENT);
 	}
 
 	@Transactional
 	public void ignoreHandWaving(Long userId, Long meetingId, Long handWavingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		Handwaving handWaving = handWavingRepository.getById(handWavingId);
+		HandWaving handWaving = getHandWavingById(handWavingId);
+		handWaving.validateIsReceiver(userId);
 		handWaving.reject();
+	}
+
+	private HandWaving getHandWavingById(Long handWavingId) {
+		return handWavingRepository.findById(handWavingId)
+			.orElseThrow(NotFoundHandWavingException::new);
 	}
 }

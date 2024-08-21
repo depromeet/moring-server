@@ -1,7 +1,7 @@
 package org.depromeet.sambad.moring.meeting.handwaving.presentation;
 
-import org.depromeet.sambad.moring.meeting.handwaving.application.HandwavingService;
-import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandwavingRequest;
+import org.depromeet.sambad.moring.meeting.handwaving.application.HandWavingService;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandWavingRequest;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,9 +22,9 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "손 흔들어 인사하기", description = "손 흔들어 인사하기 관련 api / 담당자 : 이한음")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/meetings/{meetingId}/handWaving")
-public class HandwavingController {
-	private final HandwavingService handWavingService;
+@RequestMapping("/v1/meetings/{meetingId}/hand-waving")
+public class HandWavingController {
+	private final HandWavingService handWavingService;
 
 	@Operation(summary = "손 흔들어 인사하기", description = "모임원에게 손을 흔들어 인사합니다.")
 	@ApiResponses({
@@ -36,7 +36,7 @@ public class HandwavingController {
 	public ResponseEntity<Void> sendHandWaving(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
-		@Valid @RequestBody HandwavingRequest request
+		@Valid @RequestBody HandWavingRequest request
 	) {
 		handWavingService.sendHandWaving(userId, meetingId, request);
 		return ResponseEntity.ok().build();
