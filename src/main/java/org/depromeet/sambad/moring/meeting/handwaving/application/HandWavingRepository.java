@@ -9,4 +9,6 @@ public interface HandWavingRepository {
 	void save(HandWaving handWaving);
 
 	Optional<HandWaving> findById(Long handWavingId);
+
+	Optional<HandWaving> findFirstBySenderIdAndReceiverIdOrderByIdDesc(Long senderMemberId, Long receiverMemberId);
 }

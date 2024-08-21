@@ -22,4 +22,9 @@ public class HandWavingRepositoryImpl implements HandWavingRepository {
 	public Optional<HandWaving> findById(Long handWavingId) {
 		return handWavingJpaRepository.findById(handWavingId);
 	}
+
+	@Override
+	public Optional<HandWaving> findFirstBySenderIdAndReceiverIdOrderByIdDesc(Long senderMemberId, Long receiverMemberId) {
+		return handWavingJpaRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId);
+	}
 }

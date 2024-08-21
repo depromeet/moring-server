@@ -6,6 +6,7 @@ import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWaving;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.exception.NotFoundHandWavingException;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandWavingRequest;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.response.HandWavingStatusResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
@@ -34,6 +35,12 @@ public class HandWavingService {
 		eventService.publish(userId, meetingId, HAND_WAVING_REQUESTED);
 	}
 
+	public HandWavingStatusResponse getHandWavingStatus(Long userId, Long meetingId, Long receiverMemberId) {
+		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
+		HandWaving handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId);
+		return HandWavingStatusResponse.from(handWaving);
+	}
+
 	@Transactional
 	public void acceptHandWaving(Long userId, Long meetingId, Long handWavingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
@@ -48,6 +55,11 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.reject();
+	}
+
+	private HandWaving getHandWavingBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
+		return handWavingRepository.findBySenderIdAndReceiverId(senderMemberId, receiverMemberId)
+			.orElseThrow(NotFoundHandWavingException::new);
 	}
 
 	private HandWaving getHandWavingById(Long handWavingId) {
