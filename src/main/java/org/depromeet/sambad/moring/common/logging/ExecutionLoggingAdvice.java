@@ -29,7 +29,8 @@ public class ExecutionLoggingAdvice {
 		+ "!execution(* org.depromeet.sambad.moring.*.infrastructure.*Properties.*(..)) && "
 		+ "!execution(* org.depromeet.sambad.moring.*.*.infrastructure.*Properties.*(..)) && "
 		+ "!execution(* org.depromeet.sambad.moring.common..*(..)) && "
-		+ "!execution(* org.depromeet.sambad.moring.*.*.annotation..*(..))"
+		+ "!execution(* org.depromeet.sambad.moring.*.*.annotation..*(..)) && "
+		+ "!@annotation(org.depromeet.sambad.moring.common.logging.NoLogging)"
 	)
 	private void logPointcut() {
 	}

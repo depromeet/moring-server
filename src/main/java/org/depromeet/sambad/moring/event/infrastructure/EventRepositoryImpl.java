@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.event.infrastructure;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,14 @@ public class EventRepositoryImpl implements EventRepository {
 	@Override
 	public List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType) {
 		return eventJpaRepository.findByMeetingIdAndStatusAndType(meetingId, eventStatus, eventType);
+	}
+
+	@Override
+	public List<Event> findByUserIdAndMeetingIdAndCreatedAtAfterOrderByCreatedAtDesc(
+		Long userId, Long meetingId, LocalDateTime keepDays
+	) {
+		return eventJpaRepository.findByUserIdAndMeetingIdAndCreatedAtAfterOrderByCreatedAtDesc(
+			userId, meetingId, keepDays);
 	}
 
 	@Override

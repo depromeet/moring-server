@@ -1,6 +1,10 @@
 package org.depromeet.sambad.moring.event.presentation;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.event.application.EventService;
+import org.depromeet.sambad.moring.event.domain.Event;
+import org.depromeet.sambad.moring.event.presentation.response.EventListResponse;
 import org.depromeet.sambad.moring.event.presentation.response.PollingEventListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +22,37 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Polling 을 위한 이벤트 api", description = "Polling 을 위한 이벤트 api / 담당자 : 이한음")
+@Tag(name = "알림 조회 관련 API", description = "알림 관련 CURD 및 모달 폴링 담당 / 담당자 : 이한음, 권기준")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
+@RequestMapping("/v1/events")
 public class EventController {
 	private final EventService eventService;
 
-	@Operation(summary = "이벤트 비활성화", description = "해당 이벤트 알림을 비활성화 합니다.")
+	@Operation(summary = "알림 목록 조회", description = """
+		<h2>Description</h2>
+		모임원이 수령해야 하는 알림 목록을 조회합니다.
+		
+		<h2>Event Type List</h2>
+		* <b>QUESTION_REGISTERED</b>: 릴레이 질문이 등록되어 답변 가능한 경우
+		* <b>TARGET_MEMBER</b>: 릴레이 질문 등록 대상자로 선정된 경우
+		* <b>HAND_WAVING_REQUESTED</b>: 손 흔들기 요청이 들어온 경우
+		
+		<h2>Additional Data</h2>
+		Event Type에 따라 addionalData가 다르게 반환됩니다.
+		* <b>HAND_WAVING_REQUESTED</b>: {"handWavingId": 1}""")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "이벤트 비활성화 성공"),
-		@ApiResponse(responseCode = "404", description = "NOT_FOUND_EVENT")
+		@ApiResponse(responseCode = "200", description = "알림 목록 조회 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
-	@PatchMapping("/events/{eventId}/inactivate")
-	public ResponseEntity<Object> inactivateEvent(
-		@Parameter(description = "이벤트 ID", example = "1", required = true) @PathVariable("eventId") @Positive Long eventId
+	@GetMapping("/meetings/{meetingId}")
+	public ResponseEntity<EventListResponse> getEvents(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true)
+		@PathVariable("meetingId") @Positive Long meetingId
 	) {
-		eventService.inactivate(eventId);
-		return ResponseEntity.ok().build();
+		List<Event> events = eventService.getEvents(userId, meetingId);
+		return ResponseEntity.ok(EventListResponse.from(events));
 	}
 
 	@Operation(summary = "사용자가 받아야 하는 이벤트 목록 조회", description = """
@@ -44,18 +61,31 @@ public class EventController {
 		Event List
 		* QUESTION_REGISTERED: 릴레이 질문이 등록되어 답변 가능한 경우
 		* TARGET_MEMBER: 릴레이 질문 등록 대상자로 선정된 경우
-	""")
+		""")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "사용자가 받아야 하는 이벤트의 목록 조회 성공"),
 		@ApiResponse(responseCode = "204", description = "사용자가 받아야 하는 이벤트 없음"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
-	@GetMapping("/events/{meetingId}")
+	@GetMapping(value = {"/meetings/{meetingId}/polling", "/{meetingId}"})
 	public ResponseEntity<PollingEventListResponse> getActiveEvents(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") @Positive Long meetingId
 	) {
 		PollingEventListResponse response = eventService.getActiveEvents(userId, meetingId);
 		return response.toResponseEntity();
+	}
+
+	@Operation(summary = "이벤트 비활성화", description = "해당 이벤트 알림을 비활성화 합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "이벤트 비활성화 성공"),
+		@ApiResponse(responseCode = "404", description = "NOT_FOUND_EVENT")
+	})
+	@PatchMapping("/{eventId}/inactivate")
+	public ResponseEntity<Object> inactivateEvent(
+		@Parameter(description = "이벤트 ID", example = "1", required = true) @PathVariable("eventId") @Positive Long eventId
+	) {
+		eventService.inactivate(eventId);
+		return ResponseEntity.ok().build();
 	}
 }
