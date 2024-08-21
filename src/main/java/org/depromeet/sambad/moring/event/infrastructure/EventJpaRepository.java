@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.event.infrastructure;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,7 @@ public interface EventJpaRepository extends JpaRepository<Event, Long> {
 	);
 
 	List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType);
+
+	List<Event> findByUserIdAndMeetingIdAndCreatedAtAfterOrderByCreatedAtDesc(
+		Long userId, Long meetingId, LocalDateTime keepDays);
 }
