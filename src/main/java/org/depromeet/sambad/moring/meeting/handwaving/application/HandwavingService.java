@@ -27,8 +27,8 @@ public class HandwavingService {
 	public void sendHandWaving(Long userId, Long meetingId, HandwavingRequest request) {
 		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
+		meetingMemberValidator.validateMemberIsMemberOfMeeting(request.receiverMemberId(), meetingId);
 		MeetingMember receiver = meetingMemberService.getById(request.receiverMemberId());
-		meetingMemberValidator.validateUserIsMemberOfMeeting(receiver.getUser().getId(), meetingId);
 
 		Handwaving handWaving = Handwaving.send(sender, receiver);
 		handWavingRepository.save(handWaving);
