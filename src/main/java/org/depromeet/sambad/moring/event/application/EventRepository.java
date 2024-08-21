@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.event.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +20,7 @@ public interface EventRepository {
 	);
 
 	List<Event> findByMeetingIdAndStatusAndType(Long meetingId, EventStatus eventStatus, EventType eventType);
+
+	List<Event> findByUserIdAndMeetingIdAndCreatedAtAfterOrderByCreatedAtDesc(
+		Long userId, Long meetingId, LocalDateTime keepDays);
 }

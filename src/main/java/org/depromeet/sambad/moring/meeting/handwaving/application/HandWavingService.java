@@ -1,6 +1,8 @@
 package org.depromeet.sambad.moring.meeting.handwaving.application;
 
-import static org.depromeet.sambad.moring.event.domain.EventType.HAND_WAVING_REQUESTED;
+import static org.depromeet.sambad.moring.event.domain.EventType.*;
+
+import java.util.Map;
 
 import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWaving;
@@ -32,7 +34,8 @@ public class HandWavingService {
 
 		HandWaving handWaving = HandWaving.send(sender, receiver);
 		handWavingRepository.save(handWaving);
-		eventService.publish(userId, meetingId, HAND_WAVING_REQUESTED);
+
+		publishRequestedEvent(handWaving);
 	}
 
 	public HandWavingStatusResponse getHandWavingStatus(Long userId, Long meetingId, Long receiverMemberId) {
@@ -65,5 +68,24 @@ public class HandWavingService {
 	private HandWaving getHandWavingById(Long handWavingId) {
 		return handWavingRepository.findById(handWavingId)
 			.orElseThrow(NotFoundHandWavingException::new);
+	}
+
+	private void publishRequestedEvent(HandWaving handWaving) {
+		MeetingMember sender = handWaving.getSender();
+		MeetingMember receiver = handWaving.getReceiver();
+
+		Map<String, String> contentsMap = Map.of(
+			"sender", sender.getName(),
+			"receiver", receiver.getName()
+		);
+
+		Map<String, Object> additionalData = Map.of(
+			"handWavingId", handWaving.getId()
+		);
+
+		Long userId = sender.getUser().getId();
+		Long meetingId = sender.getMeeting().getId();
+
+		eventService.publish(userId, meetingId, HAND_WAVING_REQUESTED, contentsMap, additionalData);
 	}
 }
