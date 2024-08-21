@@ -1,6 +1,6 @@
-package org.depromeet.sambad.moring.meeting.handWaving.presentation.exception;
+package org.depromeet.sambad.moring.meeting.handwaving.presentation.exception;
 
-import static org.depromeet.sambad.moring.meeting.handWaving.presentation.exception.HandWavingExceptionCode.INVALID_STATUS_CHANGE;
+import static org.depromeet.sambad.moring.meeting.handwaving.presentation.exception.HandwavingExceptionCode.INVALID_STATUS_CHANGE;
 
 import org.depromeet.sambad.moring.common.exception.BusinessException;
 

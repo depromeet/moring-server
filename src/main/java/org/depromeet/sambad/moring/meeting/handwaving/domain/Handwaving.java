@@ -1,10 +1,10 @@
-package org.depromeet.sambad.moring.meeting.handWaving.domain;
+package org.depromeet.sambad.moring.meeting.handwaving.domain;
 
 import static jakarta.persistence.EnumType.STRING;
-import static org.depromeet.sambad.moring.meeting.handWaving.domain.HandWavingStatus.REQUESTED;
+import static org.depromeet.sambad.moring.meeting.handwaving.domain.HandwavingStatus.REQUESTED;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
-import org.depromeet.sambad.moring.meeting.handWaving.presentation.exception.InvalidStatusChangeException;
+import org.depromeet.sambad.moring.meeting.handwaving.presentation.exception.InvalidStatusChangeException;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 import jakarta.persistence.Column;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HandWaving extends BaseTimeEntity {
+public class Handwaving extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,29 +39,29 @@ public class HandWaving extends BaseTimeEntity {
 	private MeetingMember receiver;
 
 	@Enumerated(STRING)
-	private HandWavingStatus status;
+	private HandwavingStatus status;
 
-	public static HandWaving send(MeetingMember sender, MeetingMember receiver) {
-		return new HandWaving(sender, receiver);
-	}
-
-	public HandWaving(MeetingMember sender, MeetingMember receiver) {
+	public Handwaving(MeetingMember sender, MeetingMember receiver) {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.status = REQUESTED;
 	}
 
+	public static Handwaving send(MeetingMember sender, MeetingMember receiver) {
+		return new Handwaving(sender, receiver);
+	}
+
 	public void resend() {
-		isRequested();
-		this.status = HandWavingStatus.ACCEPTED;
+		validateStatusIsRequested();
+		this.status = HandwavingStatus.ACCEPTED;
 	}
 
 	public void reject() {
-		isRequested();
-		this.status = HandWavingStatus.REJECTED;
+		validateStatusIsRequested();
+		this.status = HandwavingStatus.REJECTED;
 	}
 
-	private void isRequested() {
+	private void validateStatusIsRequested() {
 		if (this.status != REQUESTED) {
 			throw new InvalidStatusChangeException();
 		}
