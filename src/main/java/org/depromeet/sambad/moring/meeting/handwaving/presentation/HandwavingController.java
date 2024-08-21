@@ -49,13 +49,13 @@ public class HandwavingController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "HAND_WAVING_NOT_FOUND"),
 	})
-	@PatchMapping("/{handWavingId}/resend")
-	public ResponseEntity<Void> resendHandWaving(
+	@PatchMapping("/{handWavingId}/accept")
+	public ResponseEntity<Void> acceptHandWaving(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
 		@Parameter(description = "손 흔들기 ID", example = "1", required = true) @PathVariable("handWavingId") Long handWavingId
 	) {
-		handWavingService.resendHandWaving(userId, meetingId, handWavingId);
+		handWavingService.acceptHandWaving(userId, meetingId, handWavingId);
 		return ResponseEntity.ok().build();
 	}
 

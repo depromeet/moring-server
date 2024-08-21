@@ -36,10 +36,10 @@ public class HandwavingService {
 	}
 
 	@Transactional
-	public void resendHandWaving(Long userId, Long meetingId, Long handWavingId) {
+	public void acceptHandWaving(Long userId, Long meetingId, Long handWavingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		Handwaving handWaving = handWavingRepository.getById(handWavingId);
-		handWaving.resend();
+		handWaving.accept();
 		eventService.publish(userId, meetingId, HAND_WAVING_RESENT);
 	}
 
