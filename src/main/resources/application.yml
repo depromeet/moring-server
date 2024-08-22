@@ -131,4 +131,4 @@ caching:
     event-templates-ttl: ${EVENT_TEMPLATES_TTL:1800}
 
 event:
-  keep-days: ${EVENT_KEEP_DAYS:7}
+  keep-days: ${EVENT_KEEP_DAYS:30}
