@@ -1,11 +1,14 @@
 package org.depromeet.sambad.moring.meeting.handwaving.application;
 
 import static org.depromeet.sambad.moring.event.domain.EventType.*;
+import static org.depromeet.sambad.moring.meeting.handwaving.domain.HandWavingStatus.NOT_REQUESTED;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.event.application.EventService;
 import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWaving;
+import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWavingStatus;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.exception.NotFoundHandWavingException;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.request.HandWavingRequest;
 import org.depromeet.sambad.moring.meeting.handwaving.presentation.response.HandWavingStatusResponse;
@@ -40,8 +43,9 @@ public class HandWavingService {
 
 	public HandWavingStatusResponse getHandWavingStatus(Long userId, Long meetingId, Long receiverMemberId) {
 		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		HandWaving handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId);
-		return HandWavingStatusResponse.from(handWaving);
+		Optional<HandWaving> handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId);
+		return handWaving.map(waving -> HandWavingStatusResponse.of(waving.getId(), waving.getStatus()))
+			.orElseGet(() -> HandWavingStatusResponse.of(NOT_REQUESTED));
 	}
 
 	@Transactional
@@ -60,9 +64,8 @@ public class HandWavingService {
 		handWaving.reject();
 	}
 
-	private HandWaving getHandWavingBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
-		return handWavingRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId)
-			.orElseThrow(NotFoundHandWavingException::new);
+	private Optional<HandWaving> getHandWavingBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
+		return handWavingRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId);
 	}
 
 	private HandWaving getHandWavingById(Long handWavingId) {
