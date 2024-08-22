@@ -60,7 +60,16 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 	}
 
 	@Override
-	public List<MeetingAnswer> findAllByMeetingQuestionIdIn(List<Long> meetingQuestionIds) {
-		return meetingAnswerJpaRepository.findAllByMeetingQuestionIdIn(meetingQuestionIds);
+	public List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds) {
+		return meetingAnswerJpaRepository.findAllByMeetingMemberIdAndMeetingQuestionIdIn(meetingMemberId,
+			activeMeetingQuestionIds);
+	}
+
+	@Override
+	public List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds) {
+		return meetingAnswerJpaRepository.findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(meetingMemberId,
+			activeMeetingQuestionIds);
 	}
 }
