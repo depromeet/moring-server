@@ -57,6 +57,11 @@ public class MeetingService {
 		return MeetingNameResponse.from(meeting);
 	}
 
+	public Meeting getMeeting(Long meetingId) {
+		return meetingRepository.findById(meetingId)
+			.orElseThrow(MeetingNotFoundException::new);
+	}
+
 	private void addTypesToMeeting(MeetingPersistRequest request, Meeting meeting) {
 		List<TypesPerMeeting> types = meetingTypeRepository.findByIdIn(request.meetingTypeIds())
 			.stream()
