@@ -138,21 +138,21 @@ public class MeetingAnswerController {
 			: ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "릴레이 질문-답변 리스트 숨김 요청", description = "- 자기소개 페이지에서 숨기고 싶은 릴레이 질문 목록을 저장합니다.")
+	@Operation(summary = "릴레이 질문-답변 활성화 리스트 요청", description = "- 자기소개 페이지에서 숨기고 싶은 릴레이 질문 목록을 저장합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "숨김 처리 성공"),
-		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING / CANNOT_UPDATE_MEETING_ANSWER")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
 	})
-	@PatchMapping("/hidden")
-	public ResponseEntity<MeetingMemberListResponse> updateMeetingQuestionHidden(
+	@PatchMapping("/questions/active")
+	public ResponseEntity<MeetingMemberListResponse> updateMeetingQuestionActive(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true)
 		@Positive @PathVariable Long meetingId,
-		@Parameter(description = "숨길 모임 질문 ID 리스트", example = "1,2,3", required = true)
-		@RequestParam(value = "hiddenMeetingQuestionIds")
-		List<Long> hiddenMeetingQuestionIds
+		@Parameter(description = "활성화 모임 질문 ID 리스트", example = "1,2,3", required = true)
+		@RequestParam(value = "activeMeetingQuestionIds")
+		List<Long> activeMeetingQuestionIds
 	) {
-		meetingAnswerService.updateHidden(userId, meetingId, hiddenMeetingQuestionIds);
+		meetingAnswerService.updateHidden(userId, meetingId, activeMeetingQuestionIds);
 		return ResponseEntity.noContent().build();
 	}
 }

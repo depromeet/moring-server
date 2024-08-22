@@ -99,10 +99,15 @@ public class MeetingAnswerService {
 	}
 
 	@Transactional
-	public void updateHidden(Long userId, Long meetingId, List<Long> hiddenMeetingQuestionIds) {
+	public void updateHidden(Long userId, Long meetingId, List<Long> activeMeetingQuestionIds) {
 		MeetingMember member = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		List<MeetingAnswer> hiddenAnswers = meetingAnswerRepository.findAllByMeetingQuestionIdIn(
-			hiddenMeetingQuestionIds);
-		hiddenAnswers.forEach(meetingAnswer -> meetingAnswer.updateHidden(member));
+
+		List<MeetingAnswer> hiddenAnswers = meetingAnswerRepository.findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(
+			member.getId(), activeMeetingQuestionIds);
+		List<MeetingAnswer> activeAnswers = meetingAnswerRepository.findAllByMeetingMemberIdAndMeetingQuestionIdIn(
+			member.getId(), activeMeetingQuestionIds);
+
+		hiddenAnswers.forEach(MeetingAnswer::updateStatusHidden);
+		activeAnswers.forEach(MeetingAnswer::updateStatusActive);
 	}
 }

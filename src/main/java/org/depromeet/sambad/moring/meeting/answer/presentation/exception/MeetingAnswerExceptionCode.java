@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MeetingAnswerExceptionCode implements ExceptionCode {
 
-	CANNOT_UPDATE_MEETING_ANSWER(FORBIDDEN, "수정 권한이 없는 릴레이 질문 답변입니다."),
-
 	DUPLICATE_MEETING_ANSWER(CONFLICT, "등록된 답변이 존재합니다."),
 	;
 

@@ -7,7 +7,6 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.answer.presentation.exception.CannotUpdateMeetingAnswer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -68,10 +67,11 @@ public class MeetingAnswer extends BaseTimeEntity {
 		return answer.getContent();
 	}
 
-	public void updateHidden(MeetingMember updateMember) {
-		if (this.meetingMember.isNotEqualMemberWith(updateMember)) {
-			throw new CannotUpdateMeetingAnswer();
-		}
+	public void updateStatusHidden() {
 		this.isHidden = true;
+	}
+
+	public void updateStatusActive() {
+		this.isHidden = false;
 	}
 }
