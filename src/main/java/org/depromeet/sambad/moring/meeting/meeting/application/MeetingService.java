@@ -6,12 +6,16 @@ import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
 import org.depromeet.sambad.moring.meeting.meeting.domain.TypesPerMeeting;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.MeetingNotFoundException;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.exception.NotJoinedAnyMeetingException;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingResponse;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingNameResponse;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
+import org.depromeet.sambad.moring.user.domain.User;
+import org.depromeet.sambad.moring.user.domain.UserRepository;
+import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MeetingService {
 
+	private final UserRepository userRepository;
 	private final MeetingRepository meetingRepository;
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final MeetingTypeRepository meetingTypeRepository;
@@ -35,19 +40,21 @@ public class MeetingService {
 		Meeting meeting = generateMeeting(request);
 		addTypesToMeeting(request, meeting);
 
-		// NOTE: 모임 생성 시점엔 아직 모임장도 모임원 가입이 안된 상태이므로, 오류 발생
-		// 해당 로직 추가한 이유가 궁금합니다.
-		// meetingQuestionService.createActiveQuestion(meeting, meeting.getOwner(), null);
 		return meeting;
 	}
 
 	public MeetingResponse getMeetingResponse(Long userId) {
 		List<MeetingMember> membersOfUser = meetingMemberRepository.findByUserId(userId);
+
+		if (membersOfUser.isEmpty()) {
+			throw new NotJoinedAnyMeetingException();
+		}
+
 		List<Meeting> meetings = membersOfUser.stream()
 			.map(MeetingMember::getMeeting)
 			.toList();
 
-		return MeetingResponse.from(meetings);
+		return MeetingResponse.of(meetings, MeetingMember.getLastMeetingId(membersOfUser));
 	}
 
 	public MeetingNameResponse getMeetingNameByCode(String code) {

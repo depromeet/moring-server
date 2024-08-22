@@ -10,13 +10,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingResponse(
 	@Schema(description = "가입 되어 있는 모임의 정보 목록", requiredMode = REQUIRED)
-	List<MeetingResponseDetail> meetings
+	List<MeetingResponseDetail> meetings,
+
+	@Schema(description = "마지막으로 접근한 모임 ID", example = "1", requiredMode = REQUIRED)
+	Long lastMeetingId
 ) {
-	public static MeetingResponse from(List<Meeting> meetings) {
+	public static MeetingResponse of(List<Meeting> meetings, Long lastMeetingId) {
 		return new MeetingResponse(
 			meetings.stream()
 				.map(meeting -> new MeetingResponseDetail(meeting.getId(), meeting.getName()))
-				.toList()
+				.toList(),
+			lastMeetingId == null
+				? meetings.get(0).getId()
+				: lastMeetingId
 		);
 	}
 

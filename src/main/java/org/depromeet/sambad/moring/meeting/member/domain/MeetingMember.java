@@ -170,4 +170,15 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		this.mbti = request.mbti();
 		this.introduction = request.introduction();
 	}
+
+	public Long getUserId() {
+		return user.getId();
+	}
+
+	public static Long getLastMeetingId(List<MeetingMember> meetingMembers) {
+		return meetingMembers.stream()
+			.findFirst()
+			.map(MeetingMember::getUserId)
+			.orElse(null);
+	}
 }
