@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.event.application.EventService;
+import org.depromeet.sambad.moring.meeting.handwaving.application.HandWavingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class MeetingQuestionService {
 
 	private final MeetingQuestionRepository meetingQuestionRepository;
+	private final HandWavingRepository handWavingRepository;
 
 	private final MeetingMemberService meetingMemberService;
 	private final QuestionService questionService;
@@ -149,8 +151,11 @@ public class MeetingQuestionService {
 
 		List<MeetingMember> members = meetingQuestionRepository.findMeetingMembersByMeetingQuestionId(
 			meetingQuestion.getId());
+		MeetingMember me = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
-		return MeetingMemberListResponse.from(members);
+		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+
+		return MeetingMemberListResponse.from(members, handWavedMembers);
 	}
 
 	private CurrentMeetingQuestionResponse getCurrentMeetingQuestionResponse(
