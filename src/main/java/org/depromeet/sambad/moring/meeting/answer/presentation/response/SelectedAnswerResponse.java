@@ -28,7 +28,9 @@ public record SelectedAnswerResponse(
 				.distinct()
 				.toList(),
 			members.size(),
-			MeetingMemberListResponse.from(members).contents()
+			members.stream()
+				.map(MeetingMemberSummaryResponse::from)
+				.toList()
 		);
 	}
 }

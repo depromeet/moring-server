@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.depromeet.sambad.moring.event.application.EventService;
+import org.depromeet.sambad.moring.meeting.handwaving.application.HandWavingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
@@ -44,6 +45,7 @@ public class MeetingMemberService {
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 	private final EventService eventService;
+	private final HandWavingRepository handWavingRepository;
 
 	@Transactional
 	public MeetingMemberPersistResponse registerMeetingMember(
@@ -84,10 +86,13 @@ public class MeetingMemberService {
 
 	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		MeetingMember member = getByUserIdAndMeetingId(userId, meetingId);
 
-		return MeetingMemberListResponse.from(
-			meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId, member.getId()));
+		MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
+		List<MeetingMember> members = meetingMemberRepository.findByMeetingIdOrderByName(meetingId);
+
+		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+
+		return MeetingMemberListResponse.from(members, handWavedMembers);
 	}
 
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
