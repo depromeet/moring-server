@@ -51,6 +51,8 @@ public class User extends BaseTimeEntity {
 	@Column(columnDefinition = "TINYINT")
 	private Boolean onboardingCompleted;
 
+	private Long lastMeetingId;
+
 	@OneToMany(mappedBy = "user")
 	private List<MeetingMember> meetingMember = new ArrayList<>();
 
@@ -96,5 +98,9 @@ public class User extends BaseTimeEntity {
 
 	public boolean isNotEnteredAnyMeeting() {
 		return meetingMember.isEmpty();
+	}
+
+	public void updateLastAccessedMeeting(Long meetingId) {
+		this.lastMeetingId = meetingId;
 	}
 }
