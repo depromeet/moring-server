@@ -25,5 +25,9 @@ public interface MeetingAnswerRepository {
 
 	MyMeetingAnswerListResponse findAllByMyMeetingMemberId(Long loginMemberId);
 
-	List<MeetingAnswer> findAllByMeetingQuestionIdIn(List<Long> meetingQuestionIds);
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
 }

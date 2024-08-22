@@ -11,5 +11,9 @@ public interface MeetingAnswerJpaRepository extends JpaRepository<MeetingAnswer,
 
 	List<MeetingAnswer> findByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId);
 
-	List<MeetingAnswer> findAllByMeetingQuestionIdIn(List<Long> meetingQuestionIds);
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
 }
