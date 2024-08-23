@@ -158,7 +158,8 @@ public class MeetingQuestionService {
 		if (activeMeetingQuestion.getQuestion() == null) {
 			return CurrentMeetingQuestionResponse.questionNotRegisteredOf(activeMeetingQuestion);
 		} else {
-			MeetingMember nextTargetMember = meetingQuestionRepository.findFirstByStatusAndStartTimeAfterOrderByStartTime(
+			MeetingMember nextTargetMember = meetingQuestionRepository.findFirstByMeetingIdAndStatusAndStartTimeAfterOrderByStartTime(
+					activeMeetingQuestion.getMeeting().getId(),
 					NOT_STARTED,
 					LocalDateTime.now())
 				.map(MeetingQuestion::getTargetMember)

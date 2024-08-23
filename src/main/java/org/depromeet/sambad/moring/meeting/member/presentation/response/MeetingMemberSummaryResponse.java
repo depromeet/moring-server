@@ -23,6 +23,9 @@ public record MeetingMemberSummaryResponse(
 	MeetingMemberRole role
 ) {
 	public static MeetingMemberSummaryResponse from(MeetingMember member) {
+		if (member == null) {
+			return null;
+		}
 		return new MeetingMemberSummaryResponse(
 			member.getId(),
 			member.getName(),
