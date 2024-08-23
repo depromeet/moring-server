@@ -84,16 +84,16 @@ public class MeetingMemberService {
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
-	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
-		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+  public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
+    meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+    MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
 
-		MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
-		List<MeetingMember> members = meetingMemberRepository.findByMeetingIdOrderByName(meetingId);
+    List<MeetingMember> members = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId,
+      me.getId());
+    List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
 
-		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
-
-		return MeetingMemberListResponse.from(members, handWavedMembers);
-	}
+    return MeetingMemberListResponse.from(members, handWavedMembers);
+  }
 
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
 		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
