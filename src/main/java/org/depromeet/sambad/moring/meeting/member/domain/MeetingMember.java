@@ -175,7 +175,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 		return meetingMembers.stream()
 			.findFirst()
 			.map(MeetingMember::getUser)
-			.map(User::getId)
+			.map(User::getLastMeetingId)
 			.orElse(null);
 	}
 }
