@@ -64,7 +64,9 @@ public class MeetingMemberService {
 	}
 
 	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		MeetingMember member = getByUserIdAndMeetingId(userId, meetingId);
+
 		return MeetingMemberListResponse.from(
 			meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId, member.getId()));
 	}
