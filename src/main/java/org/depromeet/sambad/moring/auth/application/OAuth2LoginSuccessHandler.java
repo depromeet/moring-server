@@ -68,6 +68,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 	}
 
 	private String determineRedirectUrl(LoginResult result, String redirectCookie) {
+		if (result.isNotCompletedOnboarding()) {
+			return securityProperties.onboardingRedirectUrl();
+		}
+
 		if (StringUtils.hasText(redirectCookie)) {
 			return redirectCookie;
 		}

@@ -10,4 +10,10 @@ public interface MeetingAnswerJpaRepository extends JpaRepository<MeetingAnswer,
 	boolean existsByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId);
 
 	List<MeetingAnswer> findByMeetingQuestionIdAndMeetingMemberId(Long meetingQuestionId, Long meetingMemberId);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
 }

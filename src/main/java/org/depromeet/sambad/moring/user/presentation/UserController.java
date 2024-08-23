@@ -1,15 +1,21 @@
 package org.depromeet.sambad.moring.user.presentation;
 
 import org.depromeet.sambad.moring.user.application.UserService;
+import org.depromeet.sambad.moring.user.domain.User;
+import org.depromeet.sambad.moring.user.presentation.request.LastMeetingRequest;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
+import org.depromeet.sambad.moring.user.presentation.response.OnboardingResponse;
 import org.depromeet.sambad.moring.user.presentation.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -30,5 +36,27 @@ public class UserController {
 	public ResponseEntity<UserResponse> getUser(@UserId Long userId) {
 		UserResponse response = userService.findByUserId(userId);
 		return ResponseEntity.ok(response);
+	}
+
+	@Operation(
+		summary = "온보딩 완료",
+		description = "온보딩을 완료함으로써, 더 이상 온보딩 페이지로 이동하지 않도록 수정합니다."
+	)
+	@ApiResponse(responseCode = "200", description = "성공")
+	@PatchMapping("/onboarding/complete")
+	public ResponseEntity<OnboardingResponse> completeOnboarding(@UserId Long userId) {
+		OnboardingResponse response = userService.completeOnboarding(userId);
+		return ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "가장 최근 접속 모임 수정", description = "가장 최근 접속한 모임 정보를 수정합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@PatchMapping("/last-meeting")
+	public ResponseEntity<Void> updateLastMeeting(@UserId Long userId, @RequestBody LastMeetingRequest request) {
+		userService.updateLastMeeting(userId, request.meetingId());
+		return ResponseEntity.ok().build();
 	}
 }

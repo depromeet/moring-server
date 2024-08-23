@@ -9,13 +9,15 @@ import org.depromeet.sambad.moring.meeting.meeting.application.MeetingTypeServic
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingType;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.request.MeetingPersistRequest;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingCodeResponse;
+import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingNameResponse;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingPersistResponse;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingResponse;
-import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingNameResponse;
 import org.depromeet.sambad.moring.meeting.meeting.presentation.response.MeetingTypeResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +44,7 @@ public class MeetingController {
 	@Operation(summary = "모임 조회", description = "가입되어 있는 모임 목록을 조회합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모임 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "NOT_JOINED_ANY_MEETING"),
 	})
 	@GetMapping
 	public ResponseEntity<MeetingResponse> getMeetings(@UserId Long userId) {
@@ -57,6 +61,21 @@ public class MeetingController {
 	@GetMapping("/name")
 	public ResponseEntity<MeetingNameResponse> getMeetingName(@RequestParam String code) {
 		MeetingNameResponse response = meetingService.getMeetingNameByCode(code);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "모임의 초대 코드 조회", description = "특정 모임의 초대 코드를 조회합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "초대 코드 조회 성공"),
+		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND"),
+	})
+	@GetMapping("/{meetingId}/code")
+	public ResponseEntity<MeetingCodeResponse> getMeetingCode(
+		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable Long meetingId
+	) {
+		Meeting meeting = meetingService.getMeeting(meetingId);
+		MeetingCodeResponse response = MeetingCodeResponse.from(meeting);
 
 		return ResponseEntity.ok(response);
 	}

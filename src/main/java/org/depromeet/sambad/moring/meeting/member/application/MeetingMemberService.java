@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.depromeet.sambad.moring.event.application.EventService;
+import org.depromeet.sambad.moring.meeting.handwaving.application.HandWavingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
@@ -44,6 +45,7 @@ public class MeetingMemberService {
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
 	private final EventService eventService;
+	private final HandWavingRepository handWavingRepository;
 
 	@Transactional
 	public MeetingMemberPersistResponse registerMeetingMember(
@@ -56,20 +58,42 @@ public class MeetingMemberService {
 			.orElseThrow(NotFoundUserException::new);
 
 		MeetingMember meetingMember = validateAndCreateMember(userId, request, meeting, user);
-		addHobbies(meetingMember, request);
+		updateHobbies(meetingMember, request);
 
 		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
 
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
-	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
-		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-		MeetingMember member = getByUserIdAndMeetingId(userId, meetingId);
+	@Transactional
+	public MeetingMemberPersistResponse updateMeetingMember(
+		Long userId, Long meetingId, MeetingMemberPersistRequest request
+	) {
+		Meeting meeting = meetingRepository.findById(meetingId)
+			.orElseThrow(MeetingNotFoundException::new);
 
-		return MeetingMemberListResponse.from(
-			meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId, member.getId()));
+		User user = userRepository.findById(userId)
+			.orElseThrow(NotFoundUserException::new);
+
+		MeetingMember meetingMember = meetingMemberRepository.findByUserIdAndMeetingId(user.getId(), meeting.getId())
+			.orElseThrow(MeetingMemberNotFoundException::new);
+
+		meetingMember.update(request);
+		updateHobbies(meetingMember, request);
+
+		return MeetingMemberPersistResponse.from(meetingMember);
 	}
+
+  public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
+    meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+    MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
+
+    List<MeetingMember> members = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId,
+      me.getId());
+    List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+
+    return MeetingMemberListResponse.from(members, handWavedMembers);
+  }
 
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
 		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
@@ -143,11 +167,15 @@ public class MeetingMemberService {
 		meetingMemberValidator.validateMeetingMemberMaxCount(meeting.getId());
 	}
 
-	private void addHobbies(MeetingMember meetingMember, MeetingMemberPersistRequest request) {
+	private void updateHobbies(MeetingMember meetingMember, MeetingMemberPersistRequest request) {
+		List<MeetingMemberHobby> oldHobbies = meetingMember.getMeetingMemberHobbies();
+		if (!oldHobbies.isEmpty()) {
+			meetingMemberHobbyRepository.deleteAllInBatch(oldHobbies);
+		}
+
 		List<MeetingMemberHobby> hobbies = hobbyRepository.findByIdIn(request.hobbyIds()).stream()
 			.map(hobby -> MeetingMemberHobby.of(meetingMember, hobby))
 			.toList();
-
 		meetingMemberHobbyRepository.saveAll(hobbies);
 	}
 }

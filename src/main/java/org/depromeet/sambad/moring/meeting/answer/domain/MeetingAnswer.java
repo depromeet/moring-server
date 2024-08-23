@@ -43,17 +43,16 @@ public class MeetingAnswer extends BaseTimeEntity {
 	@JoinColumn(name = "meeting_member_id")
 	private MeetingMember meetingMember;
 
+	private Boolean isHidden;
+
 	@Builder
 	public MeetingAnswer(MeetingQuestion meetingQuestion, Answer answer, MeetingMember meetingMember) {
 		this.meetingQuestion = meetingQuestion;
 		this.answer = answer;
 		this.meetingMember = meetingMember;
+		this.isHidden = false;
 
 		meetingQuestion.addMeetingAnswer(this);
-	}
-
-	public String getAnswerContent() {
-		return answer.getContent();
 	}
 
 	public static List<Long> getDistinctAnswerIds(List<MeetingAnswer> answers) {
@@ -62,5 +61,17 @@ public class MeetingAnswer extends BaseTimeEntity {
 			.filter(Objects::nonNull)
 			.distinct()
 			.toList();
+	}
+
+	public String getAnswerContent() {
+		return answer.getContent();
+	}
+
+	public void updateStatusHidden() {
+		this.isHidden = true;
+	}
+
+	public void updateStatusActive() {
+		this.isHidden = false;
 	}
 }

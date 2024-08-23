@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 
 public interface MeetingAnswerRepository {
@@ -21,4 +22,12 @@ public interface MeetingAnswerRepository {
 	List<MeetingMember> findMeetingMembersSelectWith(Long meetingQuestionId, List<Long> answerIds);
 
 	MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId);
+
+	MyMeetingAnswerListResponse findAllByMyMeetingMemberId(Long loginMemberId);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
+
+	List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
+		List<Long> activeMeetingQuestionIds);
 }

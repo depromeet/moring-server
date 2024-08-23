@@ -7,9 +7,11 @@ import org.depromeet.sambad.moring.answer.domain.Answer;
 import com.querydsl.core.annotations.QueryProjection;
 
 public record MyMeetingAnswerResponseCustom(
+	Long meetingQuestionId,
 	String meetingQuestionTitle,
 	List<Answer> meetingAnswers,
-	String comment
+	String comment,
+	Boolean isHidden
 ) {
 
 	@QueryProjection

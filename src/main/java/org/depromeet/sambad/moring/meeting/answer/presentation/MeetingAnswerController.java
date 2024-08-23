@@ -1,18 +1,24 @@
 package org.depromeet.sambad.moring.meeting.answer.presentation;
 
+import java.util.List;
+
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerResultService;
 import org.depromeet.sambad.moring.meeting.answer.application.MeetingAnswerService;
 import org.depromeet.sambad.moring.meeting.answer.presentation.request.MeetingAnswerRequest;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.SelectedAnswerResponse;
+import org.depromeet.sambad.moring.meeting.member.presentation.response.MeetingMemberListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "모임원의 답변", description = "모임 내 릴레이 질문에 대한 답변 api / 담당자 : 김나현")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
+@RequestMapping("/v1/meetings/{meetingId}")
 public class MeetingAnswerController {
 
 	private final MeetingAnswerService meetingAnswerService;
@@ -41,7 +47,7 @@ public class MeetingAnswerController {
 			+ "NOT_FOUND_ANSWER"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_ANSWER / FINISHED_MEETING_QUESTION")
 	})
-	@PostMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers")
+	@PostMapping("/questions/{meetingQuestionId}/answers")
 	public ResponseEntity<Object> save(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
@@ -58,27 +64,29 @@ public class MeetingAnswerController {
 			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
-		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
+		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/meetings/{meetingId}/questions/answers/me")
-	public ResponseEntity<MeetingAnswerListResponse> findMyList(
+	@GetMapping("/questions/answers/me")
+	public ResponseEntity<MyMeetingAnswerListResponse> findMyList(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId
 	) {
-		MeetingAnswerListResponse response = meetingAnswerService.getListByMe(userId, meetingId);
+		MyMeetingAnswerListResponse response = meetingAnswerService.getListByMe(userId, meetingId);
 		return ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "모임원이 작성한 모든 질문의 답변 리스트 조회", description =
+	@Operation(summary = "다른 모임원이 작성한 모든 질문의 답변 리스트 조회", description =
 		"- 프로필 페이지 내 릴레이 질문 영역 조회 시 사용합니다.\n"
 			+ "- 생성 순으로 오름차순 정렬하여 반환합니다.\n"
-			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.")
+			+ "- 답변이 없다면, content는 빈 배열 [] 을 반환합니다.\n"
+			+ "- 숨김 처리 되어 있는 답변을 필터링 후 반환합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/meetings/{meetingId}/members/{memberId}/questions/answers")
+	@GetMapping("/members/{memberId}/questions/answers")
 	public ResponseEntity<MeetingAnswerListResponse> findMemberList(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
@@ -95,7 +103,7 @@ public class MeetingAnswerController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_MEETING_QUESTION")
 	})
-	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/most-selected")
+	@GetMapping("/questions/{meetingQuestionId}/answers/most-selected")
 	public ResponseEntity<SelectedAnswerResponse> getMostSelectedMeetingAnswer(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
@@ -116,7 +124,7 @@ public class MeetingAnswerController {
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING"),
 		@ApiResponse(responseCode = "404", description = "MEETING_MEMBER_NOT_FOUND")
 	})
-	@GetMapping("/meetings/{meetingId}/questions/{meetingQuestionId}/answers/selected-same")
+	@GetMapping("/questions/{meetingQuestionId}/answers/selected-same")
 	public ResponseEntity<SelectedAnswerResponse> getSelectedSameMeetingAnswers(
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true) @PathVariable("meetingId") Long meetingId,
@@ -128,5 +136,23 @@ public class MeetingAnswerController {
 		return response.selectedMembers().isEmpty()
 			? ResponseEntity.noContent().build()
 			: ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "릴레이 질문-답변 활성화 리스트 요청", description = "- 자기소개 페이지에서 숨기고 싶은 릴레이 질문 목록을 저장합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "숨김 처리 성공"),
+		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
+	})
+	@PatchMapping("/questions/active")
+	public ResponseEntity<MeetingMemberListResponse> updateMeetingQuestionActive(
+		@UserId Long userId,
+		@Parameter(description = "모임 ID", example = "1", required = true)
+		@Positive @PathVariable Long meetingId,
+		@Parameter(description = "활성화 모임 질문 ID 리스트", example = "1,2,3", required = true)
+		@RequestParam(value = "activeMeetingQuestionIds")
+		List<Long> activeMeetingQuestionIds
+	) {
+		meetingAnswerService.updateHidden(userId, meetingId, activeMeetingQuestionIds);
+		return ResponseEntity.noContent().build();
 	}
 }

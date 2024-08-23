@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.common.domain;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,5 +24,13 @@ public abstract class BaseTimeEntity {
 	@UpdateTimestamp
 	@Column(nullable = false)
 	protected LocalDateTime updatedAt;
+
+	public Long getCreatedAtWithEpochMilli() {
+		return this.createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	public Long getUpdatedAtWithEpochMilli() {
+		return this.updatedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
 }
 

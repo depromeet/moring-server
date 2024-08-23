@@ -5,11 +5,14 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
+import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MeetingAnswerResponseCustom;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MeetingAnswerListResponseDetail(
+	@Schema(title = "모임 내 질문 식별자", example = "1", requiredMode = REQUIRED)
+	Long meetingQuestionId,
+
 	@Schema(title = "질문 인덱스", example = "1", requiredMode = REQUIRED)
 	int idx,
 
@@ -24,11 +27,12 @@ public record MeetingAnswerListResponseDetail(
 	String commentContent
 ) {
 
-	public static List<MeetingAnswerListResponseDetail> from(List<MyMeetingAnswerResponseCustom> responseCustoms) {
+	public static List<MeetingAnswerListResponseDetail> from(List<MeetingAnswerResponseCustom> responseCustoms) {
 		return IntStream.range(0, responseCustoms.size())
 			.mapToObj(i -> {
-				MyMeetingAnswerResponseCustom response = responseCustoms.get(i);
+				MeetingAnswerResponseCustom response = responseCustoms.get(i);
 				return new MeetingAnswerListResponseDetail(
+					response.meetingQuestionId(),
 					i + 1,
 					response.meetingQuestionTitle(),
 					response.getMeetingAnswers(),

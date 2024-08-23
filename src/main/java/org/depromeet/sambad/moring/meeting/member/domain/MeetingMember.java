@@ -160,4 +160,22 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 	public boolean isNotEqualMemberWith(MeetingMember meetingMember) {
 		return !Objects.equals(this.getId(), meetingMember.getId());
 	}
+
+	public void update(MeetingMemberPersistRequest request) {
+		this.name = request.name();
+		this.gender = request.gender();
+		this.birth = request.birth();
+		this.job = request.job();
+		this.location = request.location();
+		this.mbti = request.mbti();
+		this.introduction = request.introduction();
+	}
+
+	public static Long getLastMeetingId(List<MeetingMember> meetingMembers) {
+		return meetingMembers.stream()
+			.findFirst()
+			.map(MeetingMember::getUser)
+			.map(User::getLastMeetingId)
+			.orElse(null);
+	}
 }

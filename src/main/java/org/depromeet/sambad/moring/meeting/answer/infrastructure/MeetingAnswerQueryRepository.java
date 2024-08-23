@@ -11,8 +11,10 @@ import java.util.Objects;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
 import org.depromeet.sambad.moring.meeting.answer.domain.MeetingAnswer;
+import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MeetingAnswerResponseCustom;
 import org.depromeet.sambad.moring.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
 import org.depromeet.sambad.moring.meeting.answer.presentation.response.MeetingAnswerListResponse;
+import org.depromeet.sambad.moring.meeting.answer.presentation.response.MyMeetingAnswerListResponse;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Repository;
@@ -91,7 +93,29 @@ public class MeetingAnswerQueryRepository {
 			.toList();
 	}
 
-	public MeetingAnswerListResponse findAllByMeetingMemberId(Long meetingMemberId) {
+	public MeetingAnswerListResponse findAllByOtherMeetingMemberId(Long meetingMemberId) {
+
+		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
+			.from(meetingQuestion)
+			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
+			.join(meetingMember).on(meetingMember.eq(meetingAnswer.meetingMember)).fetchJoin()
+			.where(meetingMember.id.eq(meetingMemberId),
+				meetingAnswer.isHidden.isFalse())
+			.orderBy(meetingQuestion.createdAt.asc())
+			.fetch();
+
+		List<MeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
+			.map(meetingQuestion -> new MeetingAnswerResponseCustom(meetingQuestion.getId(),
+				meetingQuestion.getTitle(),
+				getMyAnswers(meetingMemberId, meetingQuestion),
+				getMyComment(meetingMemberId, meetingQuestion)))
+			.toList();
+
+		return MeetingAnswerListResponse.from(responseCustoms);
+	}
+
+	public MyMeetingAnswerListResponse findAllByMyMeetingMemberId(Long meetingMemberId) {
+
 		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
 			.from(meetingQuestion)
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
@@ -101,12 +125,15 @@ public class MeetingAnswerQueryRepository {
 			.fetch();
 
 		List<MyMeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
-			.map(question -> new MyMeetingAnswerResponseCustom(question.getTitle(),
-				getMyAnswers(meetingMemberId, question),
-				getMyComment(meetingMemberId, question)))
+			.map(meetingQuestion -> new MyMeetingAnswerResponseCustom(meetingQuestion.getId(),
+				meetingQuestion.getTitle(),
+				getMyAnswers(meetingMemberId, meetingQuestion),
+				getMyComment(meetingMemberId, meetingQuestion),
+				isHidden(meetingQuestion, meetingMemberId)
+			))
 			.toList();
 
-		return MeetingAnswerListResponse.from(responseCustoms);
+		return MyMeetingAnswerListResponse.from(responseCustoms);
 	}
 
 	private List<Answer> getMyAnswers(Long memberId, MeetingQuestion meetingQuestion) {
@@ -123,5 +150,13 @@ public class MeetingAnswerQueryRepository {
 			.where(meetingQuestionComment.meetingMember.id.eq(memberId),
 				meetingQuestionComment.meetingQuestion.eq(meetingQuestion))
 			.fetchFirst();
+	}
+
+	private Boolean isHidden(MeetingQuestion meetingQuestion, Long loginMemberId) {
+		MeetingAnswer answerOfList = queryFactory.selectFrom(meetingAnswer)
+			.where(meetingAnswer.meetingQuestion.eq(meetingQuestion),
+				meetingAnswer.meetingMember.id.eq(loginMemberId))
+			.fetchFirst();
+		return answerOfList.getIsHidden();
 	}
 }

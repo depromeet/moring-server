@@ -1,7 +1,5 @@
 package org.depromeet.sambad.moring.user.domain;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,22 +48,31 @@ public class User extends BaseTimeEntity {
 
 	private String externalId;
 
+	@Column(columnDefinition = "TINYINT")
+	private Boolean onboardingCompleted;
+
+	private Long lastMeetingId;
+
 	@OneToMany(mappedBy = "user")
 	private List<MeetingMember> meetingMember = new ArrayList<>();
 
-	private User(FileEntity imageFile, String name, String email, LoginProvider loginProvider, String externalId) {
+	private User(
+		FileEntity imageFile, String name, String email, LoginProvider loginProvider, String externalId,
+		boolean onboardingCompleted
+	) {
 		this.profileImageFile = imageFile;
 		this.name = name;
 		this.email = email;
 		this.loginProvider = loginProvider;
 		this.externalId = externalId;
+		this.onboardingCompleted = onboardingCompleted;
 	}
 
 	public static User from(
 		FileEntity imageFile, AuthAttributes authAttributes
 	) {
 		return new User(imageFile, authAttributes.getName(), authAttributes.getEmail(), authAttributes.getProvider(),
-			authAttributes.getExternalId());
+			authAttributes.getExternalId(), false);
 	}
 
 	public String getProfileImageFileUrl() {
@@ -81,7 +88,19 @@ public class User extends BaseTimeEntity {
 		return Objects.equals(this.email, email) && !Objects.equals(this.externalId, externalId);
 	}
 
-	public Long toEpochMilli(LocalDateTime localDateTime) {
-		return getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	public void updateProfileImage(FileEntity fileEntity) {
+		this.profileImageFile = fileEntity;
+	}
+
+	public void completeOnboarding() {
+		this.onboardingCompleted = true;
+	}
+
+	public boolean isNotEnteredAnyMeeting() {
+		return meetingMember.isEmpty();
+	}
+
+	public void updateLastAccessedMeeting(Long meetingId) {
+		this.lastMeetingId = meetingId;
 	}
 }
