@@ -10,7 +10,7 @@ public interface MeetingMemberJpaRepository extends JpaRepository<MeetingMember,
 
 	List<MeetingMember> findByUserId(Long userId);
 
-	List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+	List<MeetingMember> findByMeetingIdAndIdNotOrderByName(Long meetingId, Long meetingMemberId);
 
 	Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId);
 }

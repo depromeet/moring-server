@@ -67,7 +67,8 @@ public class MeetingMemberController {
 		return ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "모임원 목록 조회", description = "특정 모임의 모임원 목록을 조회합니다.")
+	@Operation(summary = "모임원 목록 조회", description = "- 특정 모임의 모임원 목록을 조회합니다.\n"
+		+ "- 자기 자신은 목록에서 제외합니다.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "모임원 목록 조회 성공"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
