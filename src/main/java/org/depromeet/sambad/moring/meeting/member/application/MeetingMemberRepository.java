@@ -14,7 +14,7 @@ public interface MeetingMemberRepository {
 
 	Optional<MeetingMember> findByUserIdAndMeetingId(Long userId, Long meetingId);
 
-	List<MeetingMember> findByMeetingIdOrderByName(Long meetingId);
+	List<MeetingMember> findByMeetingIdAndMeetingMemberIdNotOrderByName(Long meetingId, Long loginMeetingMemberId);
 
 	List<MeetingMember> findNextTargetsByMeeting(Long meetingId, Long loginMeetingMemberId,
 		List<Long> excludeMemberIds);
