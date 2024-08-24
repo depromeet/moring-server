@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.answer.domain.Answer;
-import org.depromeet.sambad.moring.file.domain.QFileEntity;
+import org.depromeet.sambad.moring.common.response.PageableResponse;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion;
@@ -75,9 +75,6 @@ public class MeetingQuestionQueryRepository {
 	}
 
 	public FullInactiveMeetingQuestionListResponse findFullInactiveList(Long meetingId, Pageable pageable) {
-		QFileEntity profileImageFile = new QFileEntity("profileImageFile");
-		QFileEntity questionImageFile = new QFileEntity("questionImageFile");
-
 		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
 			.select(meetingQuestion)
 			.from(meetingQuestion)
@@ -91,7 +88,17 @@ public class MeetingQuestionQueryRepository {
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions, pageable);
+		List<Long> totalElementIds = queryFactory
+			.select(meetingQuestion.id)
+			.from(meetingQuestion)
+			.where(
+				meetingQuestion.meeting.id.eq(meetingId),
+				meetingQuestion.question.isNotNull(),
+				inactiveCond()
+			)
+			.fetch();
+		return FullInactiveMeetingQuestionListResponse.of(inactiveMeetingQuestions,
+			PageableResponse.of(pageable, totalElementIds));
 	}
 
 	public Boolean isAnswered(Long meetingQuestionId, Long meetingMemberId) {
