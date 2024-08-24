@@ -148,8 +148,8 @@ public class MeetingAnswerController {
 		@UserId Long userId,
 		@Parameter(description = "모임 ID", example = "1", required = true)
 		@Positive @PathVariable Long meetingId,
-		@Parameter(description = "활성화 모임 질문 ID 리스트", example = "1,2,3", required = true)
-		@RequestParam(value = "activeMeetingQuestionIds")
+		@Parameter(description = "활성화 모임 질문 ID 리스트", example = "1,2,3")
+		@RequestParam(value = "activeMeetingQuestionIds", required = false)
 		List<Long> activeMeetingQuestionIds
 	) {
 		meetingAnswerService.updateHidden(userId, meetingId, activeMeetingQuestionIds);
