@@ -46,7 +46,7 @@ public class MeetingQuestionController {
 		@ApiResponse(responseCode = "201"),
 		@ApiResponse(responseCode = "404", description = "NOT_FOUND_QUESTION"),
 		@ApiResponse(responseCode = "409", description = "DUPLICATE_MEETING_QUESTION / DUPLICATE_QUESTION / "
-			+ "INVALID_MEETING_MEMBER_TARGET")
+			+ "INVALID_MEETING_MEMBER_NEXT_TARGET")
 	})
 	@PostMapping
 	public ResponseEntity<CurrentMeetingQuestionResponse> save(

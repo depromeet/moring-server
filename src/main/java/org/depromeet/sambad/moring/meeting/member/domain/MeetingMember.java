@@ -14,7 +14,7 @@ import org.depromeet.sambad.moring.file.domain.FileEntity;
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.member.presentation.request.MeetingMemberPersistRequest;
 import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
-import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberTargetException;
+import org.depromeet.sambad.moring.meeting.question.presentation.exception.InvalidMeetingMemberNextTargetException;
 import org.depromeet.sambad.moring.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -153,7 +153,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 	public void validateNextTarget(MeetingMember targetMember) {
 		if (isOtherMeeting(targetMember) || Objects.equals(this.user, targetMember.getUser())) {
-			throw new InvalidMeetingMemberTargetException();
+			throw new InvalidMeetingMemberNextTargetException();
 		}
 	}
 
