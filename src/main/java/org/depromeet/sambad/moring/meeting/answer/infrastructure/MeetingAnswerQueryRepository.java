@@ -103,6 +103,7 @@ public class MeetingAnswerQueryRepository {
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
 			.join(meetingMember).on(meetingMember.eq(meetingAnswer.meetingMember)).fetchJoin()
 			.where(meetingMember.id.eq(meetingMemberId),
+				inactiveCond(),
 				meetingAnswer.isHidden.isFalse())
 			.orderBy(meetingQuestion.createdAt.asc())
 			.fetch();
