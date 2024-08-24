@@ -81,10 +81,6 @@ public class MeetingQuestionQueryRepository {
 		List<MeetingQuestion> inactiveMeetingQuestions = queryFactory
 			.select(meetingQuestion)
 			.from(meetingQuestion)
-			.leftJoin(meetingQuestion.targetMember, meetingMember).fetchJoin()
-			.leftJoin(meetingQuestion.targetMember.profileImageFile, profileImageFile).fetchJoin()
-			.leftJoin(meetingQuestion.question, question).fetchJoin()
-			.leftJoin(meetingQuestion.question.questionImageFile, questionImageFile).fetchJoin()
 			.where(
 				meetingQuestion.meeting.id.eq(meetingId),
 				meetingQuestion.question.isNotNull(),
