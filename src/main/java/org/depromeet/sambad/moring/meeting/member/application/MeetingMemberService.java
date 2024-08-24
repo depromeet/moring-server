@@ -38,13 +38,15 @@ public class MeetingMemberService {
 
 	private final MeetingMemberValidator meetingMemberValidator;
 	private final MeetingMemberRandomGenerator meetingMemberRandomGenerator;
+
+	private final EventService eventService;
+
 	private final MeetingRepository meetingRepository;
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final UserRepository userRepository;
 	private final HobbyRepository hobbyRepository;
 	private final MeetingQuestionRepository meetingQuestionRepository;
 	private final MeetingMemberHobbyRepository meetingMemberHobbyRepository;
-	private final EventService eventService;
 	private final HandWavingRepository handWavingRepository;
 
 	@Transactional
@@ -84,16 +86,16 @@ public class MeetingMemberService {
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
-  public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
-    meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
-    MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
+	public MeetingMemberListResponse getMeetingMembers(Long userId, Long meetingId) {
+		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
+		MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
 
-    List<MeetingMember> members = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId,
-      me.getId());
-    List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+		List<MeetingMember> members = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId,
+			me.getId());
+		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
 
-    return MeetingMemberListResponse.from(members, handWavedMembers);
-  }
+		return MeetingMemberListResponse.from(members, handWavedMembers);
+	}
 
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {
 		return meetingMemberRepository.findByUserIdAndMeetingId(userId, meetingId)
