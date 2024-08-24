@@ -4,8 +4,10 @@ import static com.querydsl.core.types.dsl.Expressions.*;
 import static org.depromeet.sambad.moring.meeting.answer.domain.QMeetingAnswer.*;
 import static org.depromeet.sambad.moring.meeting.comment.domain.comment.QMeetingQuestionComment.*;
 import static org.depromeet.sambad.moring.meeting.member.domain.QMeetingMember.*;
+import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestionStatus.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.QMeetingQuestion.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ import org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -100,6 +103,7 @@ public class MeetingAnswerQueryRepository {
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
 			.join(meetingMember).on(meetingMember.eq(meetingAnswer.meetingMember)).fetchJoin()
 			.where(meetingMember.id.eq(meetingMemberId),
+				inactiveCond(),
 				meetingAnswer.isHidden.isFalse())
 			.orderBy(meetingQuestion.createdAt.asc())
 			.fetch();
@@ -120,7 +124,8 @@ public class MeetingAnswerQueryRepository {
 			.from(meetingQuestion)
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
 			.join(meetingMember).on(meetingMember.eq(meetingAnswer.meetingMember)).fetchJoin()
-			.where(meetingMember.id.eq(meetingMemberId))
+			.where(meetingMember.id.eq(meetingMemberId),
+				inactiveCond())
 			.orderBy(meetingQuestion.createdAt.asc())
 			.fetch();
 
@@ -158,5 +163,10 @@ public class MeetingAnswerQueryRepository {
 				meetingAnswer.meetingMember.id.eq(loginMemberId))
 			.fetchFirst();
 		return answerOfList.getIsHidden();
+	}
+
+	private BooleanExpression inactiveCond() {
+		return meetingQuestion.expiredAt.lt(LocalDateTime.now())
+			.or(meetingQuestion.status.eq(INACTIVE));
 	}
 }
