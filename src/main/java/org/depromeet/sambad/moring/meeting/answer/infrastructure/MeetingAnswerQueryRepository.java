@@ -119,7 +119,6 @@ public class MeetingAnswerQueryRepository {
 
 	public MyMeetingAnswerListResponse findAllByMyMeetingMemberId(Long meetingMemberId) {
 
-		//fixme
 		List<MeetingQuestion> meetingQuestions = queryFactory.select(meetingQuestion)
 			.from(meetingQuestion)
 			.join(meetingAnswer).on(meetingQuestion.eq(meetingAnswer.meetingQuestion)).fetchJoin()
