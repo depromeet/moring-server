@@ -86,8 +86,8 @@ public class HandWavingService {
 			"handWavingId", handWaving.getId()
 		);
 
-		Long userId = sender.getUser().getId();
-		Long meetingId = sender.getMeeting().getId();
+		Long userId = receiver.getUser().getId();
+		Long meetingId = receiver.getMeeting().getId();
 
 		eventService.publish(userId, meetingId, HAND_WAVING_REQUESTED, contentsMap, additionalData);
 	}
