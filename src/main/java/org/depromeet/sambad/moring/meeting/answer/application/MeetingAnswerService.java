@@ -102,12 +102,18 @@ public class MeetingAnswerService {
 	public void updateHidden(Long userId, Long meetingId, List<Long> activeMeetingQuestionIds) {
 		MeetingMember member = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
-		List<MeetingAnswer> hiddenAnswers = meetingAnswerRepository.findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(
-			member.getId(), activeMeetingQuestionIds);
-		List<MeetingAnswer> activeAnswers = meetingAnswerRepository.findAllByMeetingMemberIdAndMeetingQuestionIdIn(
-			member.getId(), activeMeetingQuestionIds);
+		if (isAllHidden(activeMeetingQuestionIds)) {
+			meetingAnswerRepository.updateAllHiddenByMeetingMemberId(member.getId());
+			return;
+		}
 
-		hiddenAnswers.forEach(MeetingAnswer::updateStatusHidden);
-		activeAnswers.forEach(MeetingAnswer::updateStatusActive);
+		meetingAnswerRepository.updateManyHiddenByMeetingMemberIdAndMeetingQuestionId(member.getId(),
+			activeMeetingQuestionIds);
+		meetingAnswerRepository.updateManyActivateByMeetingMemberIdAndMeetingQuestionId(member.getId(),
+			activeMeetingQuestionIds);
+	}
+
+	private boolean isAllHidden(List<Long> activeMeetingQuestionIds) {
+		return activeMeetingQuestionIds == null || activeMeetingQuestionIds.isEmpty();
 	}
 }
