@@ -60,16 +60,21 @@ public class MeetingAnswerRepositoryImpl implements MeetingAnswerRepository {
 	}
 
 	@Override
-	public List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdIn(Long meetingMemberId,
-		List<Long> activeMeetingQuestionIds) {
-		return meetingAnswerJpaRepository.findAllByMeetingMemberIdAndMeetingQuestionIdIn(meetingMemberId,
-			activeMeetingQuestionIds);
+	public void updateAllHiddenByMeetingMemberId(Long meetingMemberId) {
+		meetingAnswerJpaRepository.updateAllHiddenByMeetingMemberId(meetingMemberId);
 	}
 
 	@Override
-	public List<MeetingAnswer> findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(Long meetingMemberId,
-		List<Long> activeMeetingQuestionIds) {
-		return meetingAnswerJpaRepository.findAllByMeetingMemberIdAndMeetingQuestionIdNotIn(meetingMemberId,
-			activeMeetingQuestionIds);
+	public void updateManyHiddenByMeetingMemberIdAndMeetingQuestionId(Long meetingMemberId,
+		List<Long> meetingQuestionIds) {
+		meetingAnswerJpaRepository.updateManyHiddenByMeetingMemberIdAndMeetingQuestionId(meetingMemberId,
+			meetingQuestionIds);
+	}
+
+	@Override
+	public void updateManyActivateByMeetingMemberIdAndMeetingQuestionId(Long meetingMemberId,
+		List<Long> meetingQuestionIds) {
+		meetingAnswerJpaRepository.updateManyActivateByMeetingMemberIdAndMeetingQuestionId(meetingMemberId,
+			meetingQuestionIds);
 	}
 }
