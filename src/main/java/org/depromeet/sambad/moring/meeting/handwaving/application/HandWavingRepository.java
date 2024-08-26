@@ -15,4 +15,6 @@ public interface HandWavingRepository {
 	Optional<HandWaving> findFirstBySenderIdAndReceiverIdOrderByIdDesc(Long senderMemberId, Long receiverMemberId);
 
 	List<MeetingMember> findHandWavedMembersByMeetingMemberId(Long meetingMemberId);
+
+	List<HandWaving> findAllByEventIdIn(List<Long> eventIds);
 }
