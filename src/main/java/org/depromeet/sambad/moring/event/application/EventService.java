@@ -11,6 +11,7 @@ import org.depromeet.sambad.moring.event.domain.EventType;
 import org.depromeet.sambad.moring.event.infrastructure.EventProperties;
 import org.depromeet.sambad.moring.event.presentation.excepiton.NotFoundEventException;
 import org.depromeet.sambad.moring.event.presentation.response.PollingEventListResponse;
+import org.depromeet.sambad.moring.meeting.handwaving.domain.HandWaving;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,21 +32,28 @@ public class EventService {
 	private final EventProperties eventProperties;
 
 	public void publish(Long userId, Long meetingId, EventType type) {
-		this.publish(userId, meetingId, type, Map.of(), Map.of());
+		this.publish(userId, meetingId, type, Map.of());
 	}
 
-	public void publish(
-		Long userId, Long meetingId, EventType type, Map<String, String> contentsMap, Map<String, Object> additionalData
+	public void publishHandWavingEvent(
+		Long userId, Long meetingId, EventType type, Map<String, String> contentsMap, HandWaving handWaving
 	) {
+		Event event = this.publish(userId, meetingId, type, contentsMap);
+		handWaving.mapEvent(event);
+	}
+
+	private Event publish(Long userId, Long meetingId, EventType type, Map<String, String> contentsMap) {
 		if (meetingMemberValidator.isNotUserOfMeeting(userId, meetingId)) {
 			log.warn("User is not member of meeting. userId: {}, meetingId: {}", userId, meetingId);
-			return;
+			return null;
 		}
 
 		String message = constructEventMessage(type, contentsMap);
 
-		Event event = Event.publish(userId, meetingId, type, message, additionalData);
+		Event event = Event.publish(userId, meetingId, type, message);
 		eventRepository.save(event);
+
+		return event;
 	}
 
 	public void inactivate(Long eventId) {
@@ -86,10 +94,6 @@ public class EventService {
 	}
 
 	private String constructEventMessage(EventType type, Map<String, String> contentsMap) {
-		if (contentsMap.isEmpty()) {
-			return null;
-		}
-
 		return eventMessageTemplateRepository.findByType(type)
 			.map(template -> template.replaceTemplateVariables(contentsMap))
 			.orElse(null);

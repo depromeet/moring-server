@@ -54,4 +54,9 @@ public class HandWavingRepositoryImpl implements HandWavingRepository {
 			)
 			.fetch();
 	}
+
+	@Override
+	public List<HandWaving> findAllByEventIdIn(List<Long> eventIds) {
+		return handWavingJpaRepository.findAllByEventIdIn(eventIds);
+	}
 }

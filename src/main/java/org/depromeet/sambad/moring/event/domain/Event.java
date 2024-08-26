@@ -4,15 +4,14 @@ import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 import static org.depromeet.sambad.moring.event.domain.EventStatus.*;
+import static org.depromeet.sambad.moring.event.domain.EventType.*;
 import static org.depromeet.sambad.moring.meeting.question.domain.MeetingQuestion.*;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import org.depromeet.sambad.moring.common.domain.BaseTimeEntity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -44,13 +43,8 @@ public class Event extends BaseTimeEntity {
 
 	private LocalDateTime expiredAt;
 
-	@Column(columnDefinition = "text")
-	@Convert(converter = MapToJsonConverter.class)
-	private Map<String, Object> additionalData = Map.of();
-
 	private Event(
-		Long userId, Long meetingId, EventType type, EventStatus status, String message, LocalDateTime expiredAt,
-		Map<String, Object> additionalData
+		Long userId, Long meetingId, EventType type, EventStatus status, String message, LocalDateTime expiredAt
 	) {
 		this.userId = userId;
 		this.meetingId = meetingId;
@@ -58,14 +52,11 @@ public class Event extends BaseTimeEntity {
 		this.status = status;
 		this.message = message;
 		this.expiredAt = expiredAt;
-		this.additionalData = additionalData;
 	}
 
-	public static Event publish(
-		Long userId, Long meetingId, EventType type, String message, Map<String, Object> additionalData
-	) {
+	public static Event publish(Long userId, Long meetingId, EventType type, String message) {
 		LocalDateTime expiredAt = LocalDateTime.now().plusSeconds(RESPONSE_TIME_LIMIT_SECONDS);
-		return new Event(userId, meetingId, type, ACTIVE, message, expiredAt, additionalData);
+		return new Event(userId, meetingId, type, ACTIVE, message, expiredAt);
 	}
 
 	public void inactivate() {
@@ -84,5 +75,9 @@ public class Event extends BaseTimeEntity {
 
 	public boolean isActive() {
 		return status == ACTIVE;
+	}
+
+	public boolean isHandWavingEvent() {
+		return type == HAND_WAVING_REQUESTED;
 	}
 }

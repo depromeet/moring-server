@@ -4,7 +4,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.depromeet.sambad.moring.event.domain.Event;
@@ -27,12 +26,12 @@ public record EventResponse(
 	EventStatus status,
 
 	@Schema(description = "이벤트 타입 별로 필요한 추가 데이터", example = "{\"handWavingId\": 9}", requiredMode = NOT_REQUIRED)
-	Map<String, Object> additionalData,
+	Object additionalData,
 
 	@Schema(description = "이벤트 생성 시간 타임 스탬프", example = "1724252079282", requiredMode = REQUIRED)
 	Long createdAt
 ) {
-	public static EventResponse from(Event event) {
+	public static EventResponse from(Event event, Object additionalData) {
 		List<String> messages = Optional.ofNullable(event.getMessage())
 			.map(message -> Arrays.asList(message.split("\n")))
 			.orElse(List.of());
@@ -42,7 +41,7 @@ public record EventResponse(
 			event.getType(),
 			messages,
 			event.getStatus(),
-			event.getAdditionalData(),
+			additionalData,
 			event.getCreatedAtWithEpochMilli()
 		);
 	}

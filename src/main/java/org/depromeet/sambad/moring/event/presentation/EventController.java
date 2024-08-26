@@ -1,9 +1,6 @@
 package org.depromeet.sambad.moring.event.presentation;
 
-import java.util.List;
-
 import org.depromeet.sambad.moring.event.application.EventService;
-import org.depromeet.sambad.moring.event.domain.Event;
 import org.depromeet.sambad.moring.event.presentation.response.EventListResponse;
 import org.depromeet.sambad.moring.event.presentation.response.PollingEventListResponse;
 import org.depromeet.sambad.moring.user.presentation.resolver.UserId;
@@ -27,20 +24,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1/events")
 public class EventController {
+
 	private final EventService eventService;
+	private final EventFacade eventFacade;
 
 	@Operation(summary = "알림 목록 조회", description = """
 		<h2>Description</h2>
 		모임원이 수령해야 하는 알림 목록을 조회합니다.
-		
+				
 		<h2>Event Type List</h2>
 		* <b>QUESTION_REGISTERED</b>: 릴레이 질문이 등록되어 답변 가능한 경우
 		* <b>TARGET_MEMBER</b>: 릴레이 질문 등록 대상자로 선정된 경우
 		* <b>HAND_WAVING_REQUESTED</b>: 손 흔들기 요청이 들어온 경우
-		
+				
 		<h2>Additional Data</h2>
 		Event Type에 따라 addionalData가 다르게 반환됩니다.
-		* <b>HAND_WAVING_REQUESTED</b>: {"handWavingId": 1}""")
+		* <b>HAND_WAVING_REQUESTED</b>: {"handWavingId": 1, "status": "ACCEPTED"}
+		  * <b>status == REQUESTED</b> 일 떄에만 수락 / 거절 버튼 표시되면 될 것 같습니다."""
+	)
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "알림 목록 조회 성공"),
 		@ApiResponse(responseCode = "403", description = "USER_NOT_MEMBER_OF_MEETING")
@@ -51,13 +52,13 @@ public class EventController {
 		@Parameter(description = "모임 ID", example = "1", required = true)
 		@PathVariable("meetingId") @Positive Long meetingId
 	) {
-		List<Event> events = eventService.getEvents(userId, meetingId);
-		return ResponseEntity.ok(EventListResponse.from(events));
+		EventListResponse response = eventFacade.getEventsResponse(userId, meetingId);
+		return ResponseEntity.ok(response);
 	}
 
 	@Operation(summary = "사용자가 받아야 하는 이벤트 목록 조회", description = """
 		사용자가 받아야 하는 이벤트의 목록을 조회합니다.
-		
+				
 		Event List
 		* QUESTION_REGISTERED: 릴레이 질문이 등록되어 답변 가능한 경우
 		* TARGET_MEMBER: 릴레이 질문 등록 대상자로 선정된 경우

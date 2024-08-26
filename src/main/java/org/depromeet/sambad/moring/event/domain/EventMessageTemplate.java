@@ -33,6 +33,10 @@ public class EventMessageTemplate {
 	private String template;
 
 	public String replaceTemplateVariables(Map<String, String> contentsMap) {
+		if (contentsMap == null) {
+			return template;
+		}
+
 		String message = template;
 		for (String key : contentsMap.keySet()) {
 			String regex = Pattern.quote("#{" + key + "}");
