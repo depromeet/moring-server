@@ -34,17 +34,17 @@ public class EventFacade {
 		return handWavingService.getHandWavingSummariesBy(handWavingEvents);
 	}
 
-	private EventResponse mapToResponseConsiderEventType(Event event, List<HandWavingSummary> handWavingSummaries) {
-		HandWavingSummary additionalData = HandWavingSummary.findSummaryByEvent(handWavingSummaries, event);
-
-		return EventResponse.from(event, additionalData);
-	}
-
 	private EventListResponse mapToEventListResponse(List<Event> events, List<HandWavingSummary> handWavingSummaries) {
 		List<EventResponse> responses = events.stream()
 			.map(event -> mapToResponseConsiderEventType(event, handWavingSummaries))
 			.toList();
 
 		return EventListResponse.from(responses);
+	}
+
+	private EventResponse mapToResponseConsiderEventType(Event event, List<HandWavingSummary> handWavingSummaries) {
+		HandWavingSummary additionalData = HandWavingSummary.findSummaryByEvent(handWavingSummaries, event);
+
+		return EventResponse.from(event, additionalData);
 	}
 }
