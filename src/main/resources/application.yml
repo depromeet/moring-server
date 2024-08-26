@@ -9,10 +9,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-      default_batch_fetch_size: 1000
       jdbc:
         time_zone: Asia/Seoul
     defer-datasource-initialization: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: ${CHUNK_SIZE:1000}
+        query:
+          fail_on_pagination_over_collection_fetch: true
   sql:
     init:
       data-locations: classpath:/db/data.sql
