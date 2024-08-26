@@ -72,9 +72,6 @@ public class HandWaving extends BaseTimeEntity {
 	}
 
 	public void mapEvent(Event event) {
-		if (this.eventId == null) {
-			return;
-		}
 		this.eventId = event.getId();
 	}
 
