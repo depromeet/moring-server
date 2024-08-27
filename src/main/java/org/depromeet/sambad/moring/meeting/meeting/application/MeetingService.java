@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.meeting.meeting.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.depromeet.sambad.moring.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.meeting.meeting.domain.MeetingCode;
@@ -13,9 +14,6 @@ import org.depromeet.sambad.moring.meeting.meeting.presentation.response.Meeting
 import org.depromeet.sambad.moring.meeting.member.application.MeetingMemberRepository;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.meeting.member.domain.MeetingMemberValidator;
-import org.depromeet.sambad.moring.user.domain.User;
-import org.depromeet.sambad.moring.user.domain.UserRepository;
-import org.depromeet.sambad.moring.user.presentation.exception.NotFoundUserException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MeetingService {
 
-	private final UserRepository userRepository;
 	private final MeetingRepository meetingRepository;
 	private final MeetingMemberRepository meetingMemberRepository;
 	private final MeetingTypeRepository meetingTypeRepository;
@@ -57,11 +54,14 @@ public class MeetingService {
 		return MeetingResponse.of(meetings, MeetingMember.getLastMeetingId(membersOfUser));
 	}
 
-	public MeetingNameResponse getMeetingNameByCode(String code) {
+	public MeetingNameResponse getMeetingNameByCode(Long userId, String code) {
 		Meeting meeting = meetingRepository.findByCode(MeetingCode.from(code))
 			.orElseThrow(MeetingNotFoundException::new);
 
-		return MeetingNameResponse.from(meeting);
+		Optional<MeetingMember> meetingMemberOptional = meetingMemberRepository.findByUserIdAndMeetingId(
+			userId, meeting.getId());
+
+		return MeetingNameResponse.of(meeting, meetingMemberOptional.isPresent());
 	}
 
 	public Meeting getMeeting(Long meetingId) {
