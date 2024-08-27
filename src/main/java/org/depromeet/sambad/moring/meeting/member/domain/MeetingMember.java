@@ -103,7 +103,7 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			meeting,
 			user,
 			user.getProfileImageFile(),
-			request.role(),
+			request.role() == null ? MeetingMemberRole.MEMBER : request.role(),
 			request.name(),
 			request.gender(),
 			request.birth(),
