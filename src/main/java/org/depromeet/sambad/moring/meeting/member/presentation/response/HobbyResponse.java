@@ -14,22 +14,13 @@ public record HobbyResponse(
 		description = "모임원 취미 목록",
 		requiredMode = REQUIRED
 	)
-	List<HobbyDetail> contents
+	List<HobbyDetailResponse> contents
 ) {
-
-	record HobbyDetail(
-		@Schema(example = "1", description = "모임원 취미 ID", requiredMode = REQUIRED)
-		Long hobbyId,
-
-		@Schema(example = "💩 똥", description = "모임원 취미 내용", requiredMode = REQUIRED)
-		String content
-	) {
-	}
 
 	public static HobbyResponse from(List<Hobby> hobbies) {
 		return new HobbyResponse(
 			hobbies.stream()
-				.map(meetingType -> new HobbyDetail(meetingType.getId(), meetingType.getContent()))
+				.map(HobbyDetailResponse::from)
 				.toList()
 		);
 	}

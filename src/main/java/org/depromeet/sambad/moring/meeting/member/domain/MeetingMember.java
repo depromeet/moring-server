@@ -123,7 +123,13 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 			.orElse(null);
 	}
 
-	public List<String> getHobbies() {
+	public List<Hobby> getHobbies() {
+		return meetingMemberHobbies.stream()
+			.map(MeetingMemberHobby::getHobby)
+			.toList();
+	}
+
+	public List<String> getHobbiesAsString() {
 		return meetingMemberHobbies.stream()
 			.map(MeetingMemberHobby::getHobbyContent)
 			.toList();

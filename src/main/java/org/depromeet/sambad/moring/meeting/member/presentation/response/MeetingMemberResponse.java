@@ -42,6 +42,9 @@ public record MeetingMemberResponse(
 	@Schema(description = "모임원 취미", example = "[\"독서\", \"등산\"]", requiredMode = NOT_REQUIRED)
 	List<String> hobbies,
 
+	@Schema(description = "모임원 취미 상세 정보", requiredMode = NOT_REQUIRED)
+	List<HobbyDetailResponse> hobbyDetails,
+
 	@Schema(description = "모임원 MBTI", example = "ISFP", requiredMode = NOT_REQUIRED)
 	MBTI mbti,
 
@@ -49,6 +52,10 @@ public record MeetingMemberResponse(
 	String introduction
 ) {
 	public static MeetingMemberResponse from(MeetingMember member) {
+		List<HobbyDetailResponse> hobbyDetailResponses = member.getHobbies().stream()
+			.map(HobbyDetailResponse::from)
+			.toList();
+
 		return new MeetingMemberResponse(
 			member.getId(),
 			member.getName(),
@@ -58,7 +65,8 @@ public record MeetingMemberResponse(
 			member.getBirth(),
 			member.getJob(),
 			member.getLocation(),
-			member.getHobbies(),
+			member.getHobbiesAsString(),
+			hobbyDetailResponses,
 			member.getMbti(),
 			member.getIntroduction()
 		);
