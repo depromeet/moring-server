@@ -64,6 +64,8 @@ public class MeetingMemberService {
 
 		createMeetingQuestionIfFirstMeetingMember(meeting, meetingMember);
 
+		user.updateLastAccessedMeeting(meeting.getId());
+
 		return MeetingMemberPersistResponse.from(meetingMember);
 	}
 
