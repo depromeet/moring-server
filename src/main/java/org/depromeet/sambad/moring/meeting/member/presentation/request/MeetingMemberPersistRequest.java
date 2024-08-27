@@ -19,7 +19,6 @@ import jakarta.validation.constraints.Size;
 public record MeetingMemberPersistRequest(
 
 	@Schema(description = "모임원 유형 (OWNER, ADMIN, MEMBER)", example = "MEMBER", requiredMode = REQUIRED)
-	@NotNull
 	MeetingMemberRole role,
 
 	@Schema(description = "모임원 이름", example = "권기준", requiredMode = REQUIRED)
