@@ -59,8 +59,8 @@ public class MeetingController {
 		@ApiResponse(responseCode = "404", description = "MEETING_NOT_FOUND"),
 	})
 	@GetMapping("/name")
-	public ResponseEntity<MeetingNameResponse> getMeetingName(@RequestParam String code) {
-		MeetingNameResponse response = meetingService.getMeetingNameByCode(code);
+	public ResponseEntity<MeetingNameResponse> getMeetingName(@UserId Long userId, @RequestParam String code) {
+		MeetingNameResponse response = meetingService.getMeetingNameByCode(userId, code);
 
 		return ResponseEntity.ok(response);
 	}
