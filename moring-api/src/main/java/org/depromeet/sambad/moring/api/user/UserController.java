@@ -37,6 +37,14 @@ public class UserController {
 		return ResponseEntity.ok(response);
 	}
 
+	@Operation(summary = "토큰 유효성 조회", description = "오직 토큰의 유효성을 검증하기 위한 validation API 입니다.")
+	@ApiResponse(responseCode = "202", description = "성공")
+	@ApiResponse(responseCode = "401", description = "AUTHENTICATION_REQUIRED")
+	@GetMapping("/validate-token")
+	public ResponseEntity<Void> validateToken() {
+		return ResponseEntity.accepted().build();
+	}
+
 	@Operation(
 		summary = "온보딩 완료",
 		description = "온보딩을 완료함으로써, 더 이상 온보딩 페이지로 이동하지 않도록 수정합니다."
