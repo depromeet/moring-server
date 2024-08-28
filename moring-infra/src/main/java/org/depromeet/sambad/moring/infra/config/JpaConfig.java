@@ -9,8 +9,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 
-@EntityScan(basePackages = "org.depromeet.sambad.moring.domain")
-@EnableJpaRepositories(basePackages = "org.depromeet.sambad.moring.domain")
+@EntityScan(basePackages = "org.depromeet.sambad.moring")
+@EnableJpaRepositories(basePackages = "org.depromeet.sambad.moring")
 public class JpaConfig implements MoringConfig {
 
 	private final EntityManager entityManager;
