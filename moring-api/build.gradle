@@ -1,0 +1,13 @@
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
+
+dependencies {
+    implementation project(':moring-infra')
+    implementation project(':moring-domain')
+    implementation project(':moring-global-utils')
+}

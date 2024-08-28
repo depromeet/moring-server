@@ -1,0 +1,134 @@
+spring:
+  application:
+    name: moring-api
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:moring}?useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      default_batch_fetch_size: 1000
+      jdbc:
+        time_zone: Asia/Seoul
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:/db/data.sql
+      mode: never
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      client-name: moring-api
+      repositories:
+        enabled: false
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:5MB}
+      max-request-size: ${MAX_REQUEST_SIZE:5MB}
+      enabled: true
+  security:
+    login-url: ${LOGIN_URL:/login}
+    redirect-url: ${REDIRECT_URL:/}
+    new-user-redirect-url: ${NEW_USER_REDIRECT_URL:/}
+    onboarding-redirect-url: ${ONBOARDING_REDIRECT_URL:/onboarding}
+    cookie:
+      domain: ${COOKIE_DOMAIN:moring.one}
+      secure: ${COOKIE_SECURE:true}
+      http-only: ${COOKIE_HTTP_ONLY:true}
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/login/oauth2/code/kakao}
+            authorization-grant-type: authorization_code
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+  task:
+    execution:
+      pool:
+        core-size: ${CORE_POOL_SIZE:10}
+        max-size: ${MAX_POOL_SIZE:50}
+        queue-capacity: ${QUEUE_CAPACITY:100}
+        keep-alive: ${KEEP_ALIVE_SECONDS:6000}
+      thread-name-prefix: asyncExecutor-
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+sentry:
+  max-request-body-size: always
+  tracesSampleRate: 1.0
+  send-default-pii: true
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+    #      log-filter:
+    #        pattern: ^.*$
+    datasource-proxy:
+      count-query: true
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  expiration-time:
+    access-token: ${JWT_EXPIRATION_TIME_ACCESS_TOKEN:1800} # 30 minutes
+    refresh-token: ${JWT_EXPIRATION_TIME_REFRESH_TOKEN:7776000} # 90 days
+
+cloud:
+  ncp:
+    object-storage:
+      endpoint: "https://kr.object.ncloudstorage.com"
+      credentials:
+        access-key: ${NCP_ACCESS_KEY}
+        secret-key: ${NCP_SECRET_KEY}
+        bucket: ${NCP_BUCKET_NAME}
+    region:
+      auto: false
+      static-region: "ap-southeast-2"
+    stack:
+      auto: false
+
+meeting:
+  member:
+    meeting-max-count: ${MEETING_MAX_COUNT:10}
+    meeting-member-max-count: ${MEETING_MEMBER_MAX_COUNT:50}
+    host-max-count: ${HOST_MAX_COUNT:1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  info:
+    os:
+      enabled: true
+    java:
+      enabled: true
+
+caching:
+  spring:
+    event-templates-ttl: ${EVENT_TEMPLATES_TTL:1800}
+
+event:
+  keep-days: ${EVENT_KEEP_DAYS:30}
