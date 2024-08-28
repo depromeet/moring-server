@@ -56,6 +56,7 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.accept();
+		eventService.inactivateLastEventByType(userId, meetingId, HAND_WAVING_REQUESTED);
 	}
 
 	@Transactional
@@ -64,6 +65,7 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.reject();
+		eventService.inactivateLastEventByType(userId, meetingId, HAND_WAVING_REQUESTED);
 	}
 
 	public List<HandWavingSummary> getHandWavingSummariesBy(List<Event> events) {
