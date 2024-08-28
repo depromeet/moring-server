@@ -45,8 +45,9 @@ public class HandWavingService {
 
 	public HandWavingStatusResponse getHandWavingStatus(Long userId, Long meetingId, Long receiverMemberId) {
 		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		Optional<HandWaving> handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId);
-		return handWaving.map(waving -> HandWavingStatusResponse.of(waving.getId(), waving.getStatus()))
+		Optional<HandWaving> handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId)
+			.or(() -> getHandWavingBySenderIdAndReceiverId(receiverMemberId, sender.getId()));
+		return handWaving.map(waving -> HandWavingStatusResponse.of(waving.getStatus()))
 			.orElseGet(() -> HandWavingStatusResponse.of(NOT_REQUESTED));
 	}
 
