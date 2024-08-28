@@ -1,1 +1,6 @@
 rootProject.name = 'moring'
+
+include 'moring-global-utils'
+include 'moring-infra'
+include 'moring-domain'
+include 'moring-api'

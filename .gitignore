@@ -41,4 +41,4 @@ temp
 spy.log
 
 ### Qclass ###
-src/main/generated/
+*/src/main/generated/
