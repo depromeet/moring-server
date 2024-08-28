@@ -56,6 +56,7 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.accept();
+		inactiveHandWavingEvent(handWaving);
 	}
 
 	@Transactional
@@ -64,6 +65,7 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.reject();
+		inactiveHandWavingEvent(handWaving);
 	}
 
 	public List<HandWavingSummary> getHandWavingSummariesBy(List<Event> events) {
@@ -99,5 +101,12 @@ public class HandWavingService {
 		Long meetingId = receiver.getMeeting().getId();
 
 		eventService.publishHandWavingEvent(userId, meetingId, HAND_WAVING_REQUESTED, contentsMap, handWaving);
+	}
+
+	private void inactiveHandWavingEvent(HandWaving handWaving) {
+		Long eventId = handWaving.getEventId();
+		if (eventId != null) {
+			eventService.inactivate(eventId);
+		}
 	}
 }
