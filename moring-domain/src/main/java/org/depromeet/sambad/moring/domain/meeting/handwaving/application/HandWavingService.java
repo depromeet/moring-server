@@ -110,11 +110,4 @@ public class HandWavingService {
 			eventService.inactivate(eventId);
 		}
 	}
-
-	private void inactiveHandWavingEvent(HandWaving handWaving) {
-		Long eventId = handWaving.getEventId();
-		if (eventId != null) {
-			eventService.inactivate(eventId);
-		}
-	}
 }
