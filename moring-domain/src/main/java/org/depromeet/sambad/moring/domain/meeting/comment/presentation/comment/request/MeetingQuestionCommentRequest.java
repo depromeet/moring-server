@@ -12,7 +12,7 @@ public record MeetingQuestionCommentRequest(
 
 	@Schema(description = "릴레이 질문 코멘트 내용", example = "코멘트 예시")
 	@NotBlank
-	@Size(max = 20)
+	@Size(max = 100)
 	String content
 ) {
 }
