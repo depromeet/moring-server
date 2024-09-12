@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.depromeet.sambad.moring.domain.event.application.EventService;
 import org.depromeet.sambad.moring.domain.event.domain.EventType;
 import org.depromeet.sambad.moring.domain.meeting.handwaving.application.HandWavingRepository;
+import org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavedMemberDto;
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.domain.meeting.member.application.MeetingMemberService;
 import org.depromeet.sambad.moring.domain.meeting.member.domain.MeetingMember;
@@ -152,9 +153,10 @@ public class MeetingQuestionService {
 			meetingQuestion.getId());
 		MeetingMember me = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
 
-		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+		List<HandWavedMemberDto> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(
+			me.getId());
 
-		return MeetingMemberListResponse.from(members, handWavedMembers);
+		return MeetingMemberListResponse.from(me, members, handWavedMembers);
 	}
 
 	private CurrentMeetingQuestionResponse getCurrentMeetingQuestionResponse(

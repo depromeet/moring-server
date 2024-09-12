@@ -4,9 +4,11 @@ import static org.depromeet.sambad.moring.domain.event.domain.EventType.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.depromeet.sambad.moring.domain.event.application.EventService;
 import org.depromeet.sambad.moring.domain.meeting.handwaving.application.HandWavingRepository;
+import org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavedMemberDto;
 import org.depromeet.sambad.moring.domain.meeting.meeting.application.MeetingRepository;
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.MeetingCode;
@@ -92,11 +94,18 @@ public class MeetingMemberService {
 		meetingMemberValidator.validateUserIsMemberOfMeeting(userId, meetingId);
 		MeetingMember me = getByUserIdAndMeetingId(userId, meetingId);
 
-		List<MeetingMember> members = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotOrderByName(meetingId,
-			me.getId());
-		List<MeetingMember> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+		List<HandWavedMemberDto> handWavedMembers = handWavingRepository.findHandWavedMembersByMeetingMemberId(me.getId());
+		List<Long> excludeMemberIds = handWavedMembers.stream()
+			.map(HandWavedMemberDto::getMemberId)
+			.collect(Collectors.toList());
 
-		return MeetingMemberListResponse.from(members, handWavedMembers);
+		// 본인은 항상 1순위이기 때문에, 목록 조회 대상에서 제외
+		excludeMemberIds.add(me.getId());
+
+		List<MeetingMember> notHandWavedMembers = meetingMemberRepository.findByMeetingIdAndMeetingMemberIdNotInOrderByName(
+			meetingId, excludeMemberIds);
+
+		return MeetingMemberListResponse.from(me, notHandWavedMembers, handWavedMembers);
 	}
 
 	public MeetingMember getByUserIdAndMeetingId(Long userId, Long meetingId) {

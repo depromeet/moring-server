@@ -58,10 +58,14 @@ public class MeetingMemberRepositoryImpl implements MeetingMemberRepository {
 		return meetingMemberQueryRepository.isOwnerExceedingMaxMeetings(meetingId, maxHostMeetings);
 	}
 
-	public List<MeetingMember> findByMeetingIdAndMeetingMemberIdNotOrderByName(Long meetingId,
-		Long loginMeetingMemberId) {
-		return meetingMemberJpaRepository.findByMeetingIdAndIdNotOrderByName(meetingId,
-			loginMeetingMemberId);
+	@Override
+	public List<MeetingMember> findByMeetingIdAndMeetingMemberIdNotInOrderByName(
+		Long meetingId, List<Long> excludeMemberIds
+	) {
+		if (excludeMemberIds.isEmpty()) {
+			return meetingMemberJpaRepository.findByMeetingIdOrderByName(meetingId);
+		}
+		return meetingMemberJpaRepository.findByMeetingIdAndIdNotInOrderByName(meetingId, excludeMemberIds);
 	}
 
 	@Override

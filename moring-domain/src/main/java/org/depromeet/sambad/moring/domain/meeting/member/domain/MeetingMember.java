@@ -1,6 +1,7 @@
 package org.depromeet.sambad.moring.domain.meeting.member.domain;
 
 import static jakarta.persistence.EnumType.*;
+import static org.depromeet.sambad.moring.domain.common.utils.UserIdResolver.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -141,6 +142,10 @@ public class MeetingMember extends BaseTimeEntity implements Comparable<MeetingM
 
 	public boolean isOwner() {
 		return role.equals(MeetingMemberRole.OWNER);
+	}
+
+	public boolean isMe() {
+		return Objects.equals(this.user.getId(), resolveRequestedUserId());
 	}
 
 	@Override
