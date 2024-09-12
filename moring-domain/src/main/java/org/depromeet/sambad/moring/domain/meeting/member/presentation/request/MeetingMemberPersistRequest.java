@@ -43,7 +43,6 @@ public record MeetingMemberPersistRequest(
 	String location,
 
 	@Schema(description = "모임원 취미 ID 리스트", example = "[1, 2, 3]", requiredMode = NOT_REQUIRED)
-	@Size(max = 3)
 	List<Long> hobbyIds,
 
 	@Schema(description = "모임원 MBTI", example = "ISFP", requiredMode = NOT_REQUIRED)
