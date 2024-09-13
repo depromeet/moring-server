@@ -109,8 +109,7 @@ public class MeetingAnswerQueryRepository {
 			.fetch();
 
 		List<MeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
-			.map(meetingQuestion -> new MeetingAnswerResponseCustom(meetingQuestion.getId(),
-				meetingQuestion.getTitle(),
+			.map(meetingQuestion -> new MeetingAnswerResponseCustom(meetingQuestion,
 				getMyAnswers(meetingMemberId, meetingQuestion),
 				getMyComment(meetingMemberId, meetingQuestion)))
 			.toList();
@@ -130,8 +129,8 @@ public class MeetingAnswerQueryRepository {
 			.fetch();
 
 		List<MyMeetingAnswerResponseCustom> responseCustoms = meetingQuestions.stream()
-			.map(meetingQuestion -> new MyMeetingAnswerResponseCustom(meetingQuestion.getId(),
-				meetingQuestion.getTitle(),
+			.map(meetingQuestion -> new MyMeetingAnswerResponseCustom(
+				meetingQuestion,
 				getMyAnswers(meetingMemberId, meetingQuestion),
 				getMyComment(meetingMemberId, meetingQuestion),
 				isHidden(meetingQuestion, meetingMemberId)

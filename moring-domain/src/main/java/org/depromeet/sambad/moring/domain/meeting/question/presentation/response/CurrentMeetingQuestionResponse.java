@@ -7,6 +7,7 @@ import org.depromeet.sambad.moring.domain.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.domain.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.domain.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 import org.depromeet.sambad.moring.domain.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionTitleResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -20,6 +21,9 @@ public record CurrentMeetingQuestionResponse(
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
 		requiredMode = REQUIRED)
 	String questionImageFileUrl,
+
+	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	QuestionTitleResponse questionTitle,
 
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
 	String title,
@@ -75,7 +79,8 @@ public record CurrentMeetingQuestionResponse(
 		return CurrentMeetingQuestionResponse.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.questionImageFileUrl(meetingQuestion.getQuestion().getQuestionImageUrl())
-			.title(meetingQuestion.getQuestion().getTitle())
+			.questionTitle(QuestionTitleResponse.from(meetingQuestion.getQuestion()))
+			.title(meetingQuestion.getFullTitle())
 			.questionNumber(meeting.getQuestionNumber(meetingQuestion))
 			.totalMeetingMemberCount(meeting.getTotalMemberCount())
 			.responseCount(meetingQuestion.getResponseCount())

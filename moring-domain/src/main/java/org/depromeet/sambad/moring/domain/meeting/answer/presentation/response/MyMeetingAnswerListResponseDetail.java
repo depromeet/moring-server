@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.depromeet.sambad.moring.domain.meeting.answer.infrastructure.dto.MyMeetingAnswerResponseCustom;
+import org.depromeet.sambad.moring.domain.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionTitleResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -15,6 +17,9 @@ public record MyMeetingAnswerListResponseDetail(
 
 	@Schema(title = "질문 인덱스", example = "1", requiredMode = REQUIRED)
 	int idx,
+
+	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	QuestionTitleResponse questionTitle,
 
 	@Schema(title = "릴레이 질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
@@ -34,10 +39,12 @@ public record MyMeetingAnswerListResponseDetail(
 		return IntStream.range(0, responseCustoms.size())
 			.mapToObj(i -> {
 				MyMeetingAnswerResponseCustom response = responseCustoms.get(i);
+				MeetingQuestion meetingQuestion = response.meetingQuestion();
 				return new MyMeetingAnswerListResponseDetail(
-					response.meetingQuestionId(),
+					meetingQuestion.getId(),
 					i + 1,
-					response.meetingQuestionTitle(),
+					QuestionTitleResponse.from(meetingQuestion.getQuestion()),
+					meetingQuestion.getFullTitle(),
 					response.getMeetingAnswers(),
 					response.comment(),
 					response.isHidden()

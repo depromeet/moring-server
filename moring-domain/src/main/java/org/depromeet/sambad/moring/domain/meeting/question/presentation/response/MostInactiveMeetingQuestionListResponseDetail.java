@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.depromeet.sambad.moring.domain.answer.domain.Answer;
 import org.depromeet.sambad.moring.domain.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionTitleResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -14,6 +15,9 @@ import lombok.Builder;
 public record MostInactiveMeetingQuestionListResponseDetail(
 	@Schema(example = "1", description = "모임 질문 식별자", requiredMode = REQUIRED)
 	Long meetingQuestionId,
+
+	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	QuestionTitleResponse questionTitle,
 
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
 	String title,
@@ -32,7 +36,8 @@ public record MostInactiveMeetingQuestionListResponseDetail(
 		Optional<Answer> bestAnswer) {
 		return MostInactiveMeetingQuestionListResponseDetail.builder()
 			.meetingQuestionId(meetingQuestion.getId())
-			.title(meetingQuestion.getQuestion().getTitle())
+			.questionTitle(QuestionTitleResponse.from(meetingQuestion.getQuestion()))
+			.title(meetingQuestion.getFullTitle())
 			.content(bestAnswer.isPresent() ? bestAnswer.get().getContent() : null)
 			.engagementRate(meetingQuestion.calculateEngagementRate())
 			.startTime(meetingQuestion.getEpochMilliStartTime())

@@ -8,6 +8,7 @@ import org.depromeet.sambad.moring.domain.file.presentation.annotation.FullFileU
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.domain.meeting.member.presentation.response.MeetingMemberSummaryResponse;
 import org.depromeet.sambad.moring.domain.meeting.question.domain.MeetingQuestion;
+import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionTitleResponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -21,6 +22,9 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
 		requiredMode = REQUIRED)
 	String questionImageFileUrl,
+
+	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	QuestionTitleResponse questionTitle,
 
 	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
 	String title,
@@ -42,6 +46,7 @@ public record FullInactiveMeetingQuestionListResponseDetail(
 		return FullInactiveMeetingQuestionListResponseDetail.builder()
 			.meetingQuestionId(meetingQuestion.getId())
 			.questionImageFileUrl(meetingQuestion.getQuestionImageUrl())
+			.questionTitle(QuestionTitleResponse.from(meetingQuestion.getQuestion()))
 			.title(meetingQuestion.getTitle())
 			.questionNumber(questionNumber)
 			.startTime(meetingQuestion.getEpochMilliStartTime())

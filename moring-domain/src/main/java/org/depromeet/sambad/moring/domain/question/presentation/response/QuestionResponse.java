@@ -24,6 +24,9 @@ public record QuestionResponse(
 	@Schema(description = "질문 이미지 URL", example = "https://example.com", requiredMode = REQUIRED)
 	String questionImageFileUrl,
 
+	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	QuestionTitleResponse questionTitle,
+
 	@Schema(description = "질문 제목", example = "갖고 싶은 초능력은?", requiredMode = REQUIRED)
 	String title,
 
@@ -36,6 +39,7 @@ public record QuestionResponse(
 			question.getId(),
 			question.getQuestionType(),
 			question.getQuestionImageUrl(),
+			QuestionTitleResponse.from(question),
 			question.getTitle(),
 			AnswerResponse.from(question.getAnswers())
 		);

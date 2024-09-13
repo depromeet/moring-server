@@ -34,6 +34,7 @@ public class QuestionService {
 		FileEntity image = fileService.uploadAndSave(questionRequest.questionImageUrl());
 		Question question = Question.builder()
 			.title(questionRequest.title())
+			.subtitle(questionRequest.subtitle())
 			.questionImageFile(image)
 			.questionType(questionRequest.questionType())
 			.answerContents(questionRequest.answerContents())
