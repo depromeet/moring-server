@@ -19,13 +19,13 @@ public record CurrentMeetingQuestionResponse(
 
 	@FullFileUrl
 	@Schema(example = "https://avatars.githubusercontent.com/u/173370739?v=4", description = "모임 질문 이미지 URL",
-		requiredMode = REQUIRED)
+		requiredMode = NOT_REQUIRED)
 	String questionImageFileUrl,
 
-	@Schema(description = "질문 제목 정보", requiredMode = REQUIRED)
+	@Schema(description = "질문 제목 정보", requiredMode = NOT_REQUIRED)
 	QuestionTitleResponse questionTitle,
 
-	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = REQUIRED)
+	@Schema(example = "갖고 싶은 초능력은?", description = "모임 질문 TITLE", requiredMode = NOT_REQUIRED)
 	String title,
 
 	@Schema(example = "18", description = "모임 내 질문 인덱스로 1 부터 시작합니다.", requiredMode = REQUIRED)
