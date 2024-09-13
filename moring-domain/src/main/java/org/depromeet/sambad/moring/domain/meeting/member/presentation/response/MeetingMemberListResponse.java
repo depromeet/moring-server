@@ -47,8 +47,8 @@ public record MeetingMemberListResponse(
 
 		List<MeetingMember> mergedMembers = mergeMeetingMembers(
 			List.of(me),
-			sortedHandWavingRequestedMembers,
 			sortedHandWavingAcceptedMembers,
+			sortedHandWavingRequestedMembers,
 			sortedNotHandWavedMembers
 		);
 

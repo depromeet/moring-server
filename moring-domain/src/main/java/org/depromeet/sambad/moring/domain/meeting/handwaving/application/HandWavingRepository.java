@@ -12,7 +12,7 @@ public interface HandWavingRepository {
 
 	Optional<HandWaving> findById(Long handWavingId);
 
-	Optional<HandWaving> findFirstBySenderIdAndReceiverIdOrderByIdDesc(Long senderMemberId, Long receiverMemberId);
+	Optional<HandWaving> findFirstBySenderOrReceiverIds(List<Long> memberIds);
 
 	List<HandWavedMemberDto> findHandWavedMembersByMeetingMemberId(Long meetingMemberId);
 
