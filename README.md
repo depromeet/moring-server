@@ -1,4 +1,3 @@
-
 <div align=center>
   <img width="1100" alt="스크린샷 2024-08-07 오후 2 23 06" src="https://github.com/user-attachments/assets/e634746e-fc63-4e71-847a-942a5300272f">
 </div>
@@ -23,20 +22,20 @@
 - 각 도메인 패키지는 **application**, **domain**, **infrastructure**, **presentation**의 네 가지 주요 레이어로 일관된 구조를 따릅니다.
 ```
 ├── meeting
-│   ├── answer
-│   │   ├── application
-│   │   │   ├── MeetingAnswerRepository.java
+│   ├── answer
+│   │   ├── application
+│   │   │   ├── MeetingAnswerRepository.java
 // ...
-│   │   ├── domain
-│   │   │   └── MeetingAnswer.java
-│   │   ├── infrastructure
-│   │   │   ├── MeetingAnswerJpaRepository.java
+│   │   ├── domain
+│   │   │   └── MeetingAnswer.java
+│   │   ├── infrastructure
+│   │   │   ├── MeetingAnswerJpaRepository.java
 // ...
-│   │   └── presentation
-│   │       ├── MeetingAnswerController.java
+│   │   └── presentation
+│   │       ├── MeetingAnswerController.java
 // ...
-│   ├── comment
-│   │   ├── application
+│   ├── comment
+│   │   ├── application
 // ...
 ```
 - DDD의 가장 큰 **장점**은, 도메인 모델을 강조함으로써 소프트웨어가 **비즈니스 목표 및 프로세스와 밀접하게 일치**하도록 할 수 있다는 점입니다.
@@ -47,45 +46,38 @@
     - 이 방식은 **코드의 모듈성**과 **재사용성**을 높이며, **독립적인 배포**와 **테스트**가 가능하게 해줍니다.
 ```
 ├── auth
-│   ├── src
-│   └── build.gradle
+│   ├── src
+│   └── build.gradle
 ├── meeting-api
-│   ├── src
-│   └── build.gradle
+│   ├── src
+│   └── build.gradle
 ├── admin-api
-│   ├── src
-│   └── build.gradle
+│   ├── src
+│   └── build.gradle
 // ...
 ```
-
-## ⏳ CI / CD
-- TODO
 
 ## 🚨 Monitoring / Alert
 - 다양한 지표와 로그를 효과적으로 수집하고 시각화하여 **서비스 가용성**과 **성능 최적화**에 기여합니다.
 - 각 도구는 독립적이면서도 통합적으로 관리되어 **유연한 확장성**과 **효율적인 문제 진단**을 지원합니다.
 
 1. **대시보드**
-   -  **사용 기술**: `Prometheus`, `Grafana`, `Micrometer`
-   - 시스템 및 애플리케이션 지표를 실시간으로 시각화하며, Slack 알림 설정 가능.
+    -  **사용 기술**: `Prometheus`, `Grafana`, `Micrometer`
+    - 시스템 및 애플리케이션 지표를 실시간으로 시각화하며, Slack 알림 설정 가능.
 
 2. **애플리케이션 추적**
-   - **사용 기술**: `Naver Pinpoint`
-   - HTTP 요청 및 마이크로서비스 간 분산 추적.
-   - 성능 병목을 빠르게 파악.
+    - **사용 기술**: `Naver Pinpoint`
+    - HTTP 요청 및 마이크로서비스 간 분산 추적.
+    - 성능 병목을 빠르게 파악.
 
 3. **로그**
-   - **사용 기술**: `Loki Stack (Promtail + Loki + Grafana)`
-   - 로그 데이터를 효율적으로 수집하고 필요 시 커스터마이징 가능.
-   - Grafana에서 로그를 시각화하고, 검색 및 분석을 지원.
+    - **사용 기술**: `Loki Stack (Promtail + Loki + Grafana)`
+    - 로그 데이터를 효율적으로 수집하고 필요 시 커스터마이징 가능.
+    - Grafana에서 로그를 시각화하고, 검색 및 분석을 지원.
 
 4. **에러 모니터링**
-   - **사용 기술**: `Sentry`
-   - 실시간 오류 모니터링 및 분석을 통해 빠른 대응 가능.
-
-
-## ✅ Test
-- TODO
+    - **사용 기술**: `Sentry`
+    - 실시간 오류 모니터링 및 분석을 통해 빠른 대응 가능.
 
 ## 🧑‍💻 Contribution
 <div align=center>
