@@ -42,7 +42,7 @@ public class EventService {
 		handWaving.mapEvent(event);
 	}
 
-	private Event publish(Long userId, Long meetingId, EventType type, Map<String, String> contentsMap) {
+	public Event publish(Long userId, Long meetingId, EventType type, Map<String, String> contentsMap) {
 		if (meetingMemberValidator.isNotUserOfMeeting(userId, meetingId)) {
 			log.warn("User is not member of meeting. userId: {}, meetingId: {}", userId, meetingId);
 			return null;
