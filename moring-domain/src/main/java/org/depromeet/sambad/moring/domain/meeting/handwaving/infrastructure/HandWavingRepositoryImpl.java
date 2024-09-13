@@ -35,9 +35,15 @@ public class HandWavingRepositoryImpl implements HandWavingRepository {
 	}
 
 	@Override
-	public Optional<HandWaving> findFirstBySenderIdAndReceiverIdOrderByIdDesc(Long senderMemberId,
-		Long receiverMemberId) {
-		return handWavingJpaRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId);
+	public Optional<HandWaving> findFirstBySenderOrReceiverIds(List<Long> memberIds) {
+		return Optional.ofNullable(query.selectFrom(handWaving)
+			.where(
+				handWaving.sender.id.in(memberIds),
+				handWaving.receiver.id.in(memberIds),
+				handWaving.status.in(HandWavingStatus.ACCEPTED, HandWavingStatus.REQUESTED)
+			)
+			.orderBy(handWaving.id.desc())
+			.fetchFirst());
 	}
 
 	@Override

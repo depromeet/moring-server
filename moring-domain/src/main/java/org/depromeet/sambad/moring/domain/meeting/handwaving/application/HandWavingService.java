@@ -46,9 +46,10 @@ public class HandWavingService {
 
 	public HandWavingStatusResponse getHandWavingStatus(Long userId, Long meetingId, Long receiverMemberId) {
 		MeetingMember sender = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
-		Optional<HandWaving> handWaving = getHandWavingBySenderIdAndReceiverId(sender.getId(), receiverMemberId)
-			.or(() -> getHandWavingBySenderIdAndReceiverId(receiverMemberId, sender.getId()));
-		return handWaving.map(waving -> HandWavingStatusResponse.of(waving.getId(), waving.getStatus()))
+		List<Long> memberIds = List.of(sender.getId(), receiverMemberId);
+		Optional<HandWaving> handWaving = handWavingRepository.findFirstBySenderOrReceiverIds(memberIds);
+
+		return handWaving.map(HandWavingStatusResponse::from)
 			.orElseGet(() -> HandWavingStatusResponse.of(NOT_REQUESTED));
 	}
 
@@ -83,10 +84,6 @@ public class HandWavingService {
 			.stream()
 			.map(HandWavingSummary::from)
 			.toList();
-	}
-
-	private Optional<HandWaving> getHandWavingBySenderIdAndReceiverId(Long senderMemberId, Long receiverMemberId) {
-		return handWavingRepository.findFirstBySenderIdAndReceiverIdOrderByIdDesc(senderMemberId, receiverMemberId);
 	}
 
 	private HandWaving getHandWavingById(Long handWavingId) {

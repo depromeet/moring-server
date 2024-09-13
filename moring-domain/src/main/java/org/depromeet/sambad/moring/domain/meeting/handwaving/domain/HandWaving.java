@@ -1,7 +1,10 @@
 package org.depromeet.sambad.moring.domain.meeting.handwaving.domain;
 
 import static jakarta.persistence.EnumType.*;
+import static org.depromeet.sambad.moring.domain.common.utils.UserIdResolver.*;
 import static org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavingStatus.*;
+
+import java.util.Objects;
 
 import org.depromeet.sambad.moring.domain.common.domain.BaseTimeEntity;
 import org.depromeet.sambad.moring.domain.event.domain.Event;
@@ -79,5 +82,9 @@ public class HandWaving extends BaseTimeEntity {
 		if (this.status != REQUESTED) {
 			throw new InvalidHandWavingStatusChangeException();
 		}
+	}
+
+	public boolean isSender() {
+		return Objects.equals(sender.getUser().getId(), resolveRequestedUserId());
 	}
 }
