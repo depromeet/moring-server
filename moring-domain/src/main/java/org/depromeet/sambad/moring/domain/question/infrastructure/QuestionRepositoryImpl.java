@@ -52,14 +52,6 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 				as(select(meetingQuestion.count())
 					.from(meetingQuestion)
 					.where(questionEq()), "usedCount")
-				// QuestionSummaryDto.class,
-				// question.id.as("questionId"),
-				// question.questionImageFile.physicalPath.as("questionImageFileUrl"),
-				// question.subtitle,
-				// question.title,
-				// as(select(meetingQuestion.count())
-				// 	.from(meetingQuestion)
-				// 	.where(questionEq()), "usedCount")
 			))
 			.from(question)
 			.where(question.id.notIn(usedQuestionIds))
