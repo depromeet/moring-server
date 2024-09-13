@@ -1,5 +1,6 @@
 package org.depromeet.sambad.moring.domain.meeting.handwaving.application;
 
+import static org.depromeet.sambad.moring.domain.event.domain.EventType.*;
 import static org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavingStatus.*;
 
 import java.util.List;
@@ -57,7 +58,9 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.accept();
+
 		inactiveHandWavingEvent(handWaving);
+		publishAcceptedEvent(handWaving);
 	}
 
 	@Transactional
@@ -66,7 +69,9 @@ public class HandWavingService {
 		HandWaving handWaving = getHandWavingById(handWavingId);
 		handWaving.validateIsReceiver(userId);
 		handWaving.reject();
+
 		inactiveHandWavingEvent(handWaving);
+		publishRejectedEvent(handWaving);
 	}
 
 	public List<HandWavingSummary> getHandWavingSummariesBy(List<Event> events) {
@@ -101,7 +106,8 @@ public class HandWavingService {
 		Long userId = receiver.getUser().getId();
 		Long meetingId = receiver.getMeeting().getId();
 
-		eventService.publishHandWavingEvent(userId, meetingId, EventType.HAND_WAVING_REQUESTED, contentsMap, handWaving);
+		eventService.publishHandWavingEvent(userId, meetingId, EventType.HAND_WAVING_REQUESTED, contentsMap,
+			handWaving);
 	}
 
 	private void inactiveHandWavingEvent(HandWaving handWaving) {
@@ -109,5 +115,37 @@ public class HandWavingService {
 		if (eventId != null) {
 			eventService.inactivate(eventId);
 		}
+	}
+
+	private void publishAcceptedEvent(HandWaving handWaving) {
+		publishAcceptedEventToSender(handWaving);
+		publishAcceptedEventToReceiver(handWaving);
+	}
+
+	private void publishRejectedEvent(HandWaving handWaving) {
+		// 내가 거절했으므로, 거절한 상대방의 이름이 메시지에 포함되어야 함
+		Map<String, String> contentsMap = Map.of("member", handWaving.getSender().getName());
+
+		// 이벤트의 대상은 본인이므로, Receiver의 정보를 사용함
+		Long userId = handWaving.getReceiver().getUser().getId();
+		Long meetingId = handWaving.getReceiver().getMeeting().getId();
+
+		eventService.publish(userId, meetingId, HAND_WAVING_REJECTED, contentsMap);
+	}
+
+	private void publishAcceptedEventToSender(HandWaving handWaving) {
+		Map<String, String> contentsMap = Map.of("member", handWaving.getReceiver().getName());
+		Long userId = handWaving.getSender().getUser().getId();
+		Long meetingId = handWaving.getSender().getMeeting().getId();
+
+		eventService.publish(userId, meetingId, HAND_WAVING_ACCEPTED, contentsMap);
+	}
+
+	private void publishAcceptedEventToReceiver(HandWaving handWaving) {
+		Map<String, String> contentsMap = Map.of("member", handWaving.getSender().getName());
+		Long userId = handWaving.getReceiver().getUser().getId();
+		Long meetingId = handWaving.getReceiver().getMeeting().getId();
+
+		eventService.publish(userId, meetingId, HAND_WAVING_ACCEPTED, contentsMap);
 	}
 }
