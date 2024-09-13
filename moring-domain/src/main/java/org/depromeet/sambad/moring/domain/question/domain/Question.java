@@ -40,6 +40,8 @@ public class Question extends BaseTimeEntity {
 	@JoinColumn(name = "question_image_file_id")
 	private FileEntity questionImageFile;
 
+	private String subtitle;
+
 	private String title;
 
 	@Enumerated(EnumType.STRING)
@@ -52,10 +54,13 @@ public class Question extends BaseTimeEntity {
 	private List<Answer> answers = new ArrayList<>();
 
 	@Builder
-	public Question(String title, FileEntity questionImageFile, QuestionType questionType,
-		List<String> answerContents) {
+	public Question(
+		String subtitle, String title, FileEntity questionImageFile, QuestionType questionType,
+		List<String> answerContents
+	) {
 		QuestionType.validateAnswerCount(questionType, answerContents.size());
 		this.questionType = questionType;
+		this.subtitle = subtitle;
 		this.title = title;
 		this.questionImageFile = questionImageFile;
 
@@ -79,7 +84,7 @@ public class Question extends BaseTimeEntity {
 			.orElse(null);
 	}
 
-	public QuestionType getQuestionType() {
-		return questionType;
+	public String getFullTitle() {
+		return subtitle + " " + title;
 	}
 }

@@ -11,8 +11,8 @@ import java.util.Optional;
 import org.depromeet.sambad.moring.domain.common.response.PageableResponse;
 import org.depromeet.sambad.moring.domain.question.application.QuestionRepository;
 import org.depromeet.sambad.moring.domain.question.domain.Question;
+import org.depromeet.sambad.moring.domain.question.domain.QuestionSummaryDto;
 import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionListResponse;
-import org.depromeet.sambad.moring.domain.question.presentation.response.QuestionSummaryResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -45,12 +45,10 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			)
 			.fetch();
 
-		List<QuestionSummaryResponse> questionSummaryResponses = queryFactory
+		List<QuestionSummaryDto> questionSummaryResponses = queryFactory
 			.select(Projections.constructor(
-				QuestionSummaryResponse.class,
-				question.id.as("questionId"),
-				question.questionImageFile.physicalPath.as("questionImageFileUrl"),
-				question.title,
+				QuestionSummaryDto.class,
+				question,
 				as(select(meetingQuestion.count())
 					.from(meetingQuestion)
 					.where(questionEq()), "usedCount")
@@ -67,6 +65,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 			.from(question)
 			.where(question.id.notIn(usedQuestionIds))
 			.fetch();
+
 		return QuestionListResponse.of(questionSummaryResponses, PageableResponse.of(pageable, totalElementIds));
 	}
 

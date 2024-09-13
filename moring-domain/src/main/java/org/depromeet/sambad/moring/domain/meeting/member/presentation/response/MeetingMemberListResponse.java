@@ -23,10 +23,12 @@ public record MeetingMemberListResponse(
 	) {
 		List<MeetingMember> sortedHandWavedMembers = handWavedMembers.stream()
 			.map(HandWavedMemberDto::handWavedMember)
+			.distinct()
 			.sorted()
 			.toList();
 
 		List<MeetingMember> sortedNotHandWavedMembers = notHandWavedMembers.stream()
+			.distinct()
 			.sorted()
 			.toList();
 

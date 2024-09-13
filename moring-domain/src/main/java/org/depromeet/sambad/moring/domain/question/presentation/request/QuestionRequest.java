@@ -11,6 +11,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record QuestionRequest(
+	@Schema(description = "질문 부제목", example = "다음 중", requiredMode = REQUIRED)
+	@NotBlank
+	String subtitle,
+
 	@Schema(description = "질문 제목", example = "오늘의 질문은?", requiredMode = REQUIRED)
 	@NotBlank
 	String title,

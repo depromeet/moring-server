@@ -5,6 +5,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.*;
 import java.util.List;
 
 import org.depromeet.sambad.moring.domain.common.response.PageableResponse;
+import org.depromeet.sambad.moring.domain.question.domain.QuestionSummaryDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,8 +20,12 @@ public record QuestionListResponse<T>(
 	@Schema(description = "페이징 정보", requiredMode = REQUIRED)
 	PageableResponse<T> pageable
 ) {
-	public static <T> QuestionListResponse<T> of(List<QuestionSummaryResponse> content,
-		PageableResponse<T> pageableResponse) {
-		return new QuestionListResponse(content, pageableResponse);
+	public static <T> QuestionListResponse<T> of(
+		List<QuestionSummaryDto> dtoList, PageableResponse<T> pageableResponse
+	) {
+		List<QuestionSummaryResponse> contents = dtoList.stream()
+			.map(QuestionSummaryResponse::from)
+			.toList();
+		return new QuestionListResponse(contents, pageableResponse);
 	}
 }

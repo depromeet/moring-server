@@ -201,4 +201,8 @@ public class MeetingQuestion extends BaseTimeEntity {
 			throw new InvalidMeetingMemberTargetException();
 		}
 	}
+
+	public String getFullTitle() {
+		return question.getFullTitle();
+	}
 }
