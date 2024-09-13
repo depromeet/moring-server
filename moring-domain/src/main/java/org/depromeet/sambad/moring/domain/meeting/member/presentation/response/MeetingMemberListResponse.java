@@ -21,18 +21,36 @@ public record MeetingMemberListResponse(
 	public static MeetingMemberListResponse from(
 		MeetingMember me, List<MeetingMember> notHandWavedMembers, List<HandWavedMemberDto> handWavedMembers
 	) {
-		List<MeetingMember> sortedHandWavedMembers = handWavedMembers.stream()
-			.map(HandWavedMemberDto::handWavedMember)
+		// 1순위: 나
+
+		// 2순위: 손을 흔든 사용자 중 수락한 사용자
+		List<MeetingMember> sortedHandWavingAcceptedMembers = handWavedMembers.stream()
 			.distinct()
+			.filter(HandWavedMemberDto::isAccepted)
+			.map(HandWavedMemberDto::handWavedMember)
 			.sorted()
 			.toList();
 
+		// 3순위: 손을 흔든 사용자 중 아직 요청 상태인 사용자
+		List<MeetingMember> sortedHandWavingRequestedMembers = handWavedMembers.stream()
+			.distinct()
+			.filter(HandWavedMemberDto::isRequested)
+			.map(HandWavedMemberDto::handWavedMember)
+			.sorted()
+			.toList();
+
+		// 4순위: 손을 흔들지 않은 사용자
 		List<MeetingMember> sortedNotHandWavedMembers = notHandWavedMembers.stream()
 			.distinct()
 			.sorted()
 			.toList();
 
-		List<MeetingMember> mergedMembers = mergeMeetingMembers(me, sortedHandWavedMembers, sortedNotHandWavedMembers);
+		List<MeetingMember> mergedMembers = mergeMeetingMembers(
+			List.of(me),
+			sortedHandWavingRequestedMembers,
+			sortedHandWavingAcceptedMembers,
+			sortedNotHandWavedMembers
+		);
 
 		List<MeetingMemberListResponseDetail> memberResponses = mergedMembers.stream()
 			.map(member -> MeetingMemberListResponseDetail.from(member, handWavedMembers))
@@ -41,15 +59,12 @@ public record MeetingMemberListResponse(
 		return new MeetingMemberListResponse(memberResponses);
 	}
 
-	private static List<MeetingMember> mergeMeetingMembers(
-		MeetingMember me, List<MeetingMember> sortedHandWavedMember, List<MeetingMember> sortedNotHandWavedMembers
-	) {
+	private static List<MeetingMember> mergeMeetingMembers(List<MeetingMember>... memberLists) {
 		List<MeetingMember> mergedMembers = new ArrayList<>();
 
-		// 다음과 같은 순서대로 모임원 목록을 구성
-		mergedMembers.add(me);
-		mergedMembers.addAll(sortedHandWavedMember);
-		mergedMembers.addAll(sortedNotHandWavedMembers);
+		for (List<MeetingMember> members : memberLists) {
+			mergedMembers.addAll(members);
+		}
 
 		return mergedMembers;
 	}

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.depromeet.sambad.moring.domain.meeting.handwaving.application.HandWavingRepository;
 import org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavedMemberDto;
 import org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWaving;
+import org.depromeet.sambad.moring.domain.meeting.handwaving.domain.HandWavingStatus;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.Tuple;
@@ -49,7 +50,8 @@ public class HandWavingRepositoryImpl implements HandWavingRepository {
 			.where(
 				handWaving.receiver.id.eq(meetingMemberId)
 					.or(handWaving.sender.id.eq(meetingMemberId)),
-				meetingMember.id.ne(meetingMemberId)
+				meetingMember.id.ne(meetingMemberId),
+				handWaving.status.in(HandWavingStatus.ACCEPTED, HandWavingStatus.REQUESTED)
 			)
 			.fetch();
 
