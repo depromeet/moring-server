@@ -22,7 +22,9 @@ public interface AuthAttributes {
 		if (LoginProvider.kakao.isProviderOf(providerId)) {
 			return KakaoAuthAttributes.of(attributes);
 		}
-
+		if (LoginProvider.test.isProviderOf(providerId)) {
+			return MockAuthAttributes.of();
+		}
 		throw new IllegalArgumentException("Unsupported id: " + providerId);
 	}
 }
