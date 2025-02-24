@@ -2,6 +2,7 @@ package org.depromeet.sambad.moring.domain.meeting.question.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.*;
+import static org.depromeet.sambad.moring.domain.meeting.question.domain.MeetingQuestionStatus.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.depromeet.sambad.moring.domain.auth.application.dto.AuthAttributes;
 import org.depromeet.sambad.moring.domain.common.domain.Gender;
+import org.depromeet.sambad.moring.domain.file.domain.FileEntity;
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.Meeting;
 import org.depromeet.sambad.moring.domain.meeting.meeting.domain.MeetingCode;
 import org.depromeet.sambad.moring.domain.meeting.meeting.presentation.request.MeetingPersistRequest;
@@ -16,6 +18,8 @@ import org.depromeet.sambad.moring.domain.meeting.member.domain.MBTI;
 import org.depromeet.sambad.moring.domain.meeting.member.domain.MeetingMember;
 import org.depromeet.sambad.moring.domain.meeting.member.domain.MeetingMemberRole;
 import org.depromeet.sambad.moring.domain.meeting.member.presentation.request.MeetingMemberPersistRequest;
+import org.depromeet.sambad.moring.domain.question.domain.Question;
+import org.depromeet.sambad.moring.domain.question.domain.QuestionType;
 import org.depromeet.sambad.moring.domain.user.domain.LoginProvider;
 import org.depromeet.sambad.moring.domain.user.domain.User;
 import org.junit.jupiter.api.Test;
@@ -25,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 class MeetingQuestionTest {
 
 	@Test
-	void 다음_모임_질문을_생성할_수_있다() {
+	void 다음_턴의_모임_질문을_생성할_수_있다() {
 		// given
 		Meeting meeting = createMeeting();
 		MeetingMember meetingMember = createMeetingMember(meeting);
@@ -39,8 +43,29 @@ class MeetingQuestionTest {
 			assertThat(nextMeetingQuestion.getMeeting()).isNotNull();
 			assertThat(nextMeetingQuestion.getQuestion()).isNull();
 			assertThat(nextMeetingQuestion.getTargetMember()).isNotNull();
-			assertThat(nextMeetingQuestion.getStatus()).isEqualTo(MeetingQuestionStatus.NOT_STARTED);
+			assertThat(nextMeetingQuestion.getStatus()).isEqualTo(NOT_STARTED);
 			assertThat(nextMeetingQuestion.getTotalMemberCount()).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	void 현재_턴의_모임_질문을_생성할_수_있다() {
+		// given
+		Meeting meeting = createMeeting();
+		MeetingMember meetingMember = createMeetingMember(meeting);
+		Question question = createQuestion();
+
+		// when
+		MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(meeting, meetingMember,
+			question, LocalDateTime.now(), 1);
+
+		// then
+		assertSoftly(softly -> {
+			assertThat(activeMeetingQuestion.getMeeting()).isNotNull();
+			assertThat(activeMeetingQuestion.getQuestion()).isNotNull();
+			assertThat(activeMeetingQuestion.getTargetMember()).isNotNull();
+			assertThat(activeMeetingQuestion.getStatus()).isEqualTo(ACTIVE);
+			assertThat(activeMeetingQuestion.getTotalMemberCount()).isGreaterThan(0);
 		});
 	}
 
@@ -57,5 +82,13 @@ class MeetingQuestionTest {
 			"개발자", "인천", List.of(1L), MBTI.ENFJ, "반갑다 친구들아");
 
 		return MeetingMember.createMemberWith(meeting, user, meetingMemberPersistRequest);
+	}
+
+	private Question createQuestion() {
+		return new Question("테스트",
+			"제목",
+			FileEntity.of("profile1.png", "images/profile1.png"),
+			QuestionType.MULTIPLE_DESCRIPTIVE_CHOICE,
+			List.of("답1", "답2"));
 	}
 }
