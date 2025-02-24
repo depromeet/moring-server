@@ -65,6 +65,7 @@ subprojects {
 
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testImplementation 'org.springframework.security:spring-security-test'
+		testImplementation 'org.assertj:assertj-core:3.27.3'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 		implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
