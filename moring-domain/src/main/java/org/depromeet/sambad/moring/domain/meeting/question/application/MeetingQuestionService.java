@@ -1,6 +1,5 @@
 package org.depromeet.sambad.moring.domain.meeting.question.application;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +47,6 @@ public class MeetingQuestionService {
 
 	private final MeetingMemberValidator meetingMemberValidator;
 
-	private final Clock clock;
-
 	@Transactional
 	public CurrentMeetingQuestionResponse save(Long userId, Long meetingId, MeetingQuestionRequest request) {
 		MeetingMember loginMember = meetingMemberService.getByUserIdAndMeetingId(userId, meetingId);
@@ -85,7 +82,7 @@ public class MeetingQuestionService {
 	@Transactional
 	public MeetingQuestion createActiveQuestion(Meeting meeting, MeetingMember targetMember, Question activeQuestion) {
 		MeetingQuestion activeMeetingQuestion = MeetingQuestion.createActiveMeetingQuestion(meeting, targetMember,
-			activeQuestion, LocalDateTime.now(clock), meeting.getTotalMemberCount());
+			activeQuestion, LocalDateTime.now(), meeting.getTotalMemberCount());
 		return meetingQuestionRepository.save(activeMeetingQuestion);
 	}
 
